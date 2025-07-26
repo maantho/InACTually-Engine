@@ -1,0 +1,423 @@
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Source Files\Cinder-WebSocketPP">
+      <UniqueIdentifier>{ad94068a-27ab-4fec-915f-6bcd9353657e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Cinder-WebSocketPP\websocketpp">
+      <UniqueIdentifier>{38291436-8c26-4a60-b9f8-26c121e53d0c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\imnodes">
+      <UniqueIdentifier>{8a2a34da-1b4e-4fb7-b2e8-cb8d1ae2f1ab}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\ImPlot">
+      <UniqueIdentifier>{725b3832-90bb-431a-88c8-8d657fa79145}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\OpenCV4">
+      <UniqueIdentifier>{48fdb7f5-3d92-426b-adab-52f5b6d8035f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\OSC">
+      <UniqueIdentifier>{abaf0ec1-ab2a-4960-a17c-c11c16ba45c2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Zdepth">
+      <UniqueIdentifier>{ce5a8a1c-3779-4f19-9e85-5c48be21d3e0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Zdepth\zstd">
+      <UniqueIdentifier>{2d4c67a0-b793-41f2-98c6-2eae5d2233c4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\audio">
+      <UniqueIdentifier>{e98d5b02-be2d-4710-90c7-9324f048d574}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Cinder-PortAudio">
+      <UniqueIdentifier>{223213AE-CA60-45EE-B27E-42AF8DFB5A61}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Cinder-PortAudio\src">
+      <UniqueIdentifier>{3224F40D-BEBF-4A3B-8F96-3E811CC6F034}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Cinder-PortAudio\src\cinder">
+      <UniqueIdentifier>{66EA68CE-2F14-4EDB-9204-4ACF8145B73A}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Cinder-PortAudio\src\cinder\audio">
+      <UniqueIdentifier>{92DFD015-ECF5-4043-96B1-0B15AD2FE32E}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Cinder-PortAudio\lib">
+      <UniqueIdentifier>{F7F5F361-08B4-45D0-8F93-7F71FA9CFF37}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Cinder-PortAudio\lib\portaudio">
+      <UniqueIdentifier>{C0001FEB-7FC0-4061-8F4F-B6FB8EF0EC1C}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Cinder-PortAudio\lib\portaudio\include">
+      <UniqueIdentifier>{FAEDE631-292B-4FEC-BC6E-3C0322C36BC1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Cinder-PortAudio\lib\portaudio\src">
+      <UniqueIdentifier>{C286FFD7-066A-4348-A04F-38343460703C}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\SimpleWebsocketServer">
+      <UniqueIdentifier>{56d78b9e-1631-4651-a65c-05170701e5d5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\ByteTrack">
+      <UniqueIdentifier>{f01fda4c-d197-4e0b-917a-4b1d1d9896b8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Cinder-PortAudio\lib\portaudio\src\common">
+      <UniqueIdentifier>{fba32f9b-8c18-4a1c-837e-f59241718c22}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Cinder-PortAudio\lib\portaudio\src\hostapi">
+      <UniqueIdentifier>{c11f951f-8710-4fc1-8741-65687e6bdc51}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Cinder-PortAudio\lib\portaudio\src\hostapi\win">
+      <UniqueIdentifier>{03dd8c29-5c06-42bf-9e0a-836f7ada6ef2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\dmx">
+      <UniqueIdentifier>{3819ba1a-3005-45c8-a0d5-62de6928b6be}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\utils">
+      <UniqueIdentifier>{72c7727e-523c-487e-94e9-c2cac8cdce57}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\filter">
+      <UniqueIdentifier>{75084c31-09ff-43d5-90db-a53444e78387}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\3rd\Cinder-WebSocketPP\src\WebSocketClient.cpp">
+      <Filter>Source Files\Cinder-WebSocketPP</Filter>
+    </ClCompile>
+    <ClCompile Include="..\3rd\Cinder-WebSocketPP\src\WebSocketConnection.cpp">
+      <Filter>Source Files\Cinder-WebSocketPP</Filter>
+    </ClCompile>
+    <ClCompile Include="..\3rd\Cinder-WebSocketPP\src\WebSocketServer.cpp">
+      <Filter>Source Files\Cinder-WebSocketPP</Filter>
+    </ClCompile>
+    <ClCompile Include="..\3rd\imnodes\imnodes.cpp">
+      <Filter>Source Files\imnodes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\3rd\ImPlot\implot.cpp">
+      <Filter>Source Files\ImPlot</Filter>
+    </ClCompile>
+    <ClCompile Include="..\3rd\ImPlot\implot_demo.cpp">
+      <Filter>Source Files\ImPlot</Filter>
+    </ClCompile>
+    <ClCompile Include="..\3rd\ImPlot\implot_items.cpp">
+      <Filter>Source Files\ImPlot</Filter>
+    </ClCompile>
+    <ClCompile Include="..\3rd\Zdepth\src\zdepth.cpp">
+      <Filter>Source Files\Zdepth</Filter>
+    </ClCompile>
+    <ClCompile Include="..\3rd\Zdepth\zstd\src\debug.c">
+      <Filter>Source Files\Zdepth\zstd</Filter>
+    </ClCompile>
+    <ClCompile Include="..\3rd\Zdepth\zstd\src\entropy_common.c">
+      <Filter>Source Files\Zdepth\zstd</Filter>
+    </ClCompile>
+    <ClCompile Include="..\3rd\Zdepth\zstd\src\error_private.c">
+      <Filter>Source Files\Zdepth\zstd</Filter>
+    </ClCompile>
+    <ClCompile Include="..\3rd\Zdepth\zstd\src\fse_compress.c">
+      <Filter>Source Files\Zdepth\zstd</Filter>
+    </ClCompile>
+    <ClCompile Include="..\3rd\Zdepth\zstd\src\fse_decompress.c">
+      <Filter>Source Files\Zdepth\zstd</Filter>
+    </ClCompile>
+    <ClCompile Include="..\3rd\Zdepth\zstd\src\hist.c">
+      <Filter>Source Files\Zdepth\zstd</Filter>
+    </ClCompile>
+    <ClCompile Include="..\3rd\Zdepth\zstd\src\huf_compress.c">
+      <Filter>Source Files\Zdepth\zstd</Filter>
+    </ClCompile>
+    <ClCompile Include="..\3rd\Zdepth\zstd\src\huf_decompress.c">
+      <Filter>Source Files\Zdepth\zstd</Filter>
+    </ClCompile>
+    <ClCompile Include="..\3rd\Zdepth\zstd\src\pool.c">
+      <Filter>Source Files\Zdepth\zstd</Filter>
+    </ClCompile>
+    <ClCompile Include="..\3rd\Zdepth\zstd\src\threading.c">
+      <Filter>Source Files\Zdepth\zstd</Filter>
+    </ClCompile>
+    <ClCompile Include="..\3rd\Zdepth\zstd\src\xxhash.c">
+      <Filter>Source Files\Zdepth\zstd</Filter>
+    </ClCompile>
+    <ClCompile Include="..\3rd\Zdepth\zstd\src\zstdmt_compress.c">
+      <Filter>Source Files\Zdepth\zstd</Filter>
+    </ClCompile>
+    <ClCompile Include="..\3rd\Zdepth\zstd\src\zstd_common.c">
+      <Filter>Source Files\Zdepth\zstd</Filter>
+    </ClCompile>
+    <ClCompile Include="..\3rd\Zdepth\zstd\src\zstd_compress.c">
+      <Filter>Source Files\Zdepth\zstd</Filter>
+    </ClCompile>
+    <ClCompile Include="..\3rd\Zdepth\zstd\src\zstd_compress_literals.c">
+      <Filter>Source Files\Zdepth\zstd</Filter>
+    </ClCompile>
+    <ClCompile Include="..\3rd\Zdepth\zstd\src\zstd_compress_sequences.c">
+      <Filter>Source Files\Zdepth\zstd</Filter>
+    </ClCompile>
+    <ClCompile Include="..\3rd\Zdepth\zstd\src\zstd_ddict.c">
+      <Filter>Source Files\Zdepth\zstd</Filter>
+    </ClCompile>
+    <ClCompile Include="..\3rd\Zdepth\zstd\src\zstd_decompress.c">
+      <Filter>Source Files\Zdepth\zstd</Filter>
+    </ClCompile>
+    <ClCompile Include="..\3rd\Zdepth\zstd\src\zstd_decompress_block.c">
+      <Filter>Source Files\Zdepth\zstd</Filter>
+    </ClCompile>
+    <ClCompile Include="..\3rd\Zdepth\zstd\src\zstd_double_fast.c">
+      <Filter>Source Files\Zdepth\zstd</Filter>
+    </ClCompile>
+    <ClCompile Include="..\3rd\Zdepth\zstd\src\zstd_fast.c">
+      <Filter>Source Files\Zdepth\zstd</Filter>
+    </ClCompile>
+    <ClCompile Include="..\3rd\Zdepth\zstd\src\zstd_lazy.c">
+      <Filter>Source Files\Zdepth\zstd</Filter>
+    </ClCompile>
+    <ClCompile Include="..\3rd\Zdepth\zstd\src\zstd_ldm.c">
+      <Filter>Source Files\Zdepth\zstd</Filter>
+    </ClCompile>
+    <ClCompile Include="..\3rd\Zdepth\zstd\src\zstd_opt.c">
+      <Filter>Source Files\Zdepth\zstd</Filter>
+    </ClCompile>
+    <ClCompile Include="..\3rd\AudioDrawUtils.cpp">
+      <Filter>Source Files\audio</Filter>
+    </ClCompile>
+    <ClCompile Include="..\3rd\Cinder-PortAudio\src\cinder\audio\ContextPortAudio.cpp">
+      <Filter>Source Files\Cinder-PortAudio\src\cinder\audio</Filter>
+    </ClCompile>
+    <ClCompile Include="..\3rd\Cinder-PortAudio\src\cinder\audio\DeviceManagerPortAudio.cpp">
+      <Filter>Source Files\Cinder-PortAudio\src\cinder\audio</Filter>
+    </ClCompile>
+    <ClCompile Include="..\3rd\OSC\src\cinder\osc\Osc.cpp">
+      <Filter>Source Files\OSC</Filter>
+    </ClCompile>
+    <ClCompile Include="..\3rd\smbPitchShift\smbPitchShift.cpp">
+      <Filter>Source Files\audio</Filter>
+    </ClCompile>
+    <ClCompile Include="..\3rd\Cinder-PortAudio\lib\portaudio\src\common\pa_trace.c">
+      <Filter>Source Files\Cinder-PortAudio\lib\portaudio\src\common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\3rd\Cinder-PortAudio\lib\portaudio\src\common\pa_allocation.c">
+      <Filter>Source Files\Cinder-PortAudio\lib\portaudio\src\common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\3rd\Cinder-PortAudio\lib\portaudio\src\common\pa_converters.c">
+      <Filter>Source Files\Cinder-PortAudio\lib\portaudio\src\common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\3rd\Cinder-PortAudio\lib\portaudio\src\common\pa_cpuload.c">
+      <Filter>Source Files\Cinder-PortAudio\lib\portaudio\src\common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\3rd\Cinder-PortAudio\lib\portaudio\src\common\pa_debugprint.c">
+      <Filter>Source Files\Cinder-PortAudio\lib\portaudio\src\common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\3rd\Cinder-PortAudio\lib\portaudio\src\common\pa_dither.c">
+      <Filter>Source Files\Cinder-PortAudio\lib\portaudio\src\common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\3rd\Cinder-PortAudio\lib\portaudio\src\common\pa_front.c">
+      <Filter>Source Files\Cinder-PortAudio\lib\portaudio\src\common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\3rd\Cinder-PortAudio\lib\portaudio\src\common\pa_process.c">
+      <Filter>Source Files\Cinder-PortAudio\lib\portaudio\src\common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\3rd\Cinder-PortAudio\lib\portaudio\src\common\pa_ringbuffer.c">
+      <Filter>Source Files\Cinder-PortAudio\lib\portaudio\src\common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\3rd\Cinder-PortAudio\lib\portaudio\src\common\pa_stream.c">
+      <Filter>Source Files\Cinder-PortAudio\lib\portaudio\src\common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\3rd\Cinder-PortAudio\lib\portaudio\src\os\win\pa_win_coinitialize.c">
+      <Filter>Source Files\Cinder-PortAudio\lib\portaudio\src\hostapi\win</Filter>
+    </ClCompile>
+    <ClCompile Include="..\3rd\Cinder-PortAudio\lib\portaudio\src\os\win\pa_win_hostapis.c">
+      <Filter>Source Files\Cinder-PortAudio\lib\portaudio\src\hostapi\win</Filter>
+    </ClCompile>
+    <ClCompile Include="..\3rd\Cinder-PortAudio\lib\portaudio\src\os\win\pa_win_util.c">
+      <Filter>Source Files\Cinder-PortAudio\lib\portaudio\src\hostapi\win</Filter>
+    </ClCompile>
+    <ClCompile Include="..\3rd\Cinder-PortAudio\lib\portaudio\src\hostapi\wasapi\pa_win_wasapi.c">
+      <Filter>Source Files\Cinder-PortAudio\lib\portaudio\src\hostapi\win</Filter>
+    </ClCompile>
+    <ClCompile Include="..\3rd\Cinder-PortAudio\lib\portaudio\src\os\win\pa_win_waveformat.c">
+      <Filter>Source Files\Cinder-PortAudio\lib\portaudio\src\hostapi\win</Filter>
+    </ClCompile>
+    <ClCompile Include="..\3rd\Cinder-PortAudio\lib\portaudio\src\hostapi\wdmks\pa_win_wdmks.c">
+      <Filter>Source Files\Cinder-PortAudio\lib\portaudio\src\hostapi\win</Filter>
+    </ClCompile>
+    <ClCompile Include="..\3rd\Cinder-PortAudio\lib\portaudio\src\os\win\pa_win_wdmks_utils.c">
+      <Filter>Source Files\Cinder-PortAudio\lib\portaudio\src\hostapi\win</Filter>
+    </ClCompile>
+    <ClCompile Include="..\3rd\Cinder-PortAudio\lib\portaudio\src\hostapi\wmme\pa_win_wmme.c">
+      <Filter>Source Files\Cinder-PortAudio\lib\portaudio\src\hostapi\win</Filter>
+    </ClCompile>
+    <ClCompile Include="..\3rd\dmx\DMXPro.cpp">
+      <Filter>Source Files\dmx</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\3rd\Cinder-WebSocketPP\src\WebSocketClient.h">
+      <Filter>Source Files\Cinder-WebSocketPP</Filter>
+    </ClInclude>
+    <ClInclude Include="..\3rd\Cinder-WebSocketPP\src\WebSocketConnection.h">
+      <Filter>Source Files\Cinder-WebSocketPP</Filter>
+    </ClInclude>
+    <ClInclude Include="..\3rd\Cinder-WebSocketPP\src\WebSocketServer.h">
+      <Filter>Source Files\Cinder-WebSocketPP</Filter>
+    </ClInclude>
+    <ClInclude Include="..\3rd\imnodes\imnodes.h">
+      <Filter>Source Files\imnodes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\3rd\imnodes\imnodes_internal.h">
+      <Filter>Source Files\imnodes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\3rd\ImPlot\implot.h">
+      <Filter>Source Files\ImPlot</Filter>
+    </ClInclude>
+    <ClInclude Include="..\3rd\ImPlot\implot_internal.h">
+      <Filter>Source Files\ImPlot</Filter>
+    </ClInclude>
+    <ClInclude Include="..\3rd\Zdepth\zstd\src\bitstream.h">
+      <Filter>Source Files\Zdepth\zstd</Filter>
+    </ClInclude>
+    <ClInclude Include="..\3rd\Zdepth\zstd\src\compiler.h">
+      <Filter>Source Files\Zdepth\zstd</Filter>
+    </ClInclude>
+    <ClInclude Include="..\3rd\Zdepth\zstd\src\cpu.h">
+      <Filter>Source Files\Zdepth\zstd</Filter>
+    </ClInclude>
+    <ClInclude Include="..\3rd\Zdepth\zstd\src\debug.h">
+      <Filter>Source Files\Zdepth\zstd</Filter>
+    </ClInclude>
+    <ClInclude Include="..\3rd\Zdepth\zstd\src\error_private.h">
+      <Filter>Source Files\Zdepth\zstd</Filter>
+    </ClInclude>
+    <ClInclude Include="..\3rd\Zdepth\zstd\src\hist.h">
+      <Filter>Source Files\Zdepth\zstd</Filter>
+    </ClInclude>
+    <ClInclude Include="..\3rd\Zdepth\zstd\src\mem.h">
+      <Filter>Source Files\Zdepth\zstd</Filter>
+    </ClInclude>
+    <ClInclude Include="..\3rd\Zdepth\zstd\src\pool.h">
+      <Filter>Source Files\Zdepth\zstd</Filter>
+    </ClInclude>
+    <ClInclude Include="..\3rd\Zdepth\zstd\src\threading.h">
+      <Filter>Source Files\Zdepth\zstd</Filter>
+    </ClInclude>
+    <ClInclude Include="..\3rd\Zdepth\zstd\src\zstdmt_compress.h">
+      <Filter>Source Files\Zdepth\zstd</Filter>
+    </ClInclude>
+    <ClInclude Include="..\3rd\Zdepth\zstd\src\zstd_compress_internal.h">
+      <Filter>Source Files\Zdepth\zstd</Filter>
+    </ClInclude>
+    <ClInclude Include="..\3rd\Zdepth\zstd\src\zstd_compress_literals.h">
+      <Filter>Source Files\Zdepth\zstd</Filter>
+    </ClInclude>
+    <ClInclude Include="..\3rd\Zdepth\zstd\src\zstd_compress_sequences.h">
+      <Filter>Source Files\Zdepth\zstd</Filter>
+    </ClInclude>
+    <ClInclude Include="..\3rd\Zdepth\zstd\src\zstd_ddict.h">
+      <Filter>Source Files\Zdepth\zstd</Filter>
+    </ClInclude>
+    <ClInclude Include="..\3rd\Zdepth\zstd\src\zstd_decompress_block.h">
+      <Filter>Source Files\Zdepth\zstd</Filter>
+    </ClInclude>
+    <ClInclude Include="..\3rd\Zdepth\zstd\src\zstd_decompress_internal.h">
+      <Filter>Source Files\Zdepth\zstd</Filter>
+    </ClInclude>
+    <ClInclude Include="..\3rd\Zdepth\zstd\src\zstd_double_fast.h">
+      <Filter>Source Files\Zdepth\zstd</Filter>
+    </ClInclude>
+    <ClInclude Include="..\3rd\Zdepth\zstd\src\zstd_errors.h">
+      <Filter>Source Files\Zdepth\zstd</Filter>
+    </ClInclude>
+    <ClInclude Include="..\3rd\Zdepth\zstd\src\zstd_fast.h">
+      <Filter>Source Files\Zdepth\zstd</Filter>
+    </ClInclude>
+    <ClInclude Include="..\3rd\Zdepth\zstd\src\zstd_internal.h">
+      <Filter>Source Files\Zdepth\zstd</Filter>
+    </ClInclude>
+    <ClInclude Include="..\3rd\Zdepth\zstd\src\zstd_lazy.h">
+      <Filter>Source Files\Zdepth\zstd</Filter>
+    </ClInclude>
+    <ClInclude Include="..\3rd\Zdepth\zstd\src\zstd_ldm.h">
+      <Filter>Source Files\Zdepth\zstd</Filter>
+    </ClInclude>
+    <ClInclude Include="..\3rd\Zdepth\zstd\src\zstd_opt.h">
+      <Filter>Source Files\Zdepth\zstd</Filter>
+    </ClInclude>
+    <ClInclude Include="..\3rd\AudioDrawUtils.h">
+      <Filter>Source Files\audio</Filter>
+    </ClInclude>
+    <ClInclude Include="..\3rd\Cinder-PortAudio\src\cinder\audio\ContextPortAudio.h">
+      <Filter>Source Files\Cinder-PortAudio</Filter>
+    </ClInclude>
+    <ClInclude Include="..\3rd\Cinder-PortAudio\src\cinder\audio\DeviceManagerPortAudio.h">
+      <Filter>Source Files\Cinder-PortAudio</Filter>
+    </ClInclude>
+    <ClInclude Include="..\3rd\OSC\src\cinder\osc\Osc.h">
+      <Filter>Source Files\OSC</Filter>
+    </ClInclude>
+    <ClInclude Include="..\3rd\Simple-WebSocket-Server\asio_compatibility.hpp">
+      <Filter>Source Files\SimpleWebsocketServer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\3rd\Simple-WebSocket-Server\client_ws.hpp">
+      <Filter>Source Files\SimpleWebsocketServer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\3rd\Simple-WebSocket-Server\client_wss.hpp">
+      <Filter>Source Files\SimpleWebsocketServer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\3rd\Simple-WebSocket-Server\crypto.hpp">
+      <Filter>Source Files\SimpleWebsocketServer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\3rd\Simple-WebSocket-Server\mutex.hpp">
+      <Filter>Source Files\SimpleWebsocketServer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\3rd\Simple-WebSocket-Server\server_ws.hpp">
+      <Filter>Source Files\SimpleWebsocketServer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\3rd\Simple-WebSocket-Server\server_wss.hpp">
+      <Filter>Source Files\SimpleWebsocketServer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\3rd\Simple-WebSocket-Server\status_code.hpp">
+      <Filter>Source Files\SimpleWebsocketServer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\3rd\Simple-WebSocket-Server\utility.hpp">
+      <Filter>Source Files\SimpleWebsocketServer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\3rd\smbPitchShift\smbPitchShift.h">
+      <Filter>Source Files\audio</Filter>
+    </ClInclude>
+    <ClInclude Include="..\3rd\OpenCV4\include\CinderOpenCV.h">
+      <Filter>Source Files\OpenCV4</Filter>
+    </ClInclude>
+    <ClInclude Include="..\3rd\OpenCV4\include\opencv2\cvconfig.h">
+      <Filter>Source Files\OpenCV4</Filter>
+    </ClInclude>
+    <ClInclude Include="..\3rd\OpenCV4\include\opencv2\opencv.hpp">
+      <Filter>Source Files\OpenCV4</Filter>
+    </ClInclude>
+    <ClInclude Include="..\3rd\OpenCV4\include\opencv2\opencv_modules.hpp">
+      <Filter>Source Files\OpenCV4</Filter>
+    </ClInclude>
+    <ClInclude Include="..\3rd\Cinder-PortAudio\lib\portaudio\include\portaudio.h">
+      <Filter>Source Files\Cinder-PortAudio\lib\portaudio\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\3rd\k4a2mat.hpp">
+      <Filter>Source Files\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\3rd\IconFontCppHeaders\IconsFontAwesome5.h">
+      <Filter>Source Files\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\3rd\filter\Filter.hpp">
+      <Filter>Source Files\filter</Filter>
+    </ClInclude>
+    <ClInclude Include="..\3rd\filter\OneEuroFilter.hpp">
+      <Filter>Source Files\filter</Filter>
+    </ClInclude>
+    <ClInclude Include="..\3rd\dmx\DMXPro.hpp">
+      <Filter>Source Files\dmx</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\3rd\Simple-WebSocket-Server\README.md">
+      <Filter>Source Files\SimpleWebsocketServer</Filter>
+    </None>
+    <None Include="packages.config" />
+  </ItemGroup>
+</Project>

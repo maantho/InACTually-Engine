@@ -1,0 +1,304 @@
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Source Files\audio">
+      <UniqueIdentifier>{7c401542-8800-47fa-a830-18838a4349ed}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\camera">
+      <UniqueIdentifier>{0f2542f2-287f-45e7-9d14-d53094cec720}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\computer">
+      <UniqueIdentifier>{e37d55d9-6bcc-4103-ba95-1998622dca62}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\display">
+      <UniqueIdentifier>{70d69a54-cb65-48cb-969b-7116ac2e6d95}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\kinect">
+      <UniqueIdentifier>{79edb36c-2279-4398-aa74-80e3814f827e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\marker">
+      <UniqueIdentifier>{d6caff9e-26f3-4007-bb4a-5b895a3d642e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\position">
+      <UniqueIdentifier>{73b36766-a01d-433c-8fb1-e1ba6671633e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\pointcloud">
+      <UniqueIdentifier>{5085c6a5-1275-4db2-9ed8-bc4975796f0b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\body">
+      <UniqueIdentifier>{df6da0e5-9fc6-4039-a7c7-8c2ad524884e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\dmx">
+      <UniqueIdentifier>{812158b2-3abe-415c-8264-3dd09845397b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\object">
+      <UniqueIdentifier>{7e5649a6-6ac9-4cfa-8e4e-79c38467a22c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\actionspace">
+      <UniqueIdentifier>{c9e741f1-a94a-44dd-95e9-caa89e396ffc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\projector">
+      <UniqueIdentifier>{2763d18f-4f75-4745-800c-d9fe624b79e0}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\include\modules\RoomManagers.hpp">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\room\RoomNodeBase.hpp">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\room\RoomNodeManagerBase.hpp">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\room\roompch.hpp">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\room\Stage.hpp">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\room\position\PositionRoomNode.hpp">
+      <Filter>Source Files\position</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\room\position\PositionManager.hpp">
+      <Filter>Source Files\position</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\room\pointcloud\PointcloudRoomNode.hpp">
+      <Filter>Source Files\pointcloud</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\room\marker\MarkerManager.hpp">
+      <Filter>Source Files\marker</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\room\marker\MarkerRoomNode.hpp">
+      <Filter>Source Files\marker</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\room\kinect\KinectRoomNode.hpp">
+      <Filter>Source Files\kinect</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\room\kinect\KinectDevice.hpp">
+      <Filter>Source Files\kinect</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\room\kinect\KinectDummy.hpp">
+      <Filter>Source Files\kinect</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\room\kinect\KinectManager.hpp">
+      <Filter>Source Files\kinect</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\room\display\DisplayManager.hpp">
+      <Filter>Source Files\display</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\room\computer\ComputerManager.hpp">
+      <Filter>Source Files\computer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\room\computer\ComputerRoomNode.hpp">
+      <Filter>Source Files\computer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\room\camera\CameraManager.hpp">
+      <Filter>Source Files\camera</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\room\camera\CameraRoomNode.hpp">
+      <Filter>Source Files\camera</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\room\camera\CameraDevice.hpp">
+      <Filter>Source Files\camera</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\room\audio\AudioManager.hpp">
+      <Filter>Source Files\audio</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\room\audio\AudioRoomNodeBase.hpp">
+      <Filter>Source Files\audio</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\room\audio\HeadphoneRoomNode.hpp">
+      <Filter>Source Files\audio</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\room\audio\MicrophoneRoomNode.hpp">
+      <Filter>Source Files\audio</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\room\audio\SoundFileRoomNode.hpp">
+      <Filter>Source Files\audio</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\room\audio\SoundRoomNode.hpp">
+      <Filter>Source Files\audio</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\room\audio\SpeakerRoomNode.hpp">
+      <Filter>Source Files\audio</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\room\audio\SubwooferRoomNode.hpp">
+      <Filter>Source Files\audio</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\room\body\Body.hpp">
+      <Filter>Source Files\body</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\room\body\BodyJoint.hpp">
+      <Filter>Source Files\body</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\room\body\BodyTrackingManager.hpp">
+      <Filter>Source Files\body</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\utils\KinectHelper.hpp">
+      <Filter>Source Files\kinect</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\room\dmx\DimmerRoomNode.hpp">
+      <Filter>Source Files\dmx</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\room\dmx\DMXManager.hpp">
+      <Filter>Source Files\dmx</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\room\dmx\DMXRoomNodeBase.hpp">
+      <Filter>Source Files\dmx</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\room\dmx\MovingHeadRoomNode.hpp">
+      <Filter>Source Files\dmx</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\room\object\ObjectManager.hpp">
+      <Filter>Source Files\object</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\room\object\ObjectRoomNode.hpp">
+      <Filter>Source Files\object</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\room\actionspace\ActionspaceManager.hpp">
+      <Filter>Source Files\actionspace</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\room\actionspace\ActionspaceRoomNode.hpp">
+      <Filter>Source Files\actionspace</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\room\Bounding.hpp">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\room\body\BodyRoomNode.hpp">
+      <Filter>Source Files\body</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\room\projector\ProjectorManager.hpp">
+      <Filter>Source Files\projector</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\room\projector\ProjectorRoomNode.hpp">
+      <Filter>Source Files\projector</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="IA_Room_ClassDiagram.cd" />
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\src\room\RoomNodeBase.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\room\RoomNodeManagerBase.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\room\roompch.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\room\Stage.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\room\position\PositionManager.cpp">
+      <Filter>Source Files\position</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\room\position\PositionRoomNode.cpp">
+      <Filter>Source Files\position</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\room\pointcloud\PointcloudRoomNode.cpp">
+      <Filter>Source Files\pointcloud</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\room\marker\MarkerManager.cpp">
+      <Filter>Source Files\marker</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\room\marker\MarkerRoomNode.cpp">
+      <Filter>Source Files\marker</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\room\kinect\KinectDevice.cpp">
+      <Filter>Source Files\kinect</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\room\kinect\KinectDummy.cpp">
+      <Filter>Source Files\kinect</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\room\kinect\KinectManager.cpp">
+      <Filter>Source Files\kinect</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\room\kinect\KinectRoomNode.cpp">
+      <Filter>Source Files\kinect</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\room\display\DisplayManager.cpp">
+      <Filter>Source Files\display</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\room\computer\ComputerManager.cpp">
+      <Filter>Source Files\computer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\room\computer\ComputerRoomNode.cpp">
+      <Filter>Source Files\computer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\room\camera\CameraDevice.cpp">
+      <Filter>Source Files\camera</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\room\camera\CameraManager.cpp">
+      <Filter>Source Files\camera</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\room\camera\CameraRoomNode.cpp">
+      <Filter>Source Files\camera</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\room\audio\AudioManager.cpp">
+      <Filter>Source Files\audio</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\room\audio\AudioRoomNodeBase.cpp">
+      <Filter>Source Files\audio</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\room\audio\HeadphoneRoomNode.cpp">
+      <Filter>Source Files\audio</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\room\audio\MicrophoneRoomNode.cpp">
+      <Filter>Source Files\audio</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\room\audio\SoundFileRoomNode.cpp">
+      <Filter>Source Files\audio</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\room\audio\SoundRoomNode.cpp">
+      <Filter>Source Files\audio</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\room\audio\SpeakerRoomNode.cpp">
+      <Filter>Source Files\audio</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\room\audio\SubwooferRoomNode.cpp">
+      <Filter>Source Files\audio</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\room\body\BodyTrackingManager.cpp">
+      <Filter>Source Files\body</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\room\dmx\DMXManager.cpp">
+      <Filter>Source Files\dmx</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\room\dmx\DMXRoomNodeBase.cpp">
+      <Filter>Source Files\dmx</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\room\dmx\MovingHeadRoomNode.cpp">
+      <Filter>Source Files\dmx</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\room\dmx\DimmerRoomNode.cpp">
+      <Filter>Source Files\dmx</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\room\object\ObjectManager.cpp">
+      <Filter>Source Files\object</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\room\object\ObjectRoomNode.cpp">
+      <Filter>Source Files\object</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\room\actionspace\ActionspaceManager.cpp">
+      <Filter>Source Files\actionspace</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\room\actionspace\ActionspaceRoomNode.cpp">
+      <Filter>Source Files\actionspace</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\room\body\BodyRoomNode.cpp">
+      <Filter>Source Files\body</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\room\projector\ProjectorManager.cpp">
+      <Filter>Source Files\projector</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\room\projector\ProjectorRoomNode.cpp">
+      <Filter>Source Files\projector</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>

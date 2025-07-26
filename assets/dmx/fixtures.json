@@ -1,0 +1,250 @@
+{
+    "devices": [
+        {
+            "name": "Pico Beam 60",
+            "type": "mv",
+            "channel": 13,
+            "beamAngle": 4,
+            "panRange": 540,
+            "tiltRange": 180,
+            "tiltOffset": 0,
+            "strobeSpeed": 25,
+            "mapping": {
+                "pan": 1,
+                "finePan": 2,
+                "tilt": 3,
+                "fineTilt": 4,
+                "speed": 5,
+                "dimmer": 6,
+                "strobe": 7,
+                "R": 8,
+                "G": 9,
+                "B": 10,
+                "W": 11
+            },
+            "strobeMap": {
+                "none": 5,
+                "min": 10,
+                "max": 255
+            }
+        },
+        {
+            "name": "Shark Zoom Wash One",
+            "type": "mv",
+            "channel": 15,
+            "beamAngle": 6,
+            "beamAngleMin": 6,
+            "beamAngleMax": 36,
+            "panRange": 540,
+            "tiltRange": 200,
+            "tiltOffset": 0,
+            "strobeSpeed": 20,
+            "mapping": {
+                "pan": 1,
+                "finePan": 2,
+                "tilt": 3,
+                "fineTilt": 4,
+                "speed": 5,
+                "dimmer": 6,
+                "strobe": 7,
+                "R": 8,
+                "G": 9,
+                "B": 10,
+                "W": 11,
+                "temperature": 12,
+                "zoom": 14
+            },
+            "strobeMap": {
+                "none": 5,
+                "min": 10,
+                "max": 250
+            }
+        },
+        {
+            "name": "Robe 150",
+            "type": "mv",
+            "channel": 22,
+            "beamAngle": 6,
+            "beamAngleMin": 4,
+            "beamAngleMax": 60,
+            "panRange": 540,
+            "tiltRange": 270,
+            "tiltOffset": 0,
+            "strobeSpeed": 20,
+            "mapping": {
+                "pan": 1,
+                "finePan": 2,
+                "tilt": 3,
+                "fineTilt": 4,
+                "speed": 5,
+                "dimmer": 21,
+                "strobe": 7,
+                "R": 8,
+                "G": 10,
+                "B": 12,
+                "W": 14,
+                "temperature": 16,
+                "zoom": 18
+            },
+            "strobeMap": {
+                "none": 5,
+                "min": 10,
+                "max": 250
+            }
+        },
+        {
+            "name": "Wash TMH-46",
+            "type": "mv",
+            "channel": 18,
+            "beamAngle": 24,
+            "panRange": 540,
+            "tiltRange": 220,
+            "tiltOffset": 5,
+            "strobeSpeed": 25,
+            "mapping": {
+                "pan": 1,
+                "finePan": 2,
+                "tilt": 3,
+                "fineTilt": 4,
+                "speed": 5,
+                "dimmer": 6,
+                "strobe": 7,
+                "R": 8,
+                "G": 9,
+                "B": 10,
+                "W": 11,
+                "A": 12,
+                "UV": 13
+            },
+            "strobeMap": {
+                "none": 5,
+                "min": 10,
+                "max": 249
+            }
+        },
+        {
+            "name": "Pico Spot 45",
+            "type": "mv",
+            "channel": 9,
+            "beamAngle": 13,
+            "panRange": 540,
+            "tiltRange": 200,
+            "tiltOffset": 5,
+            "strobeSpeed": 25,
+            "mapping": {
+                "pan": 1,
+                "finePan": 3,
+                "tilt": 2,
+                "fineTilt": 4,
+                "speed": 5,
+                "dimmer": 8,
+                "strobe": 9,
+                "color": 6,
+                "gobo": 7
+            },
+            "strobeMap": {
+                "none": 5,
+                "min": 10,
+                "max": 255
+            },
+            "colorMap": {
+                "amount": 8,
+                "start": 0,
+                "end": 87,
+                "colors": [
+                    {
+                        "value": 5,
+                        "label": "white",
+                        "hex": "#ffffff",
+                        "R": 255,
+                        "G": 255,
+                        "B": 255
+                    },
+                    {
+                        "value": 17,
+                        "label": "red",
+                        "hex": "#ff0000",
+                        "R": 255,
+                        "G": 0,
+                        "B": 0
+                    },
+                    {
+                        "value": 27,
+                        "label": "orange",
+                        "hex": "#ffba00",
+                        "R": 255,
+                        "G": 183,
+                        "B": 0
+                    },
+                    {
+                        "value": 37,
+                        "label": "yellow",
+                        "hex": "#fffc00",
+                        "R": 244,
+                        "G": 255,
+                        "B": 0
+                    },
+                    {
+                        "value": 52,
+                        "label": "green",
+                        "hex": "#09ff15",
+                        "R": 0,
+                        "G": 255,
+                        "B": 50
+                    },
+                    {
+                        "value": 62,
+                        "label": "blue",
+                        "hex": "#0011ff",
+                        "R": 11,
+                        "G": 0,
+                        "B": 255
+                    },
+                    {
+                        "value": 72,
+                        "label": "cyan",
+                        "hex": "#00f0ff",
+                        "R": 0,
+                        "G": 240,
+                        "B": 255
+                    },
+                    {
+                        "value": 82,
+                        "label": "purple",
+                        "hex": "#8f00ff",
+                        "R": 255,
+                        "G": 0,
+                        "B": 240
+                    }
+                ]
+            },
+            "goboMap": {
+                "amount": 7,
+                "start": 0,
+                "end": 124,
+                "shake-min": 125,
+                "shake-max": 249
+            }
+        },
+        {
+            "name": "LED Bar 18",
+            "type": "bar",
+            "channel": 54,
+            "segments": 18,
+            "mapping": {
+                "R": 1,
+                "G": 2,
+                "B": 3
+            }
+        },
+        {
+            "name": "Dimmer",
+            "type": "dimmer",
+            "channel": 1,
+            "segments": 0,
+            "mapping": {
+                "dimmer1": 1
+            }
+        }
+    ]
+}

@@ -1,0 +1,226 @@
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Source Files\audio">
+      <UniqueIdentifier>{ce27f874-31a8-4f92-8b3f-bf3860cf92d2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\audio\mixer">
+      <UniqueIdentifier>{81f112f3-8617-4542-8de3-756248dae61c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\dmx">
+      <UniqueIdentifier>{235c85af-1d00-4a06-a571-ed778053ba83}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\input">
+      <UniqueIdentifier>{ef656c0e-0977-4e35-a4ec-2c6db556fe01}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\networking">
+      <UniqueIdentifier>{6c4893da-31e9-4ed3-a6f9-0bbb9b58adcd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\computing">
+      <UniqueIdentifier>{36ff4bdb-b1ef-4d55-b0ea-a65c463ff52e}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\src\audio\AudioDeviceManager.cpp">
+      <Filter>Source Files\audio</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\audio\mixer\DistanceMixer.cpp">
+      <Filter>Source Files\audio\mixer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\audio\mixer\MixerBase.cpp">
+      <Filter>Source Files\audio\mixer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\audio\mixer\Mixer2d.cpp">
+      <Filter>Source Files\audio\mixer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\audio\mixer\Mixer3d.cpp">
+      <Filter>Source Files\audio\mixer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\audio\mixer\MixerManager.cpp">
+      <Filter>Source Files\audio\mixer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\audio\mixer\NearestMixer.cpp">
+      <Filter>Source Files\audio\mixer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\input\InputBase.cpp">
+      <Filter>Source Files\input</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\input\InputManager.cpp">
+      <Filter>Source Files\input</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\input\InteractionHelper.cpp">
+      <Filter>Source Files\input</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\input\KeyInput.cpp">
+      <Filter>Source Files\input</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\input\MouseInput.cpp">
+      <Filter>Source Files\input</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\input\TouchInput.cpp">
+      <Filter>Source Files\input</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\networking\Middleware.cpp">
+      <Filter>Source Files\networking</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\networking\NetworkManager.cpp">
+      <Filter>Source Files\networking</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\networking\OSCServer.cpp">
+      <Filter>Source Files\networking</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\networking\TCPSocket.cpp">
+      <Filter>Source Files\networking</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\networking\WebUIServer.cpp">
+      <Filter>Source Files\networking</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\networking\WebUISecureServer.cpp">
+      <Filter>Source Files\networking</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\computing\CameraCalibrator.cpp">
+      <Filter>Source Files\computing</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\computing\MarkerDetector.cpp">
+      <Filter>Source Files\computing</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\computing\ObjectDetector.cpp">
+      <Filter>Source Files\computing</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\computing\DetectorBase.cpp">
+      <Filter>Source Files\computing</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\computing\DepthDetector.cpp">
+      <Filter>Source Files\computing</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\networking\Message.cpp">
+      <Filter>Source Files\networking</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\audio\TimeStretchingNode.cpp">
+      <Filter>Source Files\audio</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\include\audio\AudioDeviceListener.hpp">
+      <Filter>Source Files\audio</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\audio\AudioDeviceManager.hpp">
+      <Filter>Source Files\audio</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\audio\mixer\DistanceMixer.hpp">
+      <Filter>Source Files\audio\mixer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\audio\mixer\MixerBase.hpp">
+      <Filter>Source Files\audio\mixer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\audio\mixer\Mixer2d.hpp">
+      <Filter>Source Files\audio\mixer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\audio\mixer\Mixer3d.hpp">
+      <Filter>Source Files\audio\mixer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\audio\mixer\MixerManager.hpp">
+      <Filter>Source Files\audio\mixer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\audio\mixer\NearestMixer.hpp">
+      <Filter>Source Files\audio\mixer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\input\InputBase.hpp">
+      <Filter>Source Files\input</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\input\InputListeners.hpp">
+      <Filter>Source Files\input</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\input\InputManager.hpp">
+      <Filter>Source Files\input</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\input\InteractionHelper.hpp">
+      <Filter>Source Files\input</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\input\InteractionManager.hpp">
+      <Filter>Source Files\input</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\input\KeyInput.hpp">
+      <Filter>Source Files\input</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\input\KeyRawListener.hpp">
+      <Filter>Source Files\input</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\input\ListenerBase.hpp">
+      <Filter>Source Files\input</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\input\MouseInput.hpp">
+      <Filter>Source Files\input</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\input\MouseRawListener.hpp">
+      <Filter>Source Files\input</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\input\TouchInput.hpp">
+      <Filter>Source Files\input</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\input\TouchRawListener.hpp">
+      <Filter>Source Files\input</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\networking\Connection.hpp">
+      <Filter>Source Files\networking</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\networking\Middleware.hpp">
+      <Filter>Source Files\networking</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\networking\NetworkManager.hpp">
+      <Filter>Source Files\networking</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\networking\OSCReciever.hpp">
+      <Filter>Source Files\networking</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\networking\OSCServer.hpp">
+      <Filter>Source Files\networking</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\networking\TCPSocket.hpp">
+      <Filter>Source Files\networking</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\networking\WebUIServer.hpp">
+      <Filter>Source Files\networking</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\networking\NetworkPublisher.hpp">
+      <Filter>Source Files\networking</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\networking\RPCHandler.hpp">
+      <Filter>Source Files\networking</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\networking\WebUISecureServer.hpp">
+      <Filter>Source Files\networking</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\computing\CameraCalibrator.hpp">
+      <Filter>Source Files\computing</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\computing\ObjectDetector.hpp">
+      <Filter>Source Files\computing</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\computing\MarkerDetector.hpp">
+      <Filter>Source Files\computing</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\computing\DetectorBase.hpp">
+      <Filter>Source Files\computing</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\computing\DepthDetector.hpp">
+      <Filter>Source Files\computing</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\networking\Message.hpp">
+      <Filter>Source Files\networking</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\audio\TimeStretchingNode.hpp">
+      <Filter>Source Files\audio</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\assets\dmx\fixtures.json">
+      <Filter>Source Files\dmx</Filter>
+    </None>
+    <None Include="IA_System_ClassDiagram.cd" />
+    <None Include="packages.config" />
+  </ItemGroup>
+</Project>

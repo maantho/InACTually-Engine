@@ -1,0 +1,29 @@
+
+https://gist.github.com/fntlnz/cf14feb5a46b2eda428e000157447309
+https://gist.github.com/fntlnz/cf14feb5a46b2eda428e000157447309?permalink_comment_id=3034183
+
+
+### for Cert
+##  create with added IP of the device/network that is hosting the app 
+
+openssl req -new -sha256 \
+    -key inactuallyCA.key \
+    -subj "/C=DE/ST=Saxony/O=Dresden/OU=InACTually/CN=InACTually Web" \
+    -reqexts SAN \
+    -config <(cat /etc/ssl/openssl.cnf <(printf "\n[SAN]\nsubjectAltName=IP:192.168.137.1,DNS:localhost")) \
+    -out inactually.csr
+
+
+openssl x509 -req -extfile <(printf "subjectAltName=IP:192.168.137.1,DNS:localhost") -days 9999 -in inactually.csr -CA inactuallyCA.crt -CAkey inactuallyCA.key -CAcreateserial -out inactually.crt -sha256
+
+
+
+### for CA
+##  install inactuallyCA.cer on the device that wants to open the app
+
+// re-creation not needed
+
+openssl genrsa -out inactuallyCA.key 4096
+
+openssl req -x509 -new -nodes -key inactuallyCA.key -sha256 -days 9999 -out inactuallyCA.crt
+
