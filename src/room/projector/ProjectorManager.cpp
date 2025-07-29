@@ -17,6 +17,7 @@
 
 #include "roompch.hpp"
 #include "projector/ProjectorManager.hpp"
+#include "WindowData.hpp"
 
 #include <algorithm> 
 
@@ -38,7 +39,7 @@ act::room::RoomNodeBaseRef act::room::ProjectorManager::drawMenu()
 {
 	
 	if (ImGui::Button("add Device")) {
-		
+		addDevice("Projector " + std::to_string(m_nodes.size() + 1));
 	}
 
 	return nullptr;
@@ -95,7 +96,9 @@ act::room::ProjectorRoomNodeRef act::room::ProjectorManager::getProjector(act::U
 
 act::room::RoomNodeBaseRef act::room::ProjectorManager::addDevice(std::string name)
 {
-	auto node = nullptr; //ProjectorRoomNode::create(window, name);
+	auto window = WindowData::createWindow("Projector");
+
+	auto node = ProjectorRoomNode::create(window, name);
 	//m_nodes.push_back(node);
 
 	return node;

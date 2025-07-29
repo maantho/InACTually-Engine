@@ -113,6 +113,7 @@ namespace act {
 
 	private:
 		ci::app::App* m_app;
+		UID m_mainWindowUID;
 
 		std::shared_ptr<input::MouseRawListener> m_mouseRawListener;
 		std::shared_ptr<input::TouchRawListener> m_touchRawListener;

@@ -403,6 +403,7 @@
     <ClInclude Include="..\3rd\libzmq\src\zmtp_engine.hpp" />
     <ClInclude Include="..\include\main\InACTually.hpp" />
     <ClInclude Include="..\include\main\ModuleRegistry.hpp" />
+    <ClInclude Include="..\include\main\WindowData.hpp" />
     <ClInclude Include="..\include\modules\ProcessingModule.hpp" />
     <ClInclude Include="..\include\modules\ModuleBase.hpp" />
     <ClInclude Include="..\include\modules\DisplayModule.hpp" />

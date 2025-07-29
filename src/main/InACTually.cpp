@@ -23,6 +23,7 @@
 #include "imnodes.h"
 
 #include "ModuleBase.hpp"
+#include "WindowData.hpp"
 
 using namespace act;
 
@@ -32,6 +33,8 @@ InACTually::InACTually(ci::app::App* app)
 	: m_app(app)
 {
 	AppState::set(AS_STARTUP);
+	getWindow()->setUserData(new WindowData());
+	m_mainWindowUID = getWindow()->getUserData<WindowData>()->getUID();
 	getWindow()->setBorderless();
 	ivec2 size = ivec2(400, 200);
 	getWindow()->setSize(size);
@@ -158,6 +161,12 @@ void InACTually::init()
 
 void InACTually::cleanup()
 {
+	auto windowData = getWindow()->getUserData<WindowData>();
+	if(windowData->getUID() != m_mainWindowUID) {
+		windowData->cleanup();
+		return;
+	}
+
 	AppState::set(AS_CLEANUP);
 
 	for (auto&& mod : reg_modules)
@@ -174,6 +183,12 @@ void InACTually::cleanup()
 
 void InACTually::update()
 {
+	auto windowData = getWindow()->getUserData<WindowData>();
+	if (windowData->getUID() != m_mainWindowUID) {
+		windowData->update();
+		return;
+	}
+
 	if (AppState::get() == AS_RUNNING) {
 		m_networkMgr->update();
 		
@@ -213,6 +228,12 @@ void InACTually::draw()
 			AppState::set(AS_INITIALISING);
 			init();
 		}
+		return;
+	}
+
+	auto windowData = getWindow()->getUserData<WindowData>();
+	if (windowData->getUID() != m_mainWindowUID) {
+		windowData->draw();
 		return;
 	}
 
@@ -447,11 +468,28 @@ void InACTually::fileDrop(FileDropEvent event)
 	else if (channel) {
 
 	}
+
+	// do something with the file
+
+	auto windowData = getWindow()->getUserData<WindowData>();
+	if (windowData->getUID() != m_mainWindowUID) {
+		//windowData->fileDrop();
+		return;
+	}
 }
 
 void InACTually::resize() const
 {
 	if (AppState::get() == AS_RUNNING) {
+
+		auto windowData = getWindow()->getUserData<WindowData>();
+		if (!windowData)
+			return;
+		if (windowData->getUID() != m_mainWindowUID) {
+			windowData->resize();
+			return;
+		}
+
 		if (m_drawGUI) {
 			Settings::get().debugGUISize = app::getWindowSize();
 			Settings::save();
