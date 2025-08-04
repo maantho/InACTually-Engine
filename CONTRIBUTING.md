@@ -17,7 +17,7 @@ As a community we use a centralized copyright `Copyright (c) <year> InACTually C
 
 ## 🪲 Got an Idea or Found a Bug?
 
-- Use [Issues](https://github.com/yourrepo/issues) to share bugs, ideas, or feedback.
+- Use [Issues](https://github.com/InACTually/InACTually-Engine/issues) to share bugs, ideas, or feedback.
 - Be clear and include relevant context, logs, or screenshots when possible.
 
 <br>
