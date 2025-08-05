@@ -9,7 +9,7 @@ InACTually is (or wants to be) an artistic tool and consists of the Engine and t
 
 <br>
 
-## 🎢What InACTually actually is
+## 🎢 What InACTually actually is
 ... or what it wants to be.
 We should definitively path this out.
 
@@ -17,13 +17,13 @@ InACTually started 2021 as tiny tool made by Lars Engeln and Fabian Töpfer that
 
 The Engine is InACTually's media server, that should be able to run a show or media installations on its own. Its core idea is to think everything spatially. Thereby, it has RoomNodes that express something in space like devices or tracked objects. According to that, there are ProcessingNode, which can be used to orchestrate more complex behaviour in the node-link diagram. 
 
-The Stage (in another repo) is InACTually's frontend, that should be nicer to use and should only give instructions to the Engine what to do. The Stage is meant to be hosted in a venue, to easily access it via a tablet or a Mixed-Reality headset.
+[The Stage](https://github.com/InACTually/InACTually-Stage) (in another repo) is InACTually's frontend, that should be nicer to use and should only give instructions to the Engine what to do. The Stage is meant to be hosted in a venue, to easily access it via a tablet or a Mixed-Reality headset.
 
 <br>
 
 ## 🎭 Gallery
 
-We would like to build up a Gallery to showcase how InACTually is been used in all the lovely projects. Please contact us, if you use InActually (all tools or one of them) in your projects.
+We would like to build up a Gallery to showcase how InACTually is been used in all the lovely projects. Please contact us, if you use InACTually (all tools or one of them) in your projects.
 And think about to contribute to the Gallery. \
 Some impressions from projects by Fabian Töpfer and Lars Engeln using InACTually:
 
