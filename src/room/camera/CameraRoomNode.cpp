@@ -134,6 +134,7 @@ void act::room::CameraRoomNode::drawSpecificSettings()
 
 	ImGui::Checkbox("detect Markers", &m_isDetectingMarkers);
 	ImGui::Checkbox("detect Objects", &m_isDetectingObjects);
+	ImGui::Checkbox("detect Depth", &m_isDetectingDepth);
 
 	if (m_depthTexture) {
 		ImGui::Image(m_depthTexture, vec2(m_depthTexture->getSize()) * 0.6f);

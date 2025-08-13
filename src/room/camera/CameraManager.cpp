@@ -47,7 +47,7 @@ act::room::RoomNodeBaseRef act::room::CameraManager::drawMenu()
 	if (ImGui::Button("add Device")) {
 		m_calibrator = CameraCalibrator::create();
 		m_calibrator->setCamera(m_currentCamera); 
-		m_doCalibrate = false;
+		m_doCalibrate = true;
 	}
 	
 	if (ImGui::Button("refresh Devicelist")) {

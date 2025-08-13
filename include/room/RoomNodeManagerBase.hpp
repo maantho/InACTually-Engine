@@ -9,7 +9,7 @@
 	Licensed under the MIT License.
 	See LICENSE file in the project root for full license information.
 
-	This file is created and substantially modified: 2021
+	This file is created and substantially modified: 2021-2025
 
 	contributors:
 	Lars Engeln - mail@lars-engeln.de
@@ -25,7 +25,7 @@ namespace act {
 		class RoomNodeManagerBase : public RoomNodeBase {
 		public:
 			RoomNodeManagerBase(std::string name);
-			~RoomNodeManagerBase();
+			virtual ~RoomNodeManagerBase();
 
 			//void	setup()		override;
 			void	update()	override;

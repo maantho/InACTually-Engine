@@ -32,11 +32,11 @@ namespace act {
 		class ProjectorRoomNode : public RoomNodeBase, public std::enable_shared_from_this<ProjectorRoomNode>
 		{
 		public:
-			ProjectorRoomNode(ci::app::WindowRef window, std::string name, ci::vec3 position, ci::vec3 rotation, float radius, act::UID replyUID = "");
+			ProjectorRoomNode(std::string name, ci::vec3 position, ci::vec3 rotation, float radius, act::UID replyUID = "");
 
 			virtual ~ProjectorRoomNode();
 
-			static std::shared_ptr<ProjectorRoomNode> create(ci::app::WindowRef window, std::string name, ci::vec3 position = ci::vec3(0.0f, 1.0f, 0.0f), ci::vec3 rotation = ci::vec3(0.0f,0.0f,0.0f), float radius = 0.5f, act::UID replyUID = "") { return std::make_shared<ProjectorRoomNode>(window, name, position, rotation, radius, replyUID); };
+			static std::shared_ptr<ProjectorRoomNode> create(std::string name, ci::vec3 position = ci::vec3(0.0f, 1.0f, 0.0f), ci::vec3 rotation = ci::vec3(0.0f,0.0f,0.0f), float radius = 0.5f, act::UID replyUID = "") { return std::make_shared<ProjectorRoomNode>(name, position, rotation, radius, replyUID); };
 
 			virtual void setup()	override;
 			virtual void update()	override;

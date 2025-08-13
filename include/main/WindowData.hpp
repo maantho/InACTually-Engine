@@ -54,7 +54,8 @@ namespace act {
 			return window;
 		};
 
-		virtual void cleanup() {};
+		virtual void cleanup() {
+		};
 
 		virtual void update() {};
 

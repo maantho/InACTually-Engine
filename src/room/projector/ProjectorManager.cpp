@@ -28,11 +28,14 @@ act::room::ProjectorManager::ProjectorManager()
 
 act::room::ProjectorManager::~ProjectorManager()
 {
+	m_nodes.clear();
 }
 
 void act::room::ProjectorManager::setup()
 {
-
+	for(auto&& node : m_nodes) {
+		node->setup();
+	}
 }
 
 act::room::RoomNodeBaseRef act::room::ProjectorManager::drawMenu()
@@ -75,6 +78,7 @@ void act::room::ProjectorManager::fromJson(ci::Json json)
 			std::string name = "";
 			util::setValueFromJson(node, "name", name);
 			auto projRoomNode = addDevice(name);
+			projRoomNode->setup();
 
 			projRoomNode->fromJson(node);
 
@@ -96,10 +100,8 @@ act::room::ProjectorRoomNodeRef act::room::ProjectorManager::getProjector(act::U
 
 act::room::RoomNodeBaseRef act::room::ProjectorManager::addDevice(std::string name)
 {
-	auto window = WindowData::createWindow("Projector");
-
-	auto node = ProjectorRoomNode::create(window, name);
-	//m_nodes.push_back(node);
+	auto node = ProjectorRoomNode::create(name);
+	m_nodes.push_back(node);
 
 	return node;
 }

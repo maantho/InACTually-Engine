@@ -39,7 +39,11 @@ InACTually::InACTually(ci::app::App* app)
 	ivec2 size = ivec2(400, 200);
 	getWindow()->setSize(size);
 	getWindow()->setPos((m_app->getDisplay()->getSize() / 2) - (size / 2));
-	getWindow()->setTitle("inACTually");
+	getWindow()->setTitle("InACTually");
+
+	getWindow()->getSignalClose().connect([&]() {
+		cleanup();
+	});
 
 	m_splashScreenTex = gl::Texture::create(*Surface::create(loadImage(getAssetPath("design/splash.png"))));
 }

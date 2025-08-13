@@ -17,13 +17,12 @@
 
 #include "roompch.hpp"
 #include "projector/ProjectorRoomNode.hpp"
+#include "WindowData.hpp"
 
 
-act::room::ProjectorRoomNode::ProjectorRoomNode(ci::app::WindowRef window, std::string name, ci::vec3 position, ci::vec3 rotation, float radius, act::UID replyUID)
+act::room::ProjectorRoomNode::ProjectorRoomNode(std::string name, ci::vec3 position, ci::vec3 rotation, float radius, act::UID replyUID)
 	: RoomNodeBase("projector", position, rotation, radius, replyUID)
 {
-	m_window = window;
-
 	m_cameraPersp = ci::CameraPersp(1920, 1080, 70, 0.1f, 5.0f);
 	m_cameraPersp.setEyePoint(vec3(0.0f));
 	m_cameraPersp.lookAt(vec3(0.0f, 1.0f, 0.0f));
@@ -31,11 +30,13 @@ act::room::ProjectorRoomNode::ProjectorRoomNode(ci::app::WindowRef window, std::
 
 act::room::ProjectorRoomNode::~ProjectorRoomNode()
 {
-
+	if (m_window) // if the window is still open, close it
+		m_window->close();
 }
 
 void act::room::ProjectorRoomNode::setup()
 {
+	
 }
 
 void act::room::ProjectorRoomNode::update()
@@ -66,7 +67,13 @@ void act::room::ProjectorRoomNode::draw()
 
 void act::room::ProjectorRoomNode::drawSpecificSettings()
 {
-	
+	if(ImGui::Button("Open Projector Window"))
+	{
+		if (!m_window)
+			m_window = WindowData::createWindow(getName());
+		else
+			m_window->show();
+	}
 }
 
 ci::Json act::room::ProjectorRoomNode::toParams()
