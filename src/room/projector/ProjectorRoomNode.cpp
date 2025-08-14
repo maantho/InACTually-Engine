@@ -114,3 +114,72 @@ void act::room::ProjectorRoomNode::drawProjection()
 	gl::drawSolidCircle(ivec2(padX, getWindowHeight() - padY), radius); // BL
 	gl::drawSolidCircle(getWindowSize() - ivec2(padX, padY), radius); // BR
 }
+
+cv::Mat act::room::ProjectorRoomNode::solveP(std::vector<cv::Point3f> objectPoints, std::vector<cv::Point2f> imagePoints)
+{
+	//construc matrix of DLT equation
+	cv::Mat A = createDLTMat(objectPoints, imagePoints);
+
+	//compute SVD
+	cv::Mat w, u, vt;
+	cv::SVD::compute(A, w, u, vt);
+
+	//use smalles singular value (last row of vt as collum)
+	cv::Mat pVec = vt.row(vt.rows - 1).t();
+
+	//normalize for stability
+	cv::norm(pVec);
+
+	//transform Vec to Mat (3 Rows)
+	cv::Mat P = pVec.reshape(0, 3);
+	
+	return P;
+}
+
+
+//create matrix A of DLT equation
+cv::Mat act::room::ProjectorRoomNode::createDLTMat(std::vector<cv::Point3f> objectPoints, std::vector<cv::Point2f> imagePoints)
+{	
+	//check if object = image points !!!
+	
+	//create Matrix
+	int	nPairs = (int)objectPoints.size();
+	cv::Mat A(2 * nPairs, 12, CV_64F, cv::Scalar(0));
+
+	//asign corespondences according to sheme
+	for (int i = 0; i < nPairs; i++)
+	{
+		//current opject pos
+		double X = objectPoints[i].x;
+		double Y = objectPoints[i].y;
+		double Z = objectPoints[i].z;
+
+		//current imagePos
+		double u = imagePoints[i].x;
+		double v = imagePoints[i].y;
+
+		//set row 2i of matrix
+		A.at<double>(2 * i, 0) = X;
+		A.at<double>(2 * i, 1) = Y;
+		A.at<double>(2 * i, 2) = Z;
+		A.at<double>(2 * i, 3) = 1;
+
+		A.at<double>(2 * i, 8) = -u*X;
+		A.at<double>(2 * i, 9) = -u*Y;
+		A.at<double>(2 * i, 10) = -u*Z;
+		A.at<double>(2 * i, 11) = -u;
+
+		//set row 2i + 1 of matrix
+		A.at<double>(2 * i + 1, 4) = X;
+		A.at<double>(2 * i + 1, 5) = Y;
+		A.at<double>(2 * i + 1, 6) = Z;
+		A.at<double>(2 * i + 1, 7) = 1;
+
+		A.at<double>(2 * i + 1, 8) = -v * X;
+		A.at<double>(2 * i + 1, 9) = -v * Y;
+		A.at<double>(2 * i + 1, 10) = -v * Z;
+		A.at<double>(2 * i + 1, 11) = -v;
+	}
+
+	return A;
+}
