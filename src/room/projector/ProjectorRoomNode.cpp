@@ -93,6 +93,9 @@ void act::room::ProjectorRoomNode::createWindow()
 	drawable->setDrawCallback(std::bind(&ProjectorRoomNode::drawProjection, this));
 	drawable->setUpdateCallback(std::bind(&ProjectorRoomNode::updateProjection, this));
 	m_window->getUserData<WindowData>()->setDrawable(drawable);
+	m_window->getSignalClose().connect([this]() {
+		m_window = nullptr; // reset the window pointer when closed
+	});
 }
 
 void act::room::ProjectorRoomNode::updateProjection()
