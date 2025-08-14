@@ -50,14 +50,16 @@ namespace act {
 		private:
 			ci::app::WindowRef		m_window;
 			ci::CameraPersp			m_cameraPersp;
-			cv::Mat					m_inrinsics; //gets calculated by calibration method
-			cv::Mat					m_extrinsics; //gets calculated by calibration method
+			cv::Mat					m_intrinsics; //gets calculated by calibration method
+			//double					m_focalLenghtX;
+			//double					m_skew;
 
 			void createWindow();
 			void updateProjection();
 			void drawProjection();
 			
 			//calibration
+			void calibrate();
 			cv::Mat solveP(std::vector<cv::Point3f> objectPoints, std::vector<cv::Point2f> imagePoints); //DLT alg on vector of correspondences
 			cv::Mat createDLTMat(std::vector<cv::Point3f> objectPoints, std::vector<cv::Point2f> imagePoints);
 

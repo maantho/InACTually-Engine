@@ -73,6 +73,11 @@ void act::room::ProjectorRoomNode::drawSpecificSettings()
 		else
 			m_window->show();
 	}
+
+	if (ImGui::Button("Calibrate"))
+	{
+		calibrate();
+	}
 }
 
 ci::Json act::room::ProjectorRoomNode::toParams()
@@ -113,6 +118,34 @@ void act::room::ProjectorRoomNode::drawProjection()
 	gl::drawSolidCircle(ivec2(getWindowWidth() - padX, padY), radius); // TR
 	gl::drawSolidCircle(ivec2(padX, getWindowHeight() - padY), radius); // BL
 	gl::drawSolidCircle(getWindowSize() - ivec2(padX, padY), radius); // BR
+}
+
+void act::room::ProjectorRoomNode::calibrate()
+{
+	//Test values that should result in principle point (0,0) and focal length of 1000mm
+	std::vector<cv::Point3f> objectPoints = { 
+		cv::Point3f(0,0,0),
+		cv::Point3f(100,0,0), 
+		cv::Point3f(0,100,0), 
+		cv::Point3f(100,100,0), 
+		cv::Point3f(50,50,100), 
+		cv::Point3f(150,50,100) 
+	};
+	std::vector<cv::Point2f> imagePoints = {
+		cv::Point2f(320, 240),
+		cv::Point2f(420, 240),
+		cv::Point2f(320, 340),
+		cv::Point2f(420, 340),
+		cv::Point2f(370, 290),
+		cv::Point2f(470, 290)
+	};
+
+	cv::Mat P = solveP(objectPoints, imagePoints);
+
+	cv::Mat R, t;
+
+	cv::decomposeProjectionMatrix(P, m_intrinsics, R, t);
+	std::cout << m_intrinsics;
 }
 
 cv::Mat act::room::ProjectorRoomNode::solveP(std::vector<cv::Point3f> objectPoints, std::vector<cv::Point2f> imagePoints)
