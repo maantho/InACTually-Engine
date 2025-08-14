@@ -105,7 +105,7 @@ void act::room::ProjectorRoomNode::drawProjection()
 	gl::color(ci::Color::white());
 
 	float radius = 10;
-	float padding = padding; // 0.1f;
+	float padding = radius; // 0.1f;
 	float padX = padding; // getWindowWidth()* padding;
 	float padY = padding; // getWindowHeight()* padding;
 	gl::drawSolidCircle(getWindowCenter(), radius); // center
