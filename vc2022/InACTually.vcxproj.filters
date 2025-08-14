@@ -897,6 +897,12 @@
     <ClInclude Include="..\include\main\WindowData.hpp">
       <Filter>Source Files\main</Filter>
     </ClInclude>
+    <ClInclude Include="..\include\main\DrawableBase.hpp">
+      <Filter>Source Files\main</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\main\CallbackDrawable.hpp">
+      <Filter>Source Files\main</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Resources.rc">

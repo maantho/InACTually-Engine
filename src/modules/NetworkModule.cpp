@@ -69,12 +69,12 @@ void act::mod::NetworkModule::drawNetworkState() {
 
 	ImGui::Begin("NetworkState");
 		
-		//if(ImGui::Button("refresh network")) {	
-		//}
+	//if(ImGui::Button("refresh network")) {	
+	//}
 
 	m_networkMgr->drawGUI();
 
-	ImGui::NewLine();
+	//ImGui::NewLine();
 	
 
 	ImGui::End();

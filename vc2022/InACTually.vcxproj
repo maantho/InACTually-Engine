@@ -401,6 +401,8 @@
     <ClInclude Include="..\3rd\libzmq\src\zap_client.hpp" />
     <ClInclude Include="..\3rd\libzmq\src\zmq_draft.h" />
     <ClInclude Include="..\3rd\libzmq\src\zmtp_engine.hpp" />
+    <ClInclude Include="..\include\main\CallbackDrawable.hpp" />
+    <ClInclude Include="..\include\main\DrawableBase.hpp" />
     <ClInclude Include="..\include\main\InACTually.hpp" />
     <ClInclude Include="..\include\main\ModuleRegistry.hpp" />
     <ClInclude Include="..\include\main\WindowData.hpp" />

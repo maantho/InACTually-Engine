@@ -23,6 +23,8 @@
 #include "Design.hpp"
 #include "UniqueIDBase.hpp"
 
+#include "DrawableBase.hpp"
+
 #include <algorithm>
 #include <functional>
 
@@ -54,22 +56,51 @@ namespace act {
 			return window;
 		};
 
-		virtual void cleanup() {
+		virtual void update() {
+			if (m_drawable)
+				m_drawable->update();
 		};
-
-		virtual void update() {};
 
 		virtual void draw() {
 			gl::clear(util::Design::backgroundColor());
 			gl::color(Color::white());
+
+			if(!m_isInitialized) {
+				m_isInitialized = true;
+				
+				auto ctx = gl::context();
+				if (ctx->getProjectionMatrixStack().size() == 0) {
+					ctx->getProjectionMatrixStack().push_back(glm::mat4(1.0f));
+				}
+				if (ctx->getModelMatrixStack().size() == 0) {
+					ctx->getModelMatrixStack().push_back(glm::mat4(1.0f));
+				}
+				if (ctx->getViewMatrixStack().size() == 0) {
+					ctx->getViewMatrixStack().push_back(glm::mat4(1.0f));
+				}
+				
+				getWindow()->emitResize();
+				return;
+			}
+
+			gl::pushMatrices();
+
+			if (m_drawable)
+				m_drawable->draw();
+
+			gl::popMatrices();
 		};
 
 		virtual void fileDrop(FileDropEvent event) {};
 		virtual void resize() const {};
 		
+		void setDrawable(DrawableBaseRef drawable) {
+			m_drawable = drawable;
+		};
 
 	private:
-		
+		DrawableBaseRef m_drawable;
+		bool m_isInitialized = false;
 	};
 
 }

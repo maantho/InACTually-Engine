@@ -51,6 +51,10 @@ namespace act {
 			ci::app::WindowRef		m_window;
 			ci::CameraPersp			m_cameraPersp;
 
+			void createWindow();
+			void updateProjection();
+			void drawProjection();
+
 		}; using ProjectorRoomNodeRef = std::shared_ptr<ProjectorRoomNode>;
 		
 	}

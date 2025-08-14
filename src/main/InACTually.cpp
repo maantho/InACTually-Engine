@@ -19,6 +19,8 @@
 #include "Logger.hpp"
 
 #include <opencv2/core/ocl.hpp>
+#include <cinder/CinderImGui.h>
+#include <imgui_impl_opengl3.h>
 #include "implot.h"
 #include "imnodes.h"
 
@@ -42,7 +44,7 @@ InACTually::InACTually(ci::app::App* app)
 	getWindow()->setTitle("InACTually");
 
 	getWindow()->getSignalClose().connect([&]() {
-		cleanup();
+		onClose();
 	});
 
 	m_splashScreenTex = gl::Texture::create(*Surface::create(loadImage(getAssetPath("design/splash.png"))));
@@ -79,6 +81,7 @@ void InACTually::init()
 
 
 	auto options = ImGui::Options().window(app::getWindow());
+	//options(true);
 	Initialize(options);
 	ImGui::GetIO().ConfigFlags |= ImGuiConfigFlags_DockingEnable;
 	ImGui::GetIO().ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;
@@ -163,14 +166,8 @@ void InACTually::init()
 	m_initCallback();
 }
 
-void InACTually::cleanup()
+void act::InACTually::onClose()
 {
-	auto windowData = getWindow()->getUserData<WindowData>();
-	if(windowData->getUID() != m_mainWindowUID) {
-		windowData->cleanup();
-		return;
-	}
-
 	AppState::set(AS_CLEANUP);
 
 	for (auto&& mod : reg_modules)
@@ -183,6 +180,10 @@ void InACTually::cleanup()
 
 	for (auto&& mgr : m_roomMgrs.list)
 		mgr->cleanUp();
+}
+
+void InACTually::cleanup()
+{
 }
 
 void InACTually::update()
@@ -221,6 +222,7 @@ void InACTually::update()
 
 void InACTually::draw()
 {
+	getWindow()->getRenderer()->makeCurrentContext(true);
 
 	if (AppState::get() == AS_INITIALISING || AppState::get() == AS_STARTUP) {
 		gl::clear(Color::gray(0.0f));
@@ -237,14 +239,16 @@ void InACTually::draw()
 
 	auto windowData = getWindow()->getUserData<WindowData>();
 	if (windowData->getUID() != m_mainWindowUID) {
+		
 		windowData->draw();
 		return;
 	}
 
+
 	gl::clear(util::Design::backgroundColor());
 	gl::color(Color::white());
 	gl::enableAlphaBlending();
-	
+
 	gl::enableDepth();
 	gl::enable(GL_VERTEX_PROGRAM_POINT_SIZE);
 
@@ -295,6 +299,11 @@ void act::InACTually::drawMinimalGUI()
 
 void act::InACTually::drawFullGUI()
 {
+	ImGuiViewport* viewport = ImGui::GetMainViewport();
+	ImGui::SetNextWindowPos(viewport->WorkPos);
+	ImGui::SetNextWindowSize(viewport->WorkSize);
+	ImGui::SetNextWindowViewport(viewport->ID);
+
 	if (AppState::get() == AS_FEATURETEST) {
 		gl::pushMatrices();
 		// test something
@@ -409,8 +418,6 @@ void act::InACTually::drawFullGUI()
 
 	ImGui::EndMainMenuBar();
 
-
-
 	ImGui::SetNextWindowPos(ImVec2(.0f, act::Settings::get().fontSize + 12.0f), ImGuiCond_Always);
 	ImGui::SetNextWindowSize(ImVec2(getWindowWidth(), getWindowHeight() - (act::Settings::get().fontSize + 12.0f)), ImGuiCond_Always);
 	ImGui::Begin("main", 0, ImGuiWindowFlags_NoCollapse |
@@ -418,8 +425,6 @@ void act::InACTually::drawFullGUI()
 	ImGuiID dockspace_id = ImGui::GetID("MyDockSpace");
 	ImGui::DockSpace(dockspace_id, ImVec2(0.0f, 0.0f));
 
-
-	m_networkMgr->drawGUI();
 
 	for (auto module : reg_modules) {
 		if (module->getIsActive()) {

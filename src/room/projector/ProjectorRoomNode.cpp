@@ -18,6 +18,7 @@
 #include "roompch.hpp"
 #include "projector/ProjectorRoomNode.hpp"
 #include "WindowData.hpp"
+#include "CallbackDrawable.hpp"
 
 
 act::room::ProjectorRoomNode::ProjectorRoomNode(std::string name, ci::vec3 position, ci::vec3 rotation, float radius, act::UID replyUID)
@@ -36,12 +37,10 @@ act::room::ProjectorRoomNode::~ProjectorRoomNode()
 
 void act::room::ProjectorRoomNode::setup()
 {
-	
 }
 
 void act::room::ProjectorRoomNode::update()
 {
-	
 }
 
 void act::room::ProjectorRoomNode::draw()
@@ -70,7 +69,7 @@ void act::room::ProjectorRoomNode::drawSpecificSettings()
 	if(ImGui::Button("Open Projector Window"))
 	{
 		if (!m_window)
-			m_window = WindowData::createWindow(getName());
+			createWindow();
 		else
 			m_window->show();
 	}
@@ -85,4 +84,33 @@ ci::Json act::room::ProjectorRoomNode::toParams()
 
 void act::room::ProjectorRoomNode::fromParams(ci::Json json)
 {
+}
+
+void act::room::ProjectorRoomNode::createWindow()
+{
+	m_window = WindowData::createWindow(getName(), ivec2(1920, 1080));
+	CallbackDrawableRef drawable = CallbackDrawable::create();
+	drawable->setDrawCallback(std::bind(&ProjectorRoomNode::drawProjection, this));
+	drawable->setUpdateCallback(std::bind(&ProjectorRoomNode::updateProjection, this));
+	m_window->getUserData<WindowData>()->setDrawable(drawable);
+}
+
+void act::room::ProjectorRoomNode::updateProjection()
+{
+}
+
+void act::room::ProjectorRoomNode::drawProjection()
+{		
+	gl::clearColor(ci::Color::gray(0.5f));
+	gl::color(ci::Color::white());
+
+	float radius = 10;
+	float padding = padding; // 0.1f;
+	float padX = padding; // getWindowWidth()* padding;
+	float padY = padding; // getWindowHeight()* padding;
+	gl::drawSolidCircle(getWindowCenter(), radius); // center
+	gl::drawSolidCircle(ivec2(padX, padY), radius); // TL
+	gl::drawSolidCircle(ivec2(getWindowWidth() - padX, padY), radius); // TR
+	gl::drawSolidCircle(ivec2(padX, getWindowHeight() - padY), radius); // BL
+	gl::drawSolidCircle(getWindowSize() - ivec2(padX, padY), radius); // BR
 }

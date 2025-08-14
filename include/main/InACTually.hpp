@@ -68,7 +68,12 @@ namespace act {
 		~InACTually();
 
 		/**
-		* @brief prepares for shutdown
+		* @brief callback on main-window close
+		* 
+		*/
+		void onClose();
+		/**
+		* @brief prepares for shutdown, is called after all windows are closed and right before the app is closed
 		*
 		*/
 		void cleanup();
