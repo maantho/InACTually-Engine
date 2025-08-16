@@ -50,18 +50,25 @@ namespace act {
 		private:
 			ci::app::WindowRef		m_window;
 			ci::CameraPersp			m_cameraPersp;
-			cv::Mat					m_intrinsics; //gets calculated by calibration method
-			//double					m_focalLenghtX;
-			//double					m_skew;
+
+			ci::ivec2				m_resolution;
+
+			ci::vec2				m_focalLenghtPixel;
+			float					m_skew;
+			ci::vec2				m_principlePoint;
+
 
 			void createWindow();
 			void updateProjection();
 			void drawProjection();
 			
 			//calibration
+			void getTestPairs(std::vector<cv::Point3f>& objectPoints, std::vector<cv::Point2f>& imagePoints);
 			void calibrate();
 			cv::Mat solveP(std::vector<cv::Point3f> objectPoints, std::vector<cv::Point2f> imagePoints); //DLT alg on vector of correspondences
 			cv::Mat createDLTMat(std::vector<cv::Point3f> objectPoints, std::vector<cv::Point2f> imagePoints);
+			bool isRotationMatrix(cv::Mat& R);
+			ci::vec3 rotationMatrixToEulerAngles(cv::Mat& R);
 
 		}; using ProjectorRoomNodeRef = std::shared_ptr<ProjectorRoomNode>;
 		

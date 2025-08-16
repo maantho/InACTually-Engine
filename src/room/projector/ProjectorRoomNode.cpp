@@ -26,7 +26,7 @@ act::room::ProjectorRoomNode::ProjectorRoomNode(std::string name, ci::vec3 posit
 {
 	m_cameraPersp = ci::CameraPersp(1920, 1080, 70, 0.1f, 5.0f);
 	m_cameraPersp.setEyePoint(vec3(0.0f));
-	m_cameraPersp.lookAt(vec3(0.0f, 1.0f, 0.0f));
+	m_cameraPersp.lookAt(vec3(0.0f, 0.0f, -1.0f)); //along negative z (follows from calibration coordinate system convertion)
 }
 
 act::room::ProjectorRoomNode::~ProjectorRoomNode()
@@ -74,10 +74,16 @@ void act::room::ProjectorRoomNode::drawSpecificSettings()
 			m_window->show();
 	}
 
+	ImGui::DragInt2("Resolution", &m_resolution);
+
 	if (ImGui::Button("Calibrate"))
 	{
 		calibrate();
 	}
+
+	ImGui::DragFloat2("Focal Length", &m_focalLenghtPixel);
+	ImGui::DragFloat("Skew", &m_skew);
+	ImGui::DragFloat2("Principle Point", &m_principlePoint);
 }
 
 ci::Json act::room::ProjectorRoomNode::toParams()
@@ -116,39 +122,104 @@ void act::room::ProjectorRoomNode::drawProjection()
 	float padding = radius; // 0.1f;
 	float padX = padding; // getWindowWidth()* padding;
 	float padY = padding; // getWindowHeight()* padding;
-	gl::drawSolidCircle(getWindowCenter(), radius); // center
 	gl::drawSolidCircle(ivec2(padX, padY), radius); // TL
+	gl::color(ci::Color::gray(0.5));
+	gl::drawSolidCircle(getWindowCenter(), radius); // center
 	gl::drawSolidCircle(ivec2(getWindowWidth() - padX, padY), radius); // TR
 	gl::drawSolidCircle(ivec2(padX, getWindowHeight() - padY), radius); // BL
 	gl::drawSolidCircle(getWindowSize() - ivec2(padX, padY), radius); // BR
 }
 
+void act::room::ProjectorRoomNode::getTestPairs(std::vector<cv::Point3f>& objectPoints, std::vector<cv::Point2f>& imagePoints)
+{
+
+	objectPoints = {
+		{-1, -1, -1}, {1, -1, -1}, {1, 1, -1}, {-1, 1, -1},
+		{-1, -1, 1},  {1, -1, 1},  {1, 1, 1},  {-1, 1, 1}
+	};
+
+	double fx = 800.0;   
+	double fy = 800.0;
+	double cx = 320.0;   
+	double cy = 240.0;
+	double skew = 0;  
+
+	//camera rotation
+	double pitch = 15.0 * CV_PI / 180.0; // rotation around X
+	double yaw = 45.0 * CV_PI / 180.0; // rotation around Y
+	double roll = 0.0 * CV_PI / 180.0; // rotation around Z
+
+
+	cv::Mat Rx = (cv::Mat_<double>(3, 3) <<
+		1, 0, 0,
+		0, cos(pitch), -sin(pitch),
+		0, sin(pitch), cos(pitch));
+
+	cv::Mat Ry = (cv::Mat_<double>(3, 3) <<
+		cos(yaw), 0, sin(yaw),
+		0, 1, 0,
+		-sin(yaw), 0, cos(yaw));
+
+	cv::Mat Rz = (cv::Mat_<double>(3, 3) <<
+		cos(roll), -sin(roll), 0,
+		sin(roll), cos(roll), 0,
+		0, 0, 1);
+
+	//combine in order: yaw pitch roll 
+	cv::Mat R = Ry * Rx * Rz;
+	R = R.t(); //to inverse world to cam rotation
+	
+	//camera center
+	cv::Mat t = (cv::Mat_<double>(3, 1) << -5.0, 2.0, -5.0);
+	t = -R * t; //to world to cam translation
+
+	//calculate correspondences
+	for (auto& p : objectPoints) {
+		cv::Mat Pw = (cv::Mat_<double>(3, 1) << p.x, p.y, p.z);
+		cv::Mat Pc = R * Pw + t;
+
+		double Xc = Pc.at<double>(0);
+		double Yc = -Pc.at<double>(1);
+		double Zc = Pc.at<double>(2);
+
+		double u = fx * Xc / Zc + skew * Yc / Zc + cx;
+		double v = fy * Yc / Zc + cy;
+
+		imagePoints.push_back(cv::Point2f(u, v));
+	}
+}
+
 void act::room::ProjectorRoomNode::calibrate()
 {
-	//Test values that should result in principle point (0,0) and focal length of 1000mm
-	std::vector<cv::Point3f> objectPoints = { 
-		cv::Point3f(0,0,0),
-		cv::Point3f(100,0,0), 
-		cv::Point3f(0,100,0), 
-		cv::Point3f(100,100,0), 
-		cv::Point3f(50,50,100), 
-		cv::Point3f(150,50,100) 
-	};
-	std::vector<cv::Point2f> imagePoints = {
-		cv::Point2f(320, 240),
-		cv::Point2f(420, 240),
-		cv::Point2f(320, 340),
-		cv::Point2f(420, 340),
-		cv::Point2f(370, 290),
-		cv::Point2f(470, 290)
-	};
+	std::vector<cv::Point3f> objectPoints;
+	std::vector<cv::Point2f> imagePoints;
+	
+	getTestPairs(objectPoints, imagePoints);
 
 	cv::Mat P = solveP(objectPoints, imagePoints);
 
-	cv::Mat R, t;
+	cv::Mat K, R, t;
 
-	cv::decomposeProjectionMatrix(P, m_intrinsics, R, t);
-	std::cout << m_intrinsics;
+	cv::decomposeProjectionMatrix(P, K, R, t);
+
+	//set intrinsics
+	K /= K.at<double>(2, 2); //normalize
+	m_focalLenghtPixel = ci::vec2(K.at<double>(0, 0), K.at<double>(1, 1));
+	m_skew = K.at<double>(0, 1);
+	m_principlePoint = ci::vec2(K.at<double>(0, 2), K.at<double>(1, 2));
+
+	//set extrinsics
+	//cv::Mat convertToCV = (cv::Mat_<double>(3, 3) <<
+	//	1, 0, 0,
+	//	0, -1, 0,
+	//	0, 0, -1); //optinally convert rotation to CV convention (y down, z foreward) or define cameraPersp in -z direction with y up
+	t = t.rowRange(0, 3) / t.at<double>(3); //unhomogenize and cut W
+	R = R.t(); // rotation in World Coordinates optionally convertToCV with right side duplication
+
+	//tVec = R.t() * tVec; //transform to position in world coordinates... not necesarry is already in world coordinates
+	m_position = ci::vec3(t.at<double>(0), t.at<double>(1), t.at<double>(2));
+
+	m_rotation = rotationMatrixToEulerAngles(R);
 }
 
 cv::Mat act::room::ProjectorRoomNode::solveP(std::vector<cv::Point3f> objectPoints, std::vector<cv::Point2f> imagePoints)
@@ -164,7 +235,7 @@ cv::Mat act::room::ProjectorRoomNode::solveP(std::vector<cv::Point3f> objectPoin
 	cv::Mat pVec = vt.row(vt.rows - 1).t();
 
 	//normalize for stability
-	cv::norm(pVec);
+	pVec /= cv::norm(pVec) * 12;
 
 	//transform Vec to Mat (3 Rows)
 	cv::Mat P = pVec.reshape(0, 3);
@@ -218,4 +289,50 @@ cv::Mat act::room::ProjectorRoomNode::createDLTMat(std::vector<cv::Point3f> obje
 	}
 
 	return A;
+}
+
+bool act::room::ProjectorRoomNode::isRotationMatrix(cv::Mat& R)
+{
+	//https://learnopencv.com/rotation-matrix-to-euler-angles/
+
+	cv::Mat Rt;
+	transpose(R, Rt);
+	cv::Mat shouldBeIdentity = Rt * R;
+	cv::Mat I = cv::Mat::eye(3, 3, shouldBeIdentity.type());
+
+	return  norm(I, shouldBeIdentity) < 1e-6;
+
+}
+
+ci::vec3 act::room::ProjectorRoomNode::rotationMatrixToEulerAngles(cv::Mat& R)
+{
+	//https://learnopencv.com/rotation-matrix-to-euler-angles/
+
+	assert(isRotationMatrix(R));
+
+	float sy = sqrt(R.at<double>(0, 0) * R.at<double>(0, 0) + R.at<double>(1, 0) * R.at<double>(1, 0));
+
+	bool singular = sy < 1e-6; // If
+
+	float x, y, z;
+	if (!singular)
+	{
+		x = atan2(R.at<double>(2, 1), R.at<double>(2, 2));
+		y = atan2(-R.at<double>(2, 0), sy);
+		z = atan2(R.at<double>(1, 0), R.at<double>(0, 0));
+	}
+	else
+	{
+		x = atan2(-R.at<double>(1, 2), R.at<double>(1, 1));
+		y = atan2(-R.at<double>(2, 0), sy);
+		z = 0;
+	}
+
+	//normalize to positive between 0 and 2pi
+	x = fmod(fmod(x, CV_PI * 2) + CV_PI * 2, CV_PI * 2);
+	y = fmod(fmod(y, CV_PI * 2) + CV_PI * 2, CV_PI * 2);
+	z = fmod(fmod(z, CV_PI * 2) + CV_PI * 2, CV_PI * 2);
+
+	return ci::vec3(x, y, z);
+
 }
