@@ -61,6 +61,7 @@ namespace act {
 			void createWindow();
 			void updateProjection();
 			void drawProjection();
+			void updateCameraPersp();
 			
 			//calibration
 			void getTestPairs(std::vector<cv::Point3f>& objectPoints, std::vector<cv::Point2f>& imagePoints);

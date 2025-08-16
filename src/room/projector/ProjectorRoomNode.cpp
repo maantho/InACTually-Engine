@@ -130,6 +130,20 @@ void act::room::ProjectorRoomNode::drawProjection()
 	gl::drawSolidCircle(getWindowSize() - ivec2(padX, padY), radius); // BR
 }
 
+void act::room::ProjectorRoomNode::updateCameraPersp()
+{
+	float fovX = 2 * atan(m_resolution.x / (2 * m_focalLenghtPixel.x)) * 180.0 / CV_PI;
+	//float fovY = 2 * atan(m_resolution.y / (2 * m_focalLenghtPixel.y)) * 180.0 / CV_PI;
+	m_cameraPersp = ci::CameraPersp(m_resolution.x, m_resolution.y, fovX, 0.1f, 30.0f);
+
+	float shiftX = (m_principlePoint.x - m_resolution.x * 0.5f) / (m_resolution.x * 0.5f);
+	float shiftY = -(m_principlePoint.y - m_resolution.y * 0.5f) / (m_resolution.y * 0.5f); //does need to be negated
+	m_cameraPersp.setLensShift(shiftX, shiftY);
+
+	m_cameraPersp.setEyePoint(vec3(0.0f));
+	m_cameraPersp.lookAt(vec3(0.0f, 0.0f, -1.0f)); //along negative z (follows from calibration coordinate system convertion)
+}
+
 void act::room::ProjectorRoomNode::getTestPairs(std::vector<cv::Point3f>& objectPoints, std::vector<cv::Point2f>& imagePoints)
 {
 
@@ -220,6 +234,8 @@ void act::room::ProjectorRoomNode::calibrate()
 	m_position = ci::vec3(t.at<double>(0), t.at<double>(1), t.at<double>(2));
 
 	m_rotation = rotationMatrixToEulerAngles(R);
+
+	updateCameraPersp();
 }
 
 cv::Mat act::room::ProjectorRoomNode::solveP(std::vector<cv::Point3f> objectPoints, std::vector<cv::Point2f> imagePoints)
