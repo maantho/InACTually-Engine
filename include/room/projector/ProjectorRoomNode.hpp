@@ -64,13 +64,16 @@ namespace act {
 			void updateCameraPersp();
 			
 			//calibration
+			//correspondences
 			void getTestPairs(std::vector<cv::Point3f>& objectPoints, std::vector<cv::Point2f>& imagePoints);
+			std::vector<cv::Point3f> m_objectPoints;
+			std::vector<cv::Point2f> m_imagePoints;
 
 			//using cv calibrate camera
 			//void calibrateCV();
 
 			//using dlt
-			void calibrateDLT();
+			void calibrateDLT(const bool useTestPairs = false);
 			cv::Mat dltSolveP(std::vector<cv::Point3f> objectPoints, std::vector<cv::Point2f> imagePoints); //DLT alg on vector of correspondences
 			cv::Mat dltCreateMat(std::vector<cv::Point3f> objectPoints, std::vector<cv::Point2f> imagePoints);
 

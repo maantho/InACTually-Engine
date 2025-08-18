@@ -23,7 +23,7 @@
 
 act::room::ProjectorRoomNode::ProjectorRoomNode(std::string name, ci::vec3 position, ci::vec3 rotation, float radius, act::UID replyUID)
 	: RoomNodeBase("projector", position, rotation, radius, replyUID)
-{
+{	
 	m_resolution = ci::ivec2(1920, 1080);
 	m_focalLenghtPixel = ci::vec2(800, 800);
 	m_skew = 0;
@@ -87,7 +87,7 @@ void act::room::ProjectorRoomNode::drawSpecificSettings()
 
 	if (ImGui::Button("Calibrate with DLT"))
 	{
-		calibrateDLT();
+		calibrateDLT(true);
 	}
 
 	if (ImGui::DragFloat2("Focal Length", &m_focalLenghtPixel)
@@ -244,12 +244,21 @@ void act::room::ProjectorRoomNode::calibrateCV()
 	
 } */
 
-void act::room::ProjectorRoomNode::calibrateDLT()
+void act::room::ProjectorRoomNode::calibrateDLT(const bool useTestPairs)
 {
 	std::vector<cv::Point3f> objectPoints;
 	std::vector<cv::Point2f> imagePoints;
 	
-	getTestPairs(objectPoints, imagePoints);
+	if (useTestPairs)
+	{
+		getTestPairs(objectPoints, imagePoints);
+	}
+	else
+	{
+		assert(m_objectPoints.size() == m_imagePoints.size() >= 6);
+		objectPoints = m_objectPoints;
+		imagePoints = m_imagePoints;
+	}	
 
 	cv::Mat P = dltSolveP(objectPoints, imagePoints);
 
