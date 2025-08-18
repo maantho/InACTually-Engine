@@ -54,7 +54,8 @@ void act::room::ProjectorRoomNode::draw()
 	gl::pushMatrices();
 	gl::translate(m_position);
 	gl::rotate(m_rotation);
-	gl::drawCube(ci::vec3(0.0f), ci::vec3(0.3f, 0.1f, 0.7f));
+	gl::drawSphere(ci::Sphere(ci::vec3(0.0f), 0.05f));
+	gl::drawCube(ci::vec3(0.1f, 0.0f, 0.15f), ci::vec3(0.4f, 0.15f, 0.3f));
 
 	util::drawCoords();
 
@@ -76,18 +77,25 @@ void act::room::ProjectorRoomNode::drawSpecificSettings()
 		else
 			m_window->show();
 	}
-	ImGui::DragInt("Resolution Width", &m_resolution.x);
-	ImGui::DragInt("Resolution Height", &m_resolution.y);
+
 	//ImGui::DragInt2("Resolution", &m_resolution, 1.0,0.0, 10000); //sets to (0,0) unchagable for some reason
+	if(ImGui::DragInt("Resolution Width", &m_resolution.x) 
+		|| ImGui::DragInt("Resolution Height", &m_resolution.y))
+	{
+		updateCameraPersp();
+	}
 
 	if (ImGui::Button("Calibrate with DLT"))
 	{
 		calibrateDLT();
 	}
 
-	ImGui::DragFloat2("Focal Length", &m_focalLenghtPixel);
-	ImGui::DragFloat("Skew", &m_skew);
-	ImGui::DragFloat2("Principle Point", &m_principlePoint);
+	if (ImGui::DragFloat2("Focal Length", &m_focalLenghtPixel)
+		|| ImGui::DragFloat("Skew", &m_skew)
+		|| ImGui::DragFloat2("Principle Point", &m_principlePoint))
+	{
+		updateCameraPersp();
+	}
 }
 
 ci::Json act::room::ProjectorRoomNode::toParams()
@@ -140,8 +148,9 @@ void act::room::ProjectorRoomNode::updateCameraPersp()
 	//float fovY = 2 * atan(m_resolution.y / (2 * m_focalLenghtPixel.y)) * 180.0 / CV_PI;
 	m_cameraPersp = ci::CameraPersp(m_resolution.x, m_resolution.y, fovX, 0.1f, 30.0f);
 
-	float shiftX = (m_principlePoint.x - m_resolution.x * 0.5f) / (m_resolution.x * 0.5f);
-	float shiftY = -(m_principlePoint.y - m_resolution.y * 0.5f) / (m_resolution.y * 0.5f); //needs to be negated
+	//lens shift 1 -> shifte half the viewport size to the right
+	float shiftX = -(m_principlePoint.x / m_resolution.x * 2.0f - 1.0f);
+	float shiftY = (m_principlePoint.y / m_resolution.y * 2.0f - 1.0f); //needs to be (double) negated since y up
 	m_cameraPersp.setLensShift(shiftX, shiftY);
 
 	m_cameraPersp.setEyePoint(vec3(0.0f));
@@ -158,7 +167,7 @@ void act::room::ProjectorRoomNode::getTestPairs(std::vector<cv::Point3f>& object
 
 	double fx = 800.0;   
 	double fy = 800.0;
-	double cx = 320.0;   
+	double cx = 1920.0 / 2.0;   
 	double cy = 240.0;
 	double skew = 0;  
 
