@@ -65,11 +65,17 @@ namespace act {
 			
 			//calibration
 			void getTestPairs(std::vector<cv::Point3f>& objectPoints, std::vector<cv::Point2f>& imagePoints);
-			void calibrate();
-			cv::Mat solveP(std::vector<cv::Point3f> objectPoints, std::vector<cv::Point2f> imagePoints); //DLT alg on vector of correspondences
-			cv::Mat createDLTMat(std::vector<cv::Point3f> objectPoints, std::vector<cv::Point2f> imagePoints);
-			bool isRotationMatrix(cv::Mat& R);
-			ci::vec3 rotationMatrixToEulerAngles(cv::Mat& R);
+
+			//using cv calibrate camera
+			//void calibrateCV();
+
+			//using dlt
+			void calibrateDLT();
+			cv::Mat dltSolveP(std::vector<cv::Point3f> objectPoints, std::vector<cv::Point2f> imagePoints); //DLT alg on vector of correspondences
+			cv::Mat dltCreateMat(std::vector<cv::Point3f> objectPoints, std::vector<cv::Point2f> imagePoints);
+
+			bool isRotationMatrix(const cv::Mat& R);
+			ci::vec3 rotationMatrixToEulerAngles(const cv::Mat& R);
 
 		}; using ProjectorRoomNodeRef = std::shared_ptr<ProjectorRoomNode>;
 		

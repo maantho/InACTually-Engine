@@ -24,9 +24,12 @@
 act::room::ProjectorRoomNode::ProjectorRoomNode(std::string name, ci::vec3 position, ci::vec3 rotation, float radius, act::UID replyUID)
 	: RoomNodeBase("projector", position, rotation, radius, replyUID)
 {
-	m_cameraPersp = ci::CameraPersp(1920, 1080, 70, 0.1f, 5.0f);
-	m_cameraPersp.setEyePoint(vec3(0.0f));
-	m_cameraPersp.lookAt(vec3(0.0f, 0.0f, -1.0f)); //along negative z (follows from calibration coordinate system convertion)
+	m_resolution = ci::ivec2(1920, 1080);
+	m_focalLenghtPixel = ci::vec2(800, 800);
+	m_skew = 0;
+	m_principlePoint = ci::vec2(0,0);
+
+	updateCameraPersp();
 }
 
 act::room::ProjectorRoomNode::~ProjectorRoomNode()
@@ -73,12 +76,13 @@ void act::room::ProjectorRoomNode::drawSpecificSettings()
 		else
 			m_window->show();
 	}
+	ImGui::DragInt("Resolution Width", &m_resolution.x);
+	ImGui::DragInt("Resolution Height", &m_resolution.y);
+	//ImGui::DragInt2("Resolution", &m_resolution, 1.0,0.0, 10000); //sets to (0,0) unchagable for some reason
 
-	ImGui::DragInt2("Resolution", &m_resolution);
-
-	if (ImGui::Button("Calibrate"))
+	if (ImGui::Button("Calibrate with DLT"))
 	{
-		calibrate();
+		calibrateDLT();
 	}
 
 	ImGui::DragFloat2("Focal Length", &m_focalLenghtPixel);
@@ -137,7 +141,7 @@ void act::room::ProjectorRoomNode::updateCameraPersp()
 	m_cameraPersp = ci::CameraPersp(m_resolution.x, m_resolution.y, fovX, 0.1f, 30.0f);
 
 	float shiftX = (m_principlePoint.x - m_resolution.x * 0.5f) / (m_resolution.x * 0.5f);
-	float shiftY = -(m_principlePoint.y - m_resolution.y * 0.5f) / (m_resolution.y * 0.5f); //does need to be negated
+	float shiftY = -(m_principlePoint.y - m_resolution.y * 0.5f) / (m_resolution.y * 0.5f); //needs to be negated
 	m_cameraPersp.setLensShift(shiftX, shiftY);
 
 	m_cameraPersp.setEyePoint(vec3(0.0f));
@@ -203,14 +207,42 @@ void act::room::ProjectorRoomNode::getTestPairs(std::vector<cv::Point3f>& object
 	}
 }
 
-void act::room::ProjectorRoomNode::calibrate()
+/* //does not work
+void act::room::ProjectorRoomNode::calibrateCV()
+{
+	std::vector<cv::Point3f> objectPoints;
+	std::vector<cv::Point2f> imagePoints;
+
+	getTestPairs(objectPoints, imagePoints);
+
+	std::vector<std::vector<cv::Point3f>> wrappedObjectPoints = { objectPoints };
+	std::vector<std::vector<cv::Point2f>> wrappedImagePoints = { imagePoints };
+
+	cv::Mat K, distCoeffs;
+	std::vector<cv::Mat> rvecs, tvecs;
+
+	CV_Assert(!wrappedImagePoints.empty());
+	CV_Assert(!wrappedObjectPoints.empty());
+	CV_Assert(wrappedImagePoints.size() == wrappedObjectPoints.size());
+	CV_Assert(wrappedImagePoints.size() > 0);
+	CV_Assert(wrappedImagePoints[0].size() == wrappedObjectPoints[0].size());
+	CV_Assert(wrappedImagePoints[0].size() >= 6);
+	CV_Assert(m_resolution.x > 6 && m_resolution.y > 6);
+
+	cv::calibrateCamera(wrappedObjectPoints, wrappedImagePoints, cv::Size(1920, 1080), K, distCoeffs, rvecs, tvecs);
+
+	//set intrinsics
+	
+} */
+
+void act::room::ProjectorRoomNode::calibrateDLT()
 {
 	std::vector<cv::Point3f> objectPoints;
 	std::vector<cv::Point2f> imagePoints;
 	
 	getTestPairs(objectPoints, imagePoints);
 
-	cv::Mat P = solveP(objectPoints, imagePoints);
+	cv::Mat P = dltSolveP(objectPoints, imagePoints);
 
 	cv::Mat K, R, t;
 
@@ -238,10 +270,10 @@ void act::room::ProjectorRoomNode::calibrate()
 	updateCameraPersp();
 }
 
-cv::Mat act::room::ProjectorRoomNode::solveP(std::vector<cv::Point3f> objectPoints, std::vector<cv::Point2f> imagePoints)
+cv::Mat act::room::ProjectorRoomNode::dltSolveP(const std::vector<cv::Point3f> objectPoints, const std::vector<cv::Point2f> imagePoints)
 {
 	//construc matrix of DLT equation
-	cv::Mat A = createDLTMat(objectPoints, imagePoints);
+	cv::Mat A = dltCreateMat(objectPoints, imagePoints);
 
 	//compute SVD
 	cv::Mat w, u, vt;
@@ -261,7 +293,7 @@ cv::Mat act::room::ProjectorRoomNode::solveP(std::vector<cv::Point3f> objectPoin
 
 
 //create matrix A of DLT equation
-cv::Mat act::room::ProjectorRoomNode::createDLTMat(std::vector<cv::Point3f> objectPoints, std::vector<cv::Point2f> imagePoints)
+cv::Mat act::room::ProjectorRoomNode::dltCreateMat(const std::vector<cv::Point3f> objectPoints, const std::vector<cv::Point2f> imagePoints)
 {	
 	//check if object = image points !!!
 	
@@ -307,7 +339,7 @@ cv::Mat act::room::ProjectorRoomNode::createDLTMat(std::vector<cv::Point3f> obje
 	return A;
 }
 
-bool act::room::ProjectorRoomNode::isRotationMatrix(cv::Mat& R)
+bool act::room::ProjectorRoomNode::isRotationMatrix(const cv::Mat& R)
 {
 	//https://learnopencv.com/rotation-matrix-to-euler-angles/
 
@@ -320,7 +352,7 @@ bool act::room::ProjectorRoomNode::isRotationMatrix(cv::Mat& R)
 
 }
 
-ci::vec3 act::room::ProjectorRoomNode::rotationMatrixToEulerAngles(cv::Mat& R)
+ci::vec3 act::room::ProjectorRoomNode::rotationMatrixToEulerAngles(const cv::Mat& R)
 {
 	//https://learnopencv.com/rotation-matrix-to-euler-angles/
 
