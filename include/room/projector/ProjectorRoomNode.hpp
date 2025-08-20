@@ -46,6 +46,21 @@ namespace act {
 
 			virtual ci::Json toParams() override;
 			virtual void fromParams(ci::Json json) override;
+
+			void setResolution(ci::ivec2 resolution, bool publish = true);
+			ci::ivec2 getResolution() { return m_resolution; };
+
+			void setFocalLengthPixel(ci::vec2 focalLengthPixel, bool publish = true, bool updateCam = true);
+			ci::vec2 getFocalLengthPixel() { return m_focalLenghtPixel; };
+
+			void setSkew(float skew, bool publish = true, bool updateCam = true);
+			float getSkew() { return m_skew; }
+
+			void setPrincipalPoint(ci::vec2 principalPoint, bool publish = true, bool updateCam = true);
+			ci::vec2 getPrincipalPoint() { return m_principalPoint; };
+
+
+
 			
 		private:
 			ci::app::WindowRef		m_window;
@@ -55,7 +70,7 @@ namespace act {
 
 			ci::vec2				m_focalLenghtPixel;
 			float					m_skew;
-			ci::vec2				m_principlePoint;
+			ci::vec2				m_principalPoint;
 
 
 			void createWindow();

@@ -24,10 +24,10 @@
 act::room::ProjectorRoomNode::ProjectorRoomNode(std::string name, ci::vec3 position, ci::vec3 rotation, float radius, act::UID replyUID)
 	: RoomNodeBase("projector", position, rotation, radius, replyUID)
 {	
-	m_resolution = ci::ivec2(1920, 1080);
-	m_focalLenghtPixel = ci::vec2(800, 800);
-	m_skew = 0;
-	m_principlePoint = ci::vec2(0,0);
+	setResolution(ci::ivec2(1920, 1080));
+	setFocalLengthPixel(ci::vec2(800, 800));
+	setSkew(0);
+	setPrincipalPoint(ci::vec2(0,0));
 
 	updateCameraPersp();
 }
@@ -78,11 +78,9 @@ void act::room::ProjectorRoomNode::drawSpecificSettings()
 			m_window->show();
 	}
 
-	//ImGui::DragInt2("Resolution", &m_resolution, 1.0,0.0, 10000); //sets to (0,0) unchagable for some reason
-	if(ImGui::DragInt("Resolution Width", &m_resolution.x) 
-		|| ImGui::DragInt("Resolution Height", &m_resolution.y))
+	if (ImGui::DragInt2("Resolution", &m_resolution, 1.0, 0.0, 10000, "%i"))
 	{
-		updateCameraPersp();
+		setResolution(m_resolution);
 	}
 
 	if (ImGui::Button("Calibrate with DLT"))
@@ -90,11 +88,19 @@ void act::room::ProjectorRoomNode::drawSpecificSettings()
 		calibrateDLT(true);
 	}
 
-	if (ImGui::DragFloat2("Focal Length", &m_focalLenghtPixel)
-		|| ImGui::DragFloat("Skew", &m_skew)
-		|| ImGui::DragFloat2("Principle Point", &m_principlePoint))
+	if (ImGui::DragFloat2("Focal Length", &m_focalLenghtPixel))
 	{
-		updateCameraPersp();
+		setFocalLengthPixel(m_focalLenghtPixel);
+	}
+
+	if (ImGui::DragFloat("Skew", &m_skew))
+	{
+		setSkew(m_skew);
+	}
+
+	if (ImGui::DragFloat2("Principle Point", &m_principalPoint))
+	{
+		setPrincipalPoint(m_principalPoint);
 	}
 }
 
@@ -107,6 +113,54 @@ ci::Json act::room::ProjectorRoomNode::toParams()
 
 void act::room::ProjectorRoomNode::fromParams(ci::Json json)
 {
+}
+
+void act::room::ProjectorRoomNode::setResolution(ci::ivec2 resolution, bool publish)
+{
+	m_resolution = resolution;
+	if (publish)
+	{
+		publishParam("resolution", util::valueToJson(m_resolution));
+	}
+}
+
+void act::room::ProjectorRoomNode::setFocalLengthPixel(ci::vec2 focalLengthPixel, bool publish, bool updateCam)
+{
+	m_focalLenghtPixel = focalLengthPixel;
+	if (publish)
+	{
+		publishParam("focalLenghtPixel", util::valueToJson(m_focalLenghtPixel));
+	}
+	if (updateCam)
+	{
+		updateCameraPersp();
+	}
+}
+
+void act::room::ProjectorRoomNode::setSkew(float skew, bool publish, bool updateCam)
+{
+	m_skew = skew;
+	if (publish)
+	{
+		publishParam("skew", m_skew);
+	}
+	if (updateCam)
+	{
+		updateCameraPersp();
+	}
+}
+
+void act::room::ProjectorRoomNode::setPrincipalPoint(ci::vec2 principalPoint, bool publish, bool updateCam)
+{
+	m_principalPoint = principalPoint;
+	if (publish)
+	{
+		publishParam("principalPoint", util::valueToJson(m_principalPoint));
+	}
+	if (updateCam)
+	{
+		updateCameraPersp();
+	}
 }
 
 void act::room::ProjectorRoomNode::createWindow()
@@ -149,8 +203,8 @@ void act::room::ProjectorRoomNode::updateCameraPersp()
 	m_cameraPersp = ci::CameraPersp(m_resolution.x, m_resolution.y, fovX, 0.1f, 30.0f);
 
 	//lens shift 1 -> shifte half the viewport size to the right
-	float shiftX = -(m_principlePoint.x / m_resolution.x * 2.0f - 1.0f);
-	float shiftY = (m_principlePoint.y / m_resolution.y * 2.0f - 1.0f); //needs to be (double) negated since y up
+	float shiftX = -(m_principalPoint.x / m_resolution.x * 2.0f - 1.0f);
+	float shiftY = (m_principalPoint.y / m_resolution.y * 2.0f - 1.0f); //needs to be (double) negated since y up
 	m_cameraPersp.setLensShift(shiftX, shiftY);
 
 	m_cameraPersp.setEyePoint(vec3(0.0f));
@@ -268,9 +322,10 @@ void act::room::ProjectorRoomNode::calibrateDLT(const bool useTestPairs)
 
 	//set intrinsics
 	K /= K.at<double>(2, 2); //normalize
-	m_focalLenghtPixel = ci::vec2(K.at<double>(0, 0), K.at<double>(1, 1));
-	m_skew = K.at<double>(0, 1);
-	m_principlePoint = ci::vec2(K.at<double>(0, 2), K.at<double>(1, 2));
+	setFocalLengthPixel(ci::vec2(K.at<double>(0, 0), K.at<double>(1, 1)), true, false);
+	setSkew(K.at<double>(0, 1), true, false);
+	setPrincipalPoint(ci::vec2(K.at<double>(0, 2), K.at<double>(1, 2)), true, false);
+	updateCameraPersp();
 
 	//set extrinsics
 	//cv::Mat convertToCV = (cv::Mat_<double>(3, 3) <<
@@ -281,11 +336,9 @@ void act::room::ProjectorRoomNode::calibrateDLT(const bool useTestPairs)
 	R = R.t(); // rotation in World Coordinates optionally convertToCV with right side duplication
 
 	//tVec = R.t() * tVec; //transform to position in world coordinates... not necesarry is already in world coordinates
-	m_position = ci::vec3(t.at<double>(0), t.at<double>(1), t.at<double>(2));
+	setPosition(ci::vec3(t.at<double>(0), t.at<double>(1), t.at<double>(2)));
 
-	m_rotation = rotationMatrixToEulerAngles(R);
-
-	updateCameraPersp();
+	setRotation(rotationMatrixToEulerAngles(R));
 }
 
 cv::Mat act::room::ProjectorRoomNode::dltSolveP(const std::vector<cv::Point3f> objectPoints, const std::vector<cv::Point2f> imagePoints)
