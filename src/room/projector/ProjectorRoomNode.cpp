@@ -107,12 +107,36 @@ void act::room::ProjectorRoomNode::drawSpecificSettings()
 ci::Json act::room::ProjectorRoomNode::toParams()
 {
 	ci::Json json = ci::Json::object();
-	
+
+	json["resolution"] = util::valueToJson(getResolution());
+	json["focalLengthPixel"] = util::valueToJson(getFocalLengthPixel());
+	json["skew"] = getSkew();
+	json["principalPoint"] = util::valueToJson(getPrincipalPoint());
+
 	return json;
 }
 
 void act::room::ProjectorRoomNode::fromParams(ci::Json json)
 {
+	ci::ivec2 resolution = ci::ivec2(0);
+	if (util::setValueFromJson(json, "resolution", resolution)) {
+		setResolution(resolution, false);
+	}
+
+	ci::vec2 focalLengthPixel = ci::vec2(0.0f);
+	if (util::setValueFromJson(json, "focalLengthPixel", focalLengthPixel)) {
+		setFocalLengthPixel(focalLengthPixel, false);
+	}
+
+	float skew = 0;
+	if (util::setValueFromJson(json, "skew", skew)) {
+		setFocalLengthPixel(focalLengthPixel, false);
+	}
+
+	ci::vec2 principalPoint = ci::vec2(0.0f);
+	if (util::setValueFromJson(json, "principalPoint", principalPoint)) {
+		setPrincipalPoint(principalPoint, false);
+	}
 }
 
 void act::room::ProjectorRoomNode::setResolution(ci::ivec2 resolution, bool publish)
