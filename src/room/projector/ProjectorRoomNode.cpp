@@ -28,6 +28,7 @@ act::room::ProjectorRoomNode::ProjectorRoomNode(std::string name, ci::vec3 posit
 	setFocalLengthPixel(ci::vec2(800, 800));
 	setSkew(0);
 	setPrincipalPoint(ci::vec2(0,0));
+	setIsCalibrating(false);
 
 	updateCameraPersp();
 }
@@ -88,6 +89,11 @@ void act::room::ProjectorRoomNode::drawSpecificSettings()
 		calibrateDLT(true);
 	}
 
+	if (ImGui::Checkbox("Listen for Correspondences", &m_isCalibrating))
+	{
+		setIsCalibrating(m_isCalibrating);
+	}
+
 	if (ImGui::DragFloat2("Focal Length", &m_focalLenghtPixel))
 	{
 		setFocalLengthPixel(m_focalLenghtPixel);
@@ -137,6 +143,11 @@ void act::room::ProjectorRoomNode::fromParams(ci::Json json)
 	if (util::setValueFromJson(json, "principalPoint", principalPoint)) {
 		setPrincipalPoint(principalPoint, false);
 	}
+
+	bool isCalibrating;
+	if (util::setValueFromJson(json, "isCalibrating", isCalibrating)) {
+		setIsCalibrating(isCalibrating, false);
+	}
 }
 
 void act::room::ProjectorRoomNode::setResolution(ci::ivec2 resolution, bool publish)
@@ -145,6 +156,15 @@ void act::room::ProjectorRoomNode::setResolution(ci::ivec2 resolution, bool publ
 	if (publish)
 	{
 		publishParam("resolution", util::valueToJson(m_resolution));
+	}
+}
+
+void act::room::ProjectorRoomNode::setIsCalibrating(bool isCalibrating, bool publish)
+{
+	m_isCalibrating = isCalibrating;
+	if (publish)
+	{
+		publishParam("isCalibrating", m_isCalibrating);
 	}
 }
 
