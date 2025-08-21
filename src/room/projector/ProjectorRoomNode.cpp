@@ -130,7 +130,7 @@ void act::room::ProjectorRoomNode::fromParams(ci::Json json)
 
 	float skew = 0;
 	if (util::setValueFromJson(json, "skew", skew)) {
-		setFocalLengthPixel(focalLengthPixel, false);
+		setSkew(skew, false);
 	}
 
 	ci::vec2 principalPoint = ci::vec2(0.0f);
@@ -153,7 +153,7 @@ void act::room::ProjectorRoomNode::setFocalLengthPixel(ci::vec2 focalLengthPixel
 	m_focalLenghtPixel = focalLengthPixel;
 	if (publish)
 	{
-		publishParam("focalLenghtPixel", util::valueToJson(m_focalLenghtPixel));
+		publishParam("focalLengthPixel", util::valueToJson(m_focalLenghtPixel));
 	}
 	if (updateCam)
 	{
