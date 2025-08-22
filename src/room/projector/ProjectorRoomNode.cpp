@@ -84,12 +84,12 @@ void act::room::ProjectorRoomNode::drawSpecificSettings()
 		setResolution(m_resolution);
 	}
 
-	if (ImGui::Button("Calibrate with DLT"))
+	if (ImGui::Button("Calibrate with Test Pairs"))
 	{
 		calibrateDLT(true);
 	}
 
-	if (ImGui::Checkbox("Listen for Correspondences", &m_isCalibrating))
+	if (ImGui::Checkbox("Calibrate", &m_isCalibrating))
 	{
 		setIsCalibrating(m_isCalibrating);
 	}
@@ -147,6 +147,11 @@ void act::room::ProjectorRoomNode::fromParams(ci::Json json)
 	bool isCalibrating;
 	if (util::setValueFromJson(json, "isCalibrating", isCalibrating)) {
 		setIsCalibrating(isCalibrating, false);
+	}
+
+	ci::vec3 objectPoint;
+	if (util::setValueFromJson(json, "objectPoint", objectPoint)) {
+		addCorrespondence(cv::Point3f(objectPoint.x, objectPoint.y, objectPoint.z));
 	}
 }
 
@@ -307,6 +312,22 @@ void act::room::ProjectorRoomNode::getTestPairs(std::vector<cv::Point3f>& object
 		double v = fy * Yc / Zc + cy;
 
 		imagePoints.push_back(cv::Point2f(u, v));
+	}
+}
+
+void act::room::ProjectorRoomNode::addCorrespondence(cv::Point3f objectPoint, bool calibrateIfPossible)
+{
+	cv::Point2f imagePoint(m_calibrationRayCoords[m_nextCalibrationRay].x * m_resolution.x, m_calibrationRayCoords[m_nextCalibrationRay].y * m_resolution.y);
+	m_imagePoints.push_back(imagePoint);
+	m_objectPoints.push_back(objectPoint);
+
+	//update next image Point
+	m_nextCalibrationRay = uint(floor(m_imagePoints.size() / m_pointsPerCalibrationRay)) % m_calibrationRayCoords.size();
+	
+	// issue calibration
+	if (calibrateIfPossible && m_imagePoints.size() >= 6)
+	{
+		calibrateDLT();
 	}
 }
 

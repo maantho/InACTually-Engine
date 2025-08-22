@@ -72,7 +72,7 @@ namespace act {
 			uint					m_nextCalibrationRay = 0;
 			const uint				m_pointsPerCalibrationRay = 2;
 			const uint				m_calibrationRays = 4;
-			const std::vector<cv::Point2f> m_calibrationRayCoords = { cv::Point2f(0.1f, 0.1f), cv::Point2f(0.1f, 0.9f), cv::Point2f(0.9f, 0.1f), cv::Point2f(0.9f, 0.9f) };
+			const std::vector<cv::Point2f> m_calibrationRayCoords = { cv::Point2f(0.1f, 0.1f), cv::Point2f(0.1f, 0.9f), cv::Point2f(0.9f, 0.1f), cv::Point2f(0.9f, 0.9f), cv::Point2f(0.5f, 0.5f)};
 
 			ci::vec2				m_focalLenghtPixel;
 			float					m_skew;
@@ -89,6 +89,8 @@ namespace act {
 			void getTestPairs(std::vector<cv::Point3f>& objectPoints, std::vector<cv::Point2f>& imagePoints);
 			std::vector<cv::Point3f> m_objectPoints;
 			std::vector<cv::Point2f> m_imagePoints;
+
+			void addCorrespondence(cv::Point3f objectPoint, bool calibrateIfPossible = true);
 
 			//using cv calibrate camera
 			//void calibrateCV();
