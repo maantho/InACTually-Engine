@@ -224,20 +224,16 @@ void act::room::ProjectorRoomNode::updateProjection()
 }
 
 void act::room::ProjectorRoomNode::drawProjection()
-{		
-	gl::clearColor(ci::Color::gray(0.5f));
-	gl::color(ci::Color::white());
+{	
+	if (m_isCalibrating)
+	{
+		gl::clearColor(ci::Color::black());
+		gl::color(ci::Color::white());
 
-	float radius = 10;
-	float padding = radius; // 0.1f;
-	float padX = padding; // getWindowWidth()* padding;
-	float padY = padding; // getWindowHeight()* padding;
-	gl::drawSolidCircle(ivec2(padX, padY), radius); // TL
-	gl::color(ci::Color::gray(0.5));
-	gl::drawSolidCircle(getWindowCenter(), radius); // center
-	gl::drawSolidCircle(ivec2(getWindowWidth() - padX, padY), radius); // TR
-	gl::drawSolidCircle(ivec2(padX, getWindowHeight() - padY), radius); // BL
-	gl::drawSolidCircle(getWindowSize() - ivec2(padX, padY), radius); // BR
+		float radius = 10;
+		ci::ivec2 position(m_calibrationRayCoords[m_nextCalibrationRay].x * m_resolution.x, m_calibrationRayCoords[m_nextCalibrationRay].y * m_resolution.y);
+		gl::drawSolidCircle(position, radius);
+	}
 }
 
 void act::room::ProjectorRoomNode::updateCameraPersp()
