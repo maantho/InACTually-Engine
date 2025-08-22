@@ -370,7 +370,7 @@ void act::room::ProjectorRoomNode::calibrateDLT(const bool useTestPairs)
 	}
 	else
 	{
-		assert(m_objectPoints.size() == m_imagePoints.size() >= 6);
+		assert(m_objectPoints.size() == m_imagePoints.size() && m_imagePoints.size() >= 6);
 		objectPoints = m_objectPoints;
 		imagePoints = m_imagePoints;
 	}	
