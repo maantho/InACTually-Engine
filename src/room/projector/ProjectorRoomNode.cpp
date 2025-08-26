@@ -322,6 +322,9 @@ void act::room::ProjectorRoomNode::getTestPairs(std::vector<cv::Point3f>& object
 
 void act::room::ProjectorRoomNode::addCorrespondence(cv::Point3f objectPoint, bool calibrateIfPossible)
 {
+	if (!m_isCalibrating) {
+		return;
+	}
 	cv::Point2f imagePoint(m_calibrationRayCoords[m_nextCalibrationRay].x * m_resolution.x, m_calibrationRayCoords[m_nextCalibrationRay].y * m_resolution.y);
 	m_imagePoints.push_back(imagePoint);
 	m_objectPoints.push_back(objectPoint);
