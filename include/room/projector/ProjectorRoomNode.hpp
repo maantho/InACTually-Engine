@@ -78,6 +78,9 @@ namespace act {
 			float					m_skew;
 			ci::vec2				m_principalPoint;
 
+			ci::gl::BatchRef		m_wirePlane;
+			bool					m_showDebugGrid = true;
+
 
 			void createWindow();
 			void updateProjection();

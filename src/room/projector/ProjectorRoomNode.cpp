@@ -41,6 +41,8 @@ act::room::ProjectorRoomNode::~ProjectorRoomNode()
 
 void act::room::ProjectorRoomNode::setup()
 {
+	auto colorShader = ci::gl::getStockShader(ci::gl::ShaderDef().color());
+	m_wirePlane = ci::gl::Batch::create(ci::geom::WirePlane().size(ci::vec2(15)).subdivisions(ci::ivec2(15)), colorShader);
 }
 
 void act::room::ProjectorRoomNode::update()
@@ -113,6 +115,9 @@ void act::room::ProjectorRoomNode::drawSpecificSettings()
 	{
 		calibrateDLT(true);
 	}
+
+	ImGui::Checkbox("Show Debug Grid", &m_showDebugGrid);
+
 }
 
 ci::Json act::room::ProjectorRoomNode::toParams()
@@ -243,6 +248,23 @@ void act::room::ProjectorRoomNode::drawProjection()
 		float radius = 10;
 		ci::ivec2 position(m_calibrationRayCoords[m_nextCalibrationRay].x * m_resolution.x, m_calibrationRayCoords[m_nextCalibrationRay].y * m_resolution.y);
 		gl::drawSolidCircle(position, radius);
+	}
+	else if (m_showDebugGrid)
+	{
+		ci::gl::color(0.3f, 0.3f, 0.3f);
+		glm::mat4 rotationMatrix = glm::toMat4(m_orientation); // Convert quaternion to rotation matrix
+		glm::mat4 translationMatrix = glm::translate(glm::mat4(1.0f), m_position); // Translate to position
+
+		glm::mat4 cameraMatrix = translationMatrix * rotationMatrix;
+
+		// invert
+		glm::mat4 viewMatrix = glm::inverse(cameraMatrix);
+
+		gl::setMatrices(m_cameraPersp);
+		gl::setViewMatrix(viewMatrix);
+
+		m_wirePlane->draw();
+
 	}
 }
 
