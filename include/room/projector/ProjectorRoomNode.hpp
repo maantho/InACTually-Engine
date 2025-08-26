@@ -70,8 +70,8 @@ namespace act {
 
 			bool					m_isCalibrating;
 			uint					m_nextCalibrationRay = 0;
-			const uint				m_pointsPerCalibrationRay = 2;
-			const uint				m_calibrationRays = 4;
+			const static uint		m_pointsPerCalibrationRay = 2;
+			const static uint		m_calibrationRays = 4;
 			const std::vector<cv::Point2f> m_calibrationRayCoords = { cv::Point2f(0.1f, 0.1f), cv::Point2f(0.1f, 0.9f), cv::Point2f(0.9f, 0.1f), cv::Point2f(0.9f, 0.9f), cv::Point2f(0.5f, 0.5f)};
 
 			ci::vec2				m_focalLenghtPixel;
@@ -91,6 +91,7 @@ namespace act {
 			std::vector<cv::Point2f> m_imagePoints;
 
 			void addCorrespondence(cv::Point3f objectPoint, bool calibrateIfPossible = true);
+			void resetCorrespondences();
 
 			//using cv calibrate camera
 			//void calibrateCV();

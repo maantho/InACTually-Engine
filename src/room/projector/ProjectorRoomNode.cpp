@@ -84,14 +84,14 @@ void act::room::ProjectorRoomNode::drawSpecificSettings()
 		setResolution(m_resolution);
 	}
 
-	if (ImGui::Button("Calibrate with Test Pairs"))
-	{
-		calibrateDLT(true);
-	}
-
 	if (ImGui::Checkbox("Calibrate", &m_isCalibrating))
 	{
 		setIsCalibrating(m_isCalibrating);
+	}
+
+	if (ImGui::Button("Reset Correspondences"))
+	{
+		resetCorrespondences();
 	}
 
 	if (ImGui::DragFloat2("Focal Length", &m_focalLenghtPixel))
@@ -107,6 +107,11 @@ void act::room::ProjectorRoomNode::drawSpecificSettings()
 	if (ImGui::DragFloat2("Principle Point", &m_principalPoint))
 	{
 		setPrincipalPoint(m_principalPoint);
+	}
+
+	if (ImGui::Button("Calibrate with Test Pairs"))
+	{
+		calibrateDLT(true);
 	}
 }
 
@@ -329,6 +334,13 @@ void act::room::ProjectorRoomNode::addCorrespondence(cv::Point3f objectPoint, bo
 	{
 		calibrateDLT();
 	}
+}
+
+void act::room::ProjectorRoomNode::resetCorrespondences()
+{
+	m_imagePoints.clear();
+	m_objectPoints.clear();
+	m_nextCalibrationRay = 0;
 }
 
 /* //does not work
