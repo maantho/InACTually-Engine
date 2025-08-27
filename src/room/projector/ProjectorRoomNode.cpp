@@ -383,7 +383,7 @@ void act::room::ProjectorRoomNode::addCorrespondence(cv::Point3f objectPoint, bo
 	m_nextCalibrationRay = uint(floor(m_imagePoints.size() / m_pointsPerCalibrationRay)) % m_calibrationRayCoords.size();
 	
 	// issue calibration
-	if (calibrateIfPossible && m_imagePoints.size() >= 6)
+	if (calibrateIfPossible && m_imagePoints.size() >= 8)
 	{
 		calibrateDLT();
 	}
