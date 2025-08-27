@@ -286,7 +286,33 @@ void act::room::ProjectorRoomNode::updateCameraPersp()
 
 void act::room::ProjectorRoomNode::getTestPairs(std::vector<cv::Point3f>& objectPoints, std::vector<cv::Point2f>& imagePoints)
 {
+	//points from calibration
+	///*
+	objectPoints = {
+	{-0.969012201,  0.104362249,  1.51150644},
+	{-0.353259593,  0.495392919,  1.27609563},
+	{ 0.859388232,  0.113188505,  0.946744561},
+	{ 1.33750129,   0.713171959,  0.730579376},
+	{-1.16010177,   0.161237001, -1.73243642},
+	{-0.515584528,  0.551542282, -1.41896713},
+	{ 0.896920264,  0.096350193, -0.897632599},
+	{ 1.17355955,   0.457464814, -0.755033493}
+	};
 
+	imagePoints = {
+	{192.000000, 108.000000},
+	{192.000000, 108.000000},
+	{192.000000, 972.000000},
+	{192.000000, 972.000000},
+	{1728.000000, 108.000000},
+	{1728.000000, 108.000000},
+	{1728.000000, 972.000000},
+	{1728.000000, 972.000000}
+	};
+	//*/
+
+	// synthetic test pairs
+	/*
 	objectPoints = {
 		{-1, -1, -1}, {1, -1, -1}, {1, 1, -1}, {-1, 1, -1},
 		{-1, -1, 1},  {1, -1, 1},  {1, 1, 1},  {-1, 1, 1}
@@ -299,8 +325,8 @@ void act::room::ProjectorRoomNode::getTestPairs(std::vector<cv::Point3f>& object
 	double skew = 0;  
 
 	//camera rotation
-	double pitch = 15.0 * CV_PI / 180.0; // rotation around X
-	double yaw = 45.0 * CV_PI / 180.0; // rotation around Y
+	double pitch = 0.0 * CV_PI / 180.0; // rotation around X
+	double yaw = 90.0 * CV_PI / 180.0; // rotation around Y
 	double roll = 0.0 * CV_PI / 180.0; // rotation around Z
 
 
@@ -324,7 +350,7 @@ void act::room::ProjectorRoomNode::getTestPairs(std::vector<cv::Point3f>& object
 	R = R.t(); //to inverse world to cam rotation
 	
 	//camera center
-	cv::Mat t = (cv::Mat_<double>(3, 1) << -5.0, 2.0, -5.0);
+	cv::Mat t = (cv::Mat_<double>(3, 1) << 5.0, 2.0, 0);
 	t = -R * t; //to world to cam translation
 
 	//calculate correspondences
@@ -333,14 +359,15 @@ void act::room::ProjectorRoomNode::getTestPairs(std::vector<cv::Point3f>& object
 		cv::Mat Pc = R * Pw + t;
 
 		double Xc = Pc.at<double>(0);
-		double Yc = -Pc.at<double>(1);
+		double Yc = Pc.at<double>(1);
 		double Zc = Pc.at<double>(2);
 
 		double u = fx * Xc / Zc + skew * Yc / Zc + cx;
-		double v = fy * Yc / Zc + cy;
+		double v = -(fy * Yc / Zc) + cy;
 
 		imagePoints.push_back(cv::Point2f(u, v));
 	}
+	*/
 }
 
 void act::room::ProjectorRoomNode::addCorrespondence(cv::Point3f objectPoint, bool calibrateIfPossible)
