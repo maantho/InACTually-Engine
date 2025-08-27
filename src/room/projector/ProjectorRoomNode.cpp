@@ -276,12 +276,12 @@ void act::room::ProjectorRoomNode::updateCameraPersp()
 	m_cameraPersp = ci::CameraPersp(m_resolution.x, m_resolution.y, fovX, 0.1f, 30.0f);
 
 	//lens shift 1 -> shifte half the viewport size to the right
-	float shiftX = -(m_principalPoint.x / m_resolution.x * 2.0f - 1.0f);
-	float shiftY = (m_principalPoint.y / m_resolution.y * 2.0f - 1.0f); //needs to be (double) negated since y up
+	float shiftX = (m_principalPoint.x / m_resolution.x * 2.0f - 1.0f);
+	float shiftY = -(m_principalPoint.y / m_resolution.y * 2.0f - 1.0f); //needs to be negated since y up
 	m_cameraPersp.setLensShift(shiftX, shiftY);
 
 	m_cameraPersp.setEyePoint(vec3(0.0f));
-	m_cameraPersp.lookAt(vec3(0.0f, 0.0f, 1.0f)); //along negative z (follows from calibration coordinate system convertion)
+	m_cameraPersp.lookAt(vec3(0.0f, 0.0f, -1.0f)); //along negative z (follows from calibration coordinate system convertion)
 }
 
 void act::room::ProjectorRoomNode::getTestPairs(std::vector<cv::Point3f>& objectPoints, std::vector<cv::Point2f>& imagePoints)
@@ -326,7 +326,7 @@ void act::room::ProjectorRoomNode::getTestPairs(std::vector<cv::Point3f>& object
 
 	//camera rotation
 	double pitch = 0.0 * CV_PI / 180.0; // rotation around X
-	double yaw = 90.0 * CV_PI / 180.0; // rotation around Y
+	double yaw = 0.0 * CV_PI / 180.0; // rotation around Y
 	double roll = 0.0 * CV_PI / 180.0; // rotation around Z
 
 
@@ -350,7 +350,7 @@ void act::room::ProjectorRoomNode::getTestPairs(std::vector<cv::Point3f>& object
 	R = R.t(); //to inverse world to cam rotation
 	
 	//camera center
-	cv::Mat t = (cv::Mat_<double>(3, 1) << 5.0, 2.0, 0);
+	cv::Mat t = (cv::Mat_<double>(3, 1) << 0.0, 0.0, 5);
 	t = -R * t; //to world to cam translation
 
 	//calculate correspondences
@@ -363,11 +363,12 @@ void act::room::ProjectorRoomNode::getTestPairs(std::vector<cv::Point3f>& object
 		double Zc = Pc.at<double>(2);
 
 		double u = fx * Xc / Zc + skew * Yc / Zc + cx;
-		double v = -(fy * Yc / Zc) + cy;
+		double v = fy * Yc / Zc + cy;
+		v = m_resolution.y - v;
 
 		imagePoints.push_back(cv::Point2f(u, v));
 	}
-	*/
+	//*/
 }
 
 void act::room::ProjectorRoomNode::addCorrespondence(cv::Point3f objectPoint, bool calibrateIfPossible)
@@ -454,12 +455,12 @@ void act::room::ProjectorRoomNode::calibrateDLT(const bool useTestPairs)
 	updateCameraPersp();
 
 	//set extrinsics
-	cv::Mat convertToCV = (cv::Mat_<double>(3, 3) <<
+	cv::Mat convertToGL = (cv::Mat_<double>(3, 3) <<
 		-1, 0, 0,
-		0, -1, 0,
-		0, 0, 1); //optinally convert rotation to CV convention (y down, z foreward) or define cameraPersp in -z direction with y up
+		0, 1, 0,
+		0, 0, -1); // convert to openGL
 
-	R = convertToCV * R; // rotation in World Coordinates optionally convertToCV with right side duplication
+	R = convertToGL * R; // rotation in World Coordinates optionally convertToCV with right side duplication
 
 	ci::mat3 ciR(
 		(float)R.at<double>(0, 0), (float)R.at<double>(0, 1), (float)R.at<double>(0, 2),
