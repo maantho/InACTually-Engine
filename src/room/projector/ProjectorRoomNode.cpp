@@ -281,7 +281,7 @@ void act::room::ProjectorRoomNode::updateCameraPersp()
 	m_cameraPersp.setLensShift(shiftX, shiftY);
 
 	m_cameraPersp.setEyePoint(vec3(0.0f));
-	m_cameraPersp.lookAt(vec3(0.0f, 0.0f, -1.0f)); //along negative z (follows from calibration coordinate system convertion)
+	m_cameraPersp.lookAt(vec3(0.0f, 0.0f, 1.0f)); //along negative z (follows from calibration coordinate system convertion)
 }
 
 void act::room::ProjectorRoomNode::getTestPairs(std::vector<cv::Point3f>& objectPoints, std::vector<cv::Point2f>& imagePoints)
@@ -454,17 +454,23 @@ void act::room::ProjectorRoomNode::calibrateDLT(const bool useTestPairs)
 	updateCameraPersp();
 
 	//set extrinsics
-	//cv::Mat convertToCV = (cv::Mat_<double>(3, 3) <<
-	//	1, 0, 0,
-	//	0, -1, 0,
-	//	0, 0, -1); //optinally convert rotation to CV convention (y down, z foreward) or define cameraPersp in -z direction with y up
+	cv::Mat convertToCV = (cv::Mat_<double>(3, 3) <<
+		-1, 0, 0,
+		0, -1, 0,
+		0, 0, 1); //optinally convert rotation to CV convention (y down, z foreward) or define cameraPersp in -z direction with y up
+
+	R = convertToCV * R; // rotation in World Coordinates optionally convertToCV with right side duplication
+
+	ci::mat3 ciR(
+		(float)R.at<double>(0, 0), (float)R.at<double>(0, 1), (float)R.at<double>(0, 2),
+		(float)R.at<double>(1, 0), (float)R.at<double>(1, 1), (float)R.at<double>(1, 2),
+		(float)R.at<double>(2, 0), (float)R.at<double>(2, 1), (float)R.at<double>(2, 2)
+	);
+	setOrientation(glm::toQuat(ciR));
+
 	t = t.rowRange(0, 3) / t.at<double>(3); //unhomogenize and cut W
-	R = R.t(); // rotation in World Coordinates optionally convertToCV with right side duplication
-
-	//tVec = R.t() * tVec; //transform to position in world coordinates... not necesarry is already in world coordinates
+	//t = R * t; //transform to position in world coordinates... not necesarry is already in world coordinates
 	setPosition(ci::vec3(t.at<double>(0), t.at<double>(1), t.at<double>(2)));
-
-	setRotation(rotationMatrixToEulerAngles(R));
 }
 
 cv::Mat act::room::ProjectorRoomNode::dltSolveP(const std::vector<cv::Point3f> objectPoints, const std::vector<cv::Point2f> imagePoints)
@@ -534,50 +540,4 @@ cv::Mat act::room::ProjectorRoomNode::dltCreateMat(const std::vector<cv::Point3f
 	}
 
 	return A;
-}
-
-bool act::room::ProjectorRoomNode::isRotationMatrix(const cv::Mat& R)
-{
-	//https://learnopencv.com/rotation-matrix-to-euler-angles/
-
-	cv::Mat Rt;
-	transpose(R, Rt);
-	cv::Mat shouldBeIdentity = Rt * R;
-	cv::Mat I = cv::Mat::eye(3, 3, shouldBeIdentity.type());
-
-	return  norm(I, shouldBeIdentity) < 1e-6;
-
-}
-
-ci::vec3 act::room::ProjectorRoomNode::rotationMatrixToEulerAngles(const cv::Mat& R)
-{
-	//https://learnopencv.com/rotation-matrix-to-euler-angles/
-
-	assert(isRotationMatrix(R));
-
-	float sy = sqrt(R.at<double>(0, 0) * R.at<double>(0, 0) + R.at<double>(1, 0) * R.at<double>(1, 0));
-
-	bool singular = sy < 1e-6; // If
-
-	float x, y, z;
-	if (!singular)
-	{
-		x = atan2(R.at<double>(2, 1), R.at<double>(2, 2));
-		y = atan2(-R.at<double>(2, 0), sy);
-		z = atan2(R.at<double>(1, 0), R.at<double>(0, 0));
-	}
-	else
-	{
-		x = atan2(-R.at<double>(1, 2), R.at<double>(1, 1));
-		y = atan2(-R.at<double>(2, 0), sy);
-		z = 0;
-	}
-
-	//normalize to positive between 0 and 2pi
-	x = fmod(fmod(x, CV_PI * 2) + CV_PI * 2, CV_PI * 2);
-	y = fmod(fmod(y, CV_PI * 2) + CV_PI * 2, CV_PI * 2);
-	z = fmod(fmod(z, CV_PI * 2) + CV_PI * 2, CV_PI * 2);
-
-	return ci::vec3(x, y, z);
-
 }
