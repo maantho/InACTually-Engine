@@ -31,6 +31,9 @@ act::room::ProjectorRoomNode::ProjectorRoomNode(std::string name, ci::vec3 posit
 	setIsCalibrating(false);
 
 	updateCameraPersp();
+
+	auto colorShader = ci::gl::getStockShader(ci::gl::ShaderDef().color());
+	m_wirePlane = ci::gl::Batch::create(ci::geom::WirePlane().size(ci::vec2(15)).subdivisions(ci::ivec2(15)), colorShader);
 }
 
 act::room::ProjectorRoomNode::~ProjectorRoomNode()
@@ -41,8 +44,6 @@ act::room::ProjectorRoomNode::~ProjectorRoomNode()
 
 void act::room::ProjectorRoomNode::setup()
 {
-	auto colorShader = ci::gl::getStockShader(ci::gl::ShaderDef().color());
-	m_wirePlane = ci::gl::Batch::create(ci::geom::WirePlane().size(ci::vec2(15)).subdivisions(ci::ivec2(15)), colorShader);
 }
 
 void act::room::ProjectorRoomNode::update()
