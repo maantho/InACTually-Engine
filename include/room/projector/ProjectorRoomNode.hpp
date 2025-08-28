@@ -64,6 +64,7 @@ namespace act {
 			
 		private:
 			ci::app::WindowRef		m_window;
+			int						m_DisplayNumber = -1;
 			ci::CameraPersp			m_cameraPersp;
 
 			ci::ivec2				m_resolution;
@@ -83,6 +84,8 @@ namespace act {
 
 
 			void createWindow();
+			void createWindowOnDisplay();
+
 			void updateProjection();
 			void drawProjection();
 			void updateCameraPersp();

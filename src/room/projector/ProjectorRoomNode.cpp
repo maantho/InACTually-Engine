@@ -76,11 +76,11 @@ void act::room::ProjectorRoomNode::drawSpecificSettings()
 {
 	if(ImGui::Button("Open Projector Window"))
 	{
-		if (!m_window)
-			createWindow();
-		else
-			m_window->show();
-			m_window->setFullScreen();
+		createWindowOnDisplay();
+	}
+
+	if (ImGui::InputInt("Display", &m_DisplayNumber)) {
+		createWindowOnDisplay();
 	}
 
 	if (ImGui::DragInt2("Resolution", &m_resolution, 1.0, 0.0, 10000, "%i"))
@@ -226,6 +226,9 @@ void act::room::ProjectorRoomNode::setPrincipalPoint(ci::vec2 principalPoint, bo
 
 void act::room::ProjectorRoomNode::createWindow()
 {
+	if (m_window) 
+		m_window->close();
+	
 	m_window = WindowData::createWindow(getName(), ivec2(1920, 1080));
 	CallbackDrawableRef drawable = CallbackDrawable::create();
 	drawable->setDrawCallback(std::bind(&ProjectorRoomNode::drawProjection, this));
@@ -234,6 +237,19 @@ void act::room::ProjectorRoomNode::createWindow()
 	m_window->getSignalClose().connect([this]() {
 		m_window = nullptr; // reset the window pointer when closed
 	});
+}
+
+void act::room::ProjectorRoomNode::createWindowOnDisplay()
+{
+	createWindow(); // create new window otherwise context will be wrong
+	FullScreenOptions fullScreenOptions;
+	if (m_DisplayNumber >= 0 && m_DisplayNumber < Display::getDisplays().size()) {
+		fullScreenOptions.display(Display::getDisplays()[m_DisplayNumber]);
+		m_window->setFullScreen(true, fullScreenOptions);
+	}
+	else {
+		m_window->setFullScreen(false);
+	}
 }
 
 void act::room::ProjectorRoomNode::updateProjection()
