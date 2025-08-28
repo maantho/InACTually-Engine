@@ -261,11 +261,10 @@ void act::room::ProjectorRoomNode::drawProjection()
 	if (m_isCalibrating)
 	{
 		gl::clearColor(ci::Color::black());
-		gl::color(ci::Color::white());
-
-		float radius = 10;
-		ci::ivec2 position(m_calibrationRayCoords[m_nextCalibrationRay].x * m_resolution.x, m_calibrationRayCoords[m_nextCalibrationRay].y * m_resolution.y);
-		gl::drawSolidCircle(position, radius);
+		gl::setMatricesWindow(getWindowSize());
+		gl::ScopedModelMatrix();
+		gl::translate(m_calibrationRayCoords[m_nextCalibrationRay].x * m_resolution.x, m_calibrationRayCoords[m_nextCalibrationRay].y * m_resolution.y);
+		drawCalibrationPoint();
 	}
 	else if (m_showDebugGrid)
 	{
@@ -284,6 +283,21 @@ void act::room::ProjectorRoomNode::drawProjection()
 		m_wirePlane->draw();
 
 	}
+}
+
+void act::room::ProjectorRoomNode::drawCalibrationPoint()
+{
+	gl::color(ci::Color::white());
+	float radius = 5;
+	ci::ivec2 position(0, 0);
+	gl::drawSolidCircle(vec2(0), radius);
+	for (int i = 2; i <= 20; i++)
+	{
+		gl::drawStrokedCircle(vec2(), radius * i * i);
+
+	}
+
+
 }
 
 void act::room::ProjectorRoomNode::updateCameraPersp()
