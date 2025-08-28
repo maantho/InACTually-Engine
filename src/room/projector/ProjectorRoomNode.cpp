@@ -33,7 +33,7 @@ act::room::ProjectorRoomNode::ProjectorRoomNode(std::string name, ci::vec3 posit
 	updateCameraPersp();
 
 	auto colorShader = ci::gl::getStockShader(ci::gl::ShaderDef().color());
-	m_wirePlane = ci::gl::Batch::create(ci::geom::WirePlane().size(ci::vec2(15)).subdivisions(ci::ivec2(15)), colorShader);
+	m_wirePlane = ci::gl::Batch::create(ci::geom::WirePlane().size(ci::vec2(15)).subdivisions(ci::ivec2(45)), colorShader);
 }
 
 act::room::ProjectorRoomNode::~ProjectorRoomNode()
@@ -80,6 +80,7 @@ void act::room::ProjectorRoomNode::drawSpecificSettings()
 			createWindow();
 		else
 			m_window->show();
+			m_window->setFullScreen();
 	}
 
 	if (ImGui::DragInt2("Resolution", &m_resolution, 1.0, 0.0, 10000, "%i"))
@@ -252,7 +253,7 @@ void act::room::ProjectorRoomNode::drawProjection()
 	}
 	else if (m_showDebugGrid)
 	{
-		ci::gl::color(0.3f, 0.3f, 0.3f);
+		ci::gl::color(1.0f, 1, 1);
 		glm::mat4 rotationMatrix = glm::toMat4(m_orientation); // Convert quaternion to rotation matrix
 		glm::mat4 translationMatrix = glm::translate(glm::mat4(1.0f), m_position); // Translate to position
 
@@ -276,8 +277,8 @@ void act::room::ProjectorRoomNode::updateCameraPersp()
 	m_cameraPersp = ci::CameraPersp(m_resolution.x, m_resolution.y, fovX, 0.1f, 30.0f);
 
 	//lens shift 1 -> shifte half the viewport size to the right
-	float shiftX = (m_principalPoint.x / m_resolution.x * 2.0f - 1.0f);
-	float shiftY = -(m_principalPoint.y / m_resolution.y * 2.0f - 1.0f); //needs to be negated since y up
+	float shiftX = -(m_principalPoint.x / m_resolution.x * 2.0f - 1.0f);
+	float shiftY = (m_principalPoint.y / m_resolution.y * 2.0f - 1.0f); //needs to be negated (twice) since y up
 	m_cameraPersp.setLensShift(shiftX, shiftY);
 
 	m_cameraPersp.setEyePoint(vec3(0.0f));
@@ -447,6 +448,13 @@ void act::room::ProjectorRoomNode::calibrateDLT(const bool useTestPairs)
 
 	cv::decomposeProjectionMatrix(P, K, R, t);
 
+	/*
+	if (cv::determinant(R) < 0) {
+		R = -R;
+		t = -t;
+	}
+	*/
+
 	//set intrinsics
 	K /= K.at<double>(2, 2); //normalize
 	setFocalLengthPixel(ci::vec2(K.at<double>(0, 0), K.at<double>(1, 1)), true, false);
@@ -456,8 +464,8 @@ void act::room::ProjectorRoomNode::calibrateDLT(const bool useTestPairs)
 
 	//set extrinsics
 	cv::Mat convertToGL = (cv::Mat_<double>(3, 3) <<
-		-1, 0, 0,
-		0, 1, 0,
+		1, 0, 0,
+		0, -1, 0,
 		0, 0, -1); // convert to openGL
 
 	R = convertToGL * R; // rotation in World Coordinates optionally convertToCV with right side duplication
@@ -484,13 +492,18 @@ cv::Mat act::room::ProjectorRoomNode::dltSolveP(const std::vector<cv::Point3f> o
 	cv::SVD::compute(A, w, u, vt);
 
 	//use smalles singular value (last row of vt as collum)
-	cv::Mat pVec = vt.row(vt.rows - 1).t();
+	cv::Mat pVec = vt.row(vt.rows - 1);
 
-	//normalize for stability
-	pVec /= cv::norm(pVec) * 12;
 
 	//transform Vec to Mat (3 Rows)
 	cv::Mat P = pVec.reshape(0, 3);
+
+	//normalize for stability
+	if (P.at<double>(2, 3) != 0.0)
+		P = P / P.at<double>(2, 3);
+	else
+		pVec /= cv::norm(pVec) * 12;
+
 	
 	return P;
 }
@@ -521,7 +534,7 @@ cv::Mat act::room::ProjectorRoomNode::dltCreateMat(const std::vector<cv::Point3f
 		A.at<double>(2 * i, 0) = X;
 		A.at<double>(2 * i, 1) = Y;
 		A.at<double>(2 * i, 2) = Z;
-		A.at<double>(2 * i, 3) = 1;
+		A.at<double>(2 * i, 3) = 1.0;
 
 		A.at<double>(2 * i, 8) = -u*X;
 		A.at<double>(2 * i, 9) = -u*Y;
@@ -532,7 +545,7 @@ cv::Mat act::room::ProjectorRoomNode::dltCreateMat(const std::vector<cv::Point3f
 		A.at<double>(2 * i + 1, 4) = X;
 		A.at<double>(2 * i + 1, 5) = Y;
 		A.at<double>(2 * i + 1, 6) = Z;
-		A.at<double>(2 * i + 1, 7) = 1;
+		A.at<double>(2 * i + 1, 7) = 1.0;
 
 		A.at<double>(2 * i + 1, 8) = -v * X;
 		A.at<double>(2 * i + 1, 9) = -v * Y;
