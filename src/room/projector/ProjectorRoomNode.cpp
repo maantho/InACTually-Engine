@@ -33,7 +33,7 @@ act::room::ProjectorRoomNode::ProjectorRoomNode(std::string name, ci::vec3 posit
 	updateCameraPersp();
 
 	auto colorShader = ci::gl::getStockShader(ci::gl::ShaderDef().color());
-	m_wirePlane = ci::gl::Batch::create(ci::geom::WirePlane().size(ci::vec2(15)).subdivisions(ci::ivec2(45)), colorShader);
+	m_wirePlane = ci::gl::Batch::create(ci::geom::WirePlane().size(ci::vec2(20)).subdivisions(ci::ivec2(100)), colorShader);
 }
 
 act::room::ProjectorRoomNode::~ProjectorRoomNode()
@@ -280,9 +280,28 @@ void act::room::ProjectorRoomNode::drawProjection()
 		gl::setMatrices(m_cameraPersp);
 		gl::setViewMatrix(viewMatrix);
 
+		gl::lineWidth(2.0f);
 		m_wirePlane->draw();
 
+		gl::color(ci::Color(1, 0, 0)); // red for X axis
+		gl::drawLine(ci::vec3(0.0f, 0.0f, 0.0f), ci::vec3(0.5f, 0.0f, 0.0f));
+		gl::color(ci::Color(0, 0, 1)); // Blue for Z axis
+		gl::drawLine(ci::vec3(0.0f, 0.0f, 0.0f), ci::vec3(0.0f, 0.0f, 0.5f));
+
 	}
+
+	// Draw lines at the edges of the window
+	ci::ivec2 winSize = getWindowSize();
+	gl::color(ci::Color(1, 1, 0)); // Yellow for visibility
+
+	// Top edge
+	gl::drawLine(ci::vec2(0, 0), ci::vec2(winSize.x, 0));
+	// Right edge
+	gl::drawLine(ci::vec2(winSize.x, 0), ci::vec2(winSize.x, winSize.y));
+	// Bottom edge
+	gl::drawLine(ci::vec2(winSize.x, winSize.y), ci::vec2(0, winSize.y));
+	// Left edge
+	gl::drawLine(ci::vec2(0, winSize.y), ci::vec2(0, 0));
 }
 
 void act::room::ProjectorRoomNode::drawCalibrationPoint()
