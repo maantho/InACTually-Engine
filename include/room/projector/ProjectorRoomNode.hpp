@@ -66,6 +66,9 @@ namespace act {
 			ci::app::WindowRef		m_window;
 			int						m_DisplayNumber = 2;
 			ci::CameraPersp			m_cameraPersp;
+			ci::mat4				m_projectionMatrix;
+
+			bool					m_useCameraPersp = false;
 
 			ci::ivec2				m_resolution;
 
@@ -91,6 +94,7 @@ namespace act {
 			void drawProjection();
 			void drawCalibrationPoint();
 			void updateCameraPersp();
+			void calculateProjectionMatrix();
 			
 			//calibration
 			//correspondences

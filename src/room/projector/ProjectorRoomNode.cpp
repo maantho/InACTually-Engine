@@ -31,6 +31,7 @@ act::room::ProjectorRoomNode::ProjectorRoomNode(std::string name, ci::vec3 posit
 	setIsCalibrating(false);
 
 	updateCameraPersp();
+	calculateProjectionMatrix();
 
 	auto colorShader = ci::gl::getStockShader(ci::gl::ShaderDef().color());
 	m_wirePlane = ci::gl::Batch::create(ci::geom::WirePlane().size(ci::vec2(20)).subdivisions(ci::ivec2(100)), colorShader);
@@ -82,6 +83,9 @@ void act::room::ProjectorRoomNode::drawSpecificSettings()
 	if (ImGui::InputInt("Display", &m_DisplayNumber)) {
 		createWindowOnDisplay();
 	}
+
+	ImGui::Checkbox("Use cameraPersp", &m_useCameraPersp);
+
 
 	if (ImGui::DragInt2("Resolution", &m_resolution, 1.0, 0.0, 10000, "%i"))
 	{
@@ -197,6 +201,7 @@ void act::room::ProjectorRoomNode::setFocalLengthPixel(ci::vec2 focalLengthPixel
 	if (updateCam)
 	{
 		updateCameraPersp();
+		calculateProjectionMatrix();
 	}
 }
 
@@ -210,6 +215,7 @@ void act::room::ProjectorRoomNode::setSkew(float skew, bool publish, bool update
 	if (updateCam)
 	{
 		updateCameraPersp();
+		calculateProjectionMatrix();
 	}
 }
 
@@ -223,6 +229,7 @@ void act::room::ProjectorRoomNode::setPrincipalPoint(ci::vec2 principalPoint, bo
 	if (updateCam)
 	{
 		updateCameraPersp();
+		calculateProjectionMatrix();
 	}
 }
 
@@ -271,6 +278,7 @@ void act::room::ProjectorRoomNode::drawProjection()
 	else if (m_showDebugGrid)
 	{
 		ci::gl::color(1.0f, 1, 1);
+		gl::ScopedMatrices();
 		glm::mat4 rotationMatrix = glm::toMat4(m_orientation); // Convert quaternion to rotation matrix
 		glm::mat4 translationMatrix = glm::translate(glm::mat4(1.0f), m_position); // Translate to position
 
@@ -279,7 +287,10 @@ void act::room::ProjectorRoomNode::drawProjection()
 		// invert
 		glm::mat4 viewMatrix = glm::inverse(cameraMatrix);
 
-		gl::setMatrices(m_cameraPersp);
+		if (m_useCameraPersp)
+			gl::setMatrices(m_cameraPersp);
+		else
+			gl::setProjectionMatrix(m_projectionMatrix);
 		gl::setViewMatrix(viewMatrix);
 
 		gl::ScopedLineWidth(2.0f);
@@ -328,9 +339,10 @@ void act::room::ProjectorRoomNode::drawCalibrationPoint()
 
 void act::room::ProjectorRoomNode::updateCameraPersp()
 {
-	float fovX = 2 * atan(m_resolution.x / (2 * m_focalLenghtPixel.x)) * 180.0 / CV_PI;
+	float f = (m_focalLenghtPixel.x + m_focalLenghtPixel.y) / 2;
+	float fov = 2 * atan(m_resolution.x / (2 * f)) * 180.0 / CV_PI;
 	//float fovY = 2 * atan(m_resolution.y / (2 * m_focalLenghtPixel.y)) * 180.0 / CV_PI;
-	m_cameraPersp = ci::CameraPersp(m_resolution.x, m_resolution.y, fovX, 0.1f, 30.0f);
+	m_cameraPersp = ci::CameraPersp(m_resolution.x, m_resolution.y, fov, 0.1f, 30.0f);
 
 	//lens shift 1 -> shifte half the viewport size to the right
 	float shiftX = -(m_principalPoint.x / m_resolution.x * 2.0f - 1.0f);
@@ -339,6 +351,19 @@ void act::room::ProjectorRoomNode::updateCameraPersp()
 
 	m_cameraPersp.setEyePoint(vec3(0.0f));
 	m_cameraPersp.lookAt(vec3(0.0f, 0.0f, -1.0f)); //along negative z (follows from calibration coordinate system convertion)
+}
+
+void act::room::ProjectorRoomNode::calculateProjectionMatrix()
+{
+	float nearZ = 0.1f, farZ = 30.0f;
+
+	float left = -(m_principalPoint.x) * nearZ / m_focalLenghtPixel.x;
+	float right = (m_resolution.x - m_principalPoint.x) * nearZ / m_focalLenghtPixel.x;
+	float bottom = -(m_resolution.y - m_principalPoint.y) * nearZ / m_focalLenghtPixel.y;
+	float top = (m_principalPoint.y) * nearZ / m_focalLenghtPixel.y;
+
+	m_projectionMatrix = glm::frustum(left, right, bottom, top, nearZ, farZ);
+	m_projectionMatrix[1][0] = m_skew / m_focalLenghtPixel.x;
 }
 
 void act::room::ProjectorRoomNode::getTestPairs(std::vector<cv::Point3f>& objectPoints, std::vector<cv::Point2f>& imagePoints)
@@ -441,7 +466,7 @@ void act::room::ProjectorRoomNode::addCorrespondence(cv::Point3f objectPoint, bo
 	m_nextCalibrationRay = uint(floor(m_imagePoints.size() / m_pointsPerCalibrationRay)) % m_calibrationRayCoords.size();
 	
 	// issue calibration
-	if (calibrateIfPossible && m_imagePoints.size() >= 8)
+	if (calibrateIfPossible && m_imagePoints.size() >= 6)
 	{
 		calibrateDLT();
 	}
@@ -517,6 +542,7 @@ void act::room::ProjectorRoomNode::calibrateDLT(const bool useTestPairs)
 	setSkew(K.at<double>(0, 1), true, false);
 	setPrincipalPoint(ci::vec2(K.at<double>(0, 2), K.at<double>(1, 2)), true, false);
 	updateCameraPersp();
+	calculateProjectionMatrix();
 
 	//set extrinsics
 	cv::Mat convertToGL = (cv::Mat_<double>(3, 3) <<
