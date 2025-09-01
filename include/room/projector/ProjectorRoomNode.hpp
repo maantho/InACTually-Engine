@@ -81,6 +81,7 @@ namespace act {
 
 			ci::gl::BatchRef		m_wirePlane;
 			bool					m_showDebugGrid = true;
+			bool					m_showWindowBorders = true;
 
 
 			void createWindow();

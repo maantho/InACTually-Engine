@@ -120,6 +120,8 @@ void act::room::ProjectorRoomNode::drawSpecificSettings()
 
 	ImGui::Checkbox("Show Debug Grid", &m_showDebugGrid);
 
+	ImGui::Checkbox("Show Window Borders", &m_showWindowBorders);
+
 }
 
 ci::Json act::room::ProjectorRoomNode::toParams()
@@ -260,9 +262,9 @@ void act::room::ProjectorRoomNode::drawProjection()
 {	
 	if (m_isCalibrating)
 	{
+		gl::ScopedMatrices();
 		gl::clearColor(ci::Color::black());
 		gl::setMatricesWindow(getWindowSize());
-		gl::ScopedModelMatrix();
 		gl::translate(m_calibrationRayCoords[m_nextCalibrationRay].x * m_resolution.x, m_calibrationRayCoords[m_nextCalibrationRay].y * m_resolution.y);
 		drawCalibrationPoint();
 	}
@@ -280,7 +282,7 @@ void act::room::ProjectorRoomNode::drawProjection()
 		gl::setMatrices(m_cameraPersp);
 		gl::setViewMatrix(viewMatrix);
 
-		gl::lineWidth(2.0f);
+		gl::ScopedLineWidth(2.0f);
 		m_wirePlane->draw();
 
 		gl::color(ci::Color(1, 0, 0)); // red for X axis
@@ -290,18 +292,23 @@ void act::room::ProjectorRoomNode::drawProjection()
 
 	}
 
-	// Draw lines at the edges of the window
-	ci::ivec2 winSize = getWindowSize();
-	gl::color(ci::Color(1, 1, 0)); // Yellow for visibility
+	if (m_showWindowBorders)
+	{
+		gl::ScopedMatrices();
+		gl::setMatricesWindow(getWindowSize());
+		gl::color(ci::Color::white());
 
-	// Top edge
-	gl::drawLine(ci::vec2(0, 0), ci::vec2(winSize.x, 0));
-	// Right edge
-	gl::drawLine(ci::vec2(winSize.x, 0), ci::vec2(winSize.x, winSize.y));
-	// Bottom edge
-	gl::drawLine(ci::vec2(winSize.x, winSize.y), ci::vec2(0, winSize.y));
-	// Left edge
-	gl::drawLine(ci::vec2(0, winSize.y), ci::vec2(0, 0));
+		gl::ScopedLineWidth(3.0f);
+		// Top edge
+		gl::drawLine(ci::vec2(0, 0), ci::vec2(m_resolution.x, 0));
+		// Right edge
+		gl::drawLine(ci::vec2(m_resolution.x, 0), ci::vec2(m_resolution.x, m_resolution.y));
+		// Bottom edge
+		gl::drawLine(ci::vec2(m_resolution.x, m_resolution.y), ci::vec2(0, m_resolution.y));
+		// Left edge
+		gl::drawLine(ci::vec2(0, m_resolution.y), ci::vec2(0, 0));
+	}
+
 }
 
 void act::room::ProjectorRoomNode::drawCalibrationPoint()
