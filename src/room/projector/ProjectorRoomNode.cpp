@@ -296,9 +296,10 @@ void act::room::ProjectorRoomNode::drawProjection()
 		gl::ScopedLineWidth(2.0f);
 		m_wirePlane->draw();
 
-		gl::color(ci::Color(1, 0, 0)); // red for X axis
+		gl::ScopedLineWidth(5.0f);
+		gl::color(ci::Color(1.0f, 0.5f, 0.5f)); // red for X axis
 		gl::drawLine(ci::vec3(0.0f, 0.0f, 0.0f), ci::vec3(0.5f, 0.0f, 0.0f));
-		gl::color(ci::Color(0, 0, 1)); // Blue for Z axis
+		gl::color(ci::Color(0.5f, 0.9f, 1.0f)); // Blue for Z axis
 		gl::drawLine(ci::vec3(0.0f, 0.0f, 0.0f), ci::vec3(0.0f, 0.0f, 0.5f));
 
 	}
@@ -309,7 +310,7 @@ void act::room::ProjectorRoomNode::drawProjection()
 		gl::setMatricesWindow(getWindowSize());
 		gl::color(ci::Color::white());
 
-		gl::ScopedLineWidth(3.0f);
+		gl::ScopedLineWidth(4.0f);
 		// Top edge
 		gl::drawLine(ci::vec2(0, 0), ci::vec2(m_resolution.x, 0));
 		// Right edge
