@@ -277,8 +277,8 @@ void act::room::ProjectorRoomNode::drawProjection()
 	}
 	else if (m_showDebugGrid)
 	{
-		ci::gl::color(1.0f, 1, 1);
 		gl::ScopedMatrices();
+		ci::gl::color(1.0f, 1, 1);
 		glm::mat4 rotationMatrix = glm::toMat4(m_orientation); // Convert quaternion to rotation matrix
 		glm::mat4 translationMatrix = glm::translate(glm::mat4(1.0f), m_position); // Translate to position
 
@@ -293,10 +293,10 @@ void act::room::ProjectorRoomNode::drawProjection()
 			gl::setProjectionMatrix(m_projectionMatrix);
 		gl::setViewMatrix(viewMatrix);
 
-		gl::ScopedLineWidth(2.0f);
+		gl::ScopedLineWidth lineWidth(3.0f);
 		m_wirePlane->draw();
 
-		gl::ScopedLineWidth(5.0f);
+		gl::ScopedLineWidth lineWidth2(5.0f);
 		gl::color(ci::Color(1.0f, 0.5f, 0.5f)); // red for X axis
 		gl::drawLine(ci::vec3(0.0f, 0.0f, 0.0f), ci::vec3(0.5f, 0.0f, 0.0f));
 		gl::color(ci::Color(0.5f, 0.9f, 1.0f)); // Blue for Z axis
@@ -310,7 +310,7 @@ void act::room::ProjectorRoomNode::drawProjection()
 		gl::setMatricesWindow(getWindowSize());
 		gl::color(ci::Color::white());
 
-		gl::ScopedLineWidth(4.0f);
+		gl::ScopedLineWidth lineWidth(5.0f);
 		// Top edge
 		gl::drawLine(ci::vec2(0, 0), ci::vec2(m_resolution.x, 0));
 		// Right edge
