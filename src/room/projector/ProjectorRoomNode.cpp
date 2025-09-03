@@ -286,6 +286,14 @@ void act::room::ProjectorRoomNode::createWindow()
 	m_window->getSignalClose().connect([this]() {
 		m_window = nullptr; // reset the window pointer when closed
 	});
+	m_window->getSignalMouseUp().connect([this](ci::app::MouseEvent evt) {
+		// onMouse()
+
+		auto distance = ci::distance(vec2(m_mousePos), vec2(evt.getPos()));
+
+		m_mousePos = evt.getPos();
+			
+	});
 }
 
 void act::room::ProjectorRoomNode::createWindowOnDisplay()
@@ -523,7 +531,7 @@ void act::room::ProjectorRoomNode::addCorrespondence(cv::Point3f objectPoint, bo
 	m_nextCorrespondence++;
 	
 	// issue calibration
-	if (calibrateIfPossible && m_nextCorrespondence > 6)
+	if (calibrateIfPossible && m_nextCorrespondence >= 6)
 	{
 		calibrateDLT();
 	}

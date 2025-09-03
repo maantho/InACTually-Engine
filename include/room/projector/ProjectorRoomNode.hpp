@@ -98,6 +98,8 @@ namespace act {
 			float					m_skew;
 			ci::vec2				m_principalPoint;
 
+			ci::ivec2				m_mousePos = ivec2(0);
+
 			ci::gl::BatchRef		m_wirePlane;
 			bool					m_showDebugGrid = true;
 			bool					m_showWindowBorders = true;
