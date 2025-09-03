@@ -354,6 +354,21 @@ void act::room::ProjectorRoomNode::drawProjection()
 		gl::color(ci::Color(0.5f, 0.9f, 1.0f)); // Blue for Z axis
 		gl::drawLine(ci::vec3(0.0f, 0.0f, 0.0f), ci::vec3(0.0f, 0.0f, 0.5f));
 
+		gl::setMatricesWindow(getWindowSize());
+		cv::Mat X = (cv::Mat_<double>(4, 1) << 0, 0, 0, 1.0);
+
+		//reproject 
+		cv::Mat x = m_P * X;
+
+		//Unhomogenize reprojectefc point
+		double u = x.at<double>(0, 0) / x.at<double>(2, 0);
+		double v = x.at<double>(1, 0) / x.at<double>(2, 0);
+
+		gl::color(1, 0, 0);
+		float radius = 2;
+		gl::drawSolidCircle(vec2(u, v), radius);
+
+
 	}
 
 	if (m_showWindowBorders)
@@ -421,7 +436,7 @@ void act::room::ProjectorRoomNode::calculateViewProjectionMatrix()
 	m_glViewMatrix = glm::inverse(cameraMatrix);
 
 	//projection
-	float nearZ = 0.1f, farZ = 30.0f;
+	float nearZ = 0.1f, farZ = 1000.0f;
 
 	float left = -(m_principalPoint.x) * nearZ / m_focalLenghtPixel.x;
 	float right = (m_resolution.x - m_principalPoint.x) * nearZ / m_focalLenghtPixel.x;
@@ -429,7 +444,7 @@ void act::room::ProjectorRoomNode::calculateViewProjectionMatrix()
 	float top = (m_principalPoint.y) * nearZ / m_focalLenghtPixel.y;
 
 	m_glProjectionMatrix = glm::frustum(left, right, bottom, top, nearZ, farZ);
-	m_glProjectionMatrix[1][0] = m_skew / m_focalLenghtPixel.x;
+	m_glProjectionMatrix[0][1] = 2 * m_skew / m_resolution.x;
 }
 
 void act::room::ProjectorRoomNode::getTestPairs(std::vector<cv::Point3f>& objectPoints, std::vector<cv::Point2f>& imagePoints)
@@ -733,7 +748,6 @@ cv::Mat act::room::ProjectorRoomNode::dltCreateMat(const std::vector<cv::Point3f
 void act::room::ProjectorRoomNode::calculateErrors(const cv::Mat& P, const std::vector<cv::Point3f>& objectPoints, const std::vector<cv::Point2f>& imagePoints)
 {
 	int numPoints = objectPoints.size();
-	std::vector<cv::Point2f> reprojectedPoints;
 
 	double totalSquaredError = 0.0;
 	double totalError = 0.0;
@@ -767,10 +781,10 @@ void act::room::ProjectorRoomNode::calculateErrors(const cv::Mat& P, const std::
 		
 		glm::vec3 ndc = glm::vec3(clip) / clip.w;
 		float uGL = (ndc.x + 1.0f) * 0.5f * m_resolution.x;
-		float vGL = (ndc.y + 1.0f) * 0.5f * m_resolution.y;
+		float vGL = (1 - (ndc.y + 1.0f) * 0.5f) * m_resolution.y;
 
-		double dxGL = uGL - u;
-		double dyGL = vGL - v;
+		double dxGL = imgPt.x - uGL;
+		double dyGL = imgPt.y - vGL;
 		double errorGL = dxGL * dxGL + dyGL * dyGL; //square distance
 
 		totalGLError += std::sqrt(errorGL);
