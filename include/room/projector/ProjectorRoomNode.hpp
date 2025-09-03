@@ -73,10 +73,26 @@ namespace act {
 			ci::ivec2				m_resolution;
 
 			bool					m_isCalibrating;
-			uint					m_nextCalibrationRay = 0;
-			const static uint		m_pointsPerCalibrationRay = 2;
-			const static uint		m_calibrationRays = 4;
-			const std::vector<cv::Point2f> m_calibrationRayCoords = { cv::Point2f(0.1f, 0.1f), cv::Point2f(0.1f, 0.9f), cv::Point2f(0.9f, 0.1f), cv::Point2f(0.9f, 0.9f), cv::Point2f(0.5f, 0.5f)};
+
+			int						m_nextCorrespondence = 0;
+			int						m_totalPoints = 6;
+			int						m_totalCalibrationRays = 4;
+
+			const std::vector<cv::Point2f> m_calibrationRayCoords = {
+				// used for 4 points
+				cv::Point2f(1.0f / 6.0f, 1.0f / 3.0f),
+				cv::Point2f(1.0f / 6.0f, 2.0f / 3.0f),
+				cv::Point2f(5.0f / 6.0f, 1.0f / 3.0f),
+				cv::Point2f(5.0f / 6.0f, 2.0f / 3.0f),
+
+				//additionally for  up to 10 points
+				cv::Point2f(2.0f / 6.0f, 1.0f / 3.0f),
+				cv::Point2f(3.0f / 6.0f, 1.0f / 3.0f),
+				cv::Point2f(4.0f / 6.0f, 1.0f / 3.0f),
+				cv::Point2f(2.0f / 6.0f, 2.0f / 3.0f),
+				cv::Point2f(3.0f / 6.0f, 2.0f / 3.0f),
+				cv::Point2f(4.0f / 6.0f, 2.0f / 3.0f),
+			};
 
 			ci::vec2				m_focalLenghtPixel;
 			float					m_skew;
@@ -105,6 +121,7 @@ namespace act {
 			std::vector<cv::Point2f> m_imagePoints;
 
 			void addCorrespondence(cv::Point3f objectPoint, bool calibrateIfPossible = true);
+			int getCurrentRay();
 			void resetCorrespondences();
 
 			//using cv calibrate camera

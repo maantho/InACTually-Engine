@@ -92,6 +92,11 @@ void act::room::ProjectorRoomNode::drawSpecificSettings()
 		setResolution(m_resolution);
 	}
 
+	ImGui::InputInt("Total Points", &m_totalPoints);
+
+	ImGui::InputInt("Total Rays", &m_totalCalibrationRays);
+
+
 	if (ImGui::Checkbox("Calibrate", &m_isCalibrating))
 	{
 		setIsCalibrating(m_isCalibrating);
@@ -141,6 +146,11 @@ ci::Json act::room::ProjectorRoomNode::toParams()
 	json["principalPoint"] = util::valueToJson(getPrincipalPoint());
 	json["meanError"] = m_meanError;
 	json["rmsError"] = m_rmsError;
+	json["nextCorrespondence"] = m_nextCorrespondence;
+	json["totalPoints"] = m_totalPoints;
+	json["totalCalibrationRays"] = m_totalCalibrationRays;
+
+
 
 	return json;
 }
@@ -185,6 +195,21 @@ void act::room::ProjectorRoomNode::fromParams(ci::Json json)
 	float rmsError = 0.0f;
 	if (util::setValueFromJson(json, "rmsError", rmsError)) {
 		m_rmsError = rmsError;
+	}
+
+	int nextCorrespondence = 0;
+	if (util::setValueFromJson(json, "nextCorrespondence", nextCorrespondence)) {
+		m_nextCorrespondence = nextCorrespondence;
+	}
+
+	int totalPoints = 0;
+	if (util::setValueFromJson(json, "totalPoints", totalPoints)) {
+		m_totalPoints = totalPoints;
+	}
+
+	int totalCalibrationRays = 0;
+	if (util::setValueFromJson(json, "totalCalibrationRays", totalCalibrationRays)) {
+		m_totalCalibrationRays = totalCalibrationRays;
 	}
 }
 
@@ -285,10 +310,19 @@ void act::room::ProjectorRoomNode::drawProjection()
 	gl::clear(ci::Color::black());
 	if (m_isCalibrating)
 	{
-		gl::ScopedMatrices();
-		gl::setMatricesWindow(getWindowSize());
-		gl::translate(m_calibrationRayCoords[m_nextCalibrationRay].x * m_resolution.x, m_calibrationRayCoords[m_nextCalibrationRay].y * m_resolution.y);
-		drawCalibrationPoint();
+		if (m_nextCorrespondence < m_totalPoints)
+		{
+			gl::ScopedMatrices();
+			gl::setMatricesWindow(getWindowSize());
+
+			int currentRay = getCurrentRay();
+			gl::translate(m_calibrationRayCoords[currentRay].x * m_resolution.x, m_calibrationRayCoords[currentRay].y * m_resolution.y);
+			drawCalibrationPoint();
+		}
+		else
+		{
+			setIsCalibrating(false);
+		}
 	}
 	else if (m_showDebugGrid)
 	{
@@ -475,28 +509,49 @@ void act::room::ProjectorRoomNode::getTestPairs(std::vector<cv::Point3f>& object
 
 void act::room::ProjectorRoomNode::addCorrespondence(cv::Point3f objectPoint, bool calibrateIfPossible)
 {
-	if (!m_isCalibrating) {
+	if (!m_isCalibrating || m_nextCorrespondence >= m_totalPoints) {
 		return;
 	}
-	cv::Point2f imagePoint(m_calibrationRayCoords[m_nextCalibrationRay].x * m_resolution.x, m_calibrationRayCoords[m_nextCalibrationRay].y * m_resolution.y);
+
+	int currentRay = getCurrentRay();
+
+	cv::Point2f imagePoint(m_calibrationRayCoords[currentRay].x * m_resolution.x, m_calibrationRayCoords[currentRay].y * m_resolution.y);
 	m_imagePoints.push_back(imagePoint);
 	m_objectPoints.push_back(objectPoint);
 
 	//update next image Point
-	m_nextCalibrationRay = uint(floor(m_imagePoints.size() / m_pointsPerCalibrationRay)) % m_calibrationRayCoords.size();
+	m_nextCorrespondence++;
 	
 	// issue calibration
-	if (calibrateIfPossible && m_imagePoints.size() >= 6)
+	if (calibrateIfPossible && m_nextCorrespondence > 6)
 	{
 		calibrateDLT();
 	}
+}
+
+int act::room::ProjectorRoomNode::getCurrentRay()
+{
+	int pointsPerRay = m_totalPoints / m_totalCalibrationRays;
+	int rest = m_totalPoints % m_totalCalibrationRays;
+
+	std::vector<int> rayOrder;
+	rayOrder.reserve(m_totalPoints);
+
+	for (int ray = 0; ray < m_totalCalibrationRays; ++ray) {
+		int count = pointsPerRay + (ray < rest ? 1 : 0); //ditribute rest
+		for (int i = 0; i < count; ++i) {
+			rayOrder.push_back(ray);
+		}
+	}
+
+	return rayOrder[m_nextCorrespondence]; 
 }
 
 void act::room::ProjectorRoomNode::resetCorrespondences()
 {
 	m_imagePoints.clear();
 	m_objectPoints.clear();
-	m_nextCalibrationRay = 0;
+	m_nextCorrespondence = 0;
 }
 
 /* //does not work
