@@ -282,10 +282,10 @@ void act::room::ProjectorRoomNode::updateProjection()
 
 void act::room::ProjectorRoomNode::drawProjection()
 {	
+	gl::clear(ci::Color::black());
 	if (m_isCalibrating)
 	{
 		gl::ScopedMatrices();
-		gl::clearColor(ci::Color::black());
 		gl::setMatricesWindow(getWindowSize());
 		gl::translate(m_calibrationRayCoords[m_nextCalibrationRay].x * m_resolution.x, m_calibrationRayCoords[m_nextCalibrationRay].y * m_resolution.y);
 		drawCalibrationPoint();
@@ -341,12 +341,16 @@ void act::room::ProjectorRoomNode::drawProjection()
 void act::room::ProjectorRoomNode::drawCalibrationPoint()
 {
 	gl::color(ci::Color::white());
-	float radius = 5;
-	ci::ivec2 position(0, 0);
+	float radius = 2;
 	gl::drawSolidCircle(vec2(0), radius);
-	for (int i = 2; i <= 20; i++)
+
+	int numCircles = 25;
+
+	gl::ScopedLineWidth lineWidth(2.0f);
+	for (int i = 2; i <= numCircles; i++)
 	{
-		gl::drawStrokedCircle(vec2(), radius * i * i);
+		gl::color(ci::Color::gray(1.0f - float(i) / float(numCircles)));
+		gl::drawStrokedCircle(vec2(), 10 * i * i /2);
 
 	}
 
