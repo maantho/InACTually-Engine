@@ -117,6 +117,9 @@ void act::room::ProjectorRoomNode::drawSpecificSettings()
 		setPrincipalPoint(m_principalPoint);
 	}
 
+	ImGui::LabelText("Mean Error", "%f", m_meanError);
+	ImGui::LabelText("RMS Error", "%f", m_rmsError);
+
 	if (ImGui::Button("Calibrate with Test Pairs"))
 	{
 		calibrateDLT(true);
@@ -136,6 +139,8 @@ ci::Json act::room::ProjectorRoomNode::toParams()
 	json["focalLengthPixel"] = util::valueToJson(getFocalLengthPixel());
 	json["skew"] = getSkew();
 	json["principalPoint"] = util::valueToJson(getPrincipalPoint());
+	json["meanError"] = m_meanError;
+	json["rmsError"] = m_rmsError;
 
 	return json;
 }
@@ -170,6 +175,16 @@ void act::room::ProjectorRoomNode::fromParams(ci::Json json)
 	ci::vec3 objectPoint;
 	if (util::setValueFromJson(json, "objectPoint", objectPoint)) {
 		addCorrespondence(cv::Point3f(objectPoint.x, objectPoint.y, objectPoint.z));
+	}
+
+	float meanError = 0.0f;
+	if (util::setValueFromJson(json, "meanError", meanError)) {
+		m_meanError = meanError;
+	}
+
+	float rmsError = 0.0f;
+	if (util::setValueFromJson(json, "rmsError", rmsError)) {
+		m_rmsError = rmsError;
 	}
 }
 
@@ -526,6 +541,8 @@ void act::room::ProjectorRoomNode::calibrateDLT(const bool useTestPairs)
 
 	cv::Mat P = dltSolveP(objectPoints, imagePoints);
 
+	calculateErrors(P, objectPoints, imagePoints);
+
 	cv::Mat K, R, t;
 
 	cv::decomposeProjectionMatrix(P, K, R, t);
@@ -637,4 +654,40 @@ cv::Mat act::room::ProjectorRoomNode::dltCreateMat(const std::vector<cv::Point3f
 	}
 
 	return A;
+}
+
+void act::room::ProjectorRoomNode::calculateErrors(const cv::Mat& P, const std::vector<cv::Point3f>& objectPoints, const std::vector<cv::Point2f>& imagePoints)
+{
+	int numPoints = objectPoints.size();
+	std::vector<cv::Point2f> reprojectedPoints;
+
+	double totalSquaredError = 0.0;
+	double totalError = 0.0;
+
+	for (int i = 0; i < numPoints; ++i)
+	{
+		const cv::Point3f& objPt = objectPoints[i];
+
+		//Convert to homogeneous coordinates
+		cv::Mat X = (cv::Mat_<double>(4, 1) << objPt.x, objPt.y, objPt.z, 1.0);
+
+		//reproject 
+		cv::Mat x = P * X;
+
+		//Unhomogenize reprojectefc point
+		double u = x.at<double>(0, 0) / x.at<double>(2, 0);
+		double v = x.at<double>(1, 0) / x.at<double>(2, 0);
+
+		//Compute error
+		const cv::Point2f& imgPt = imagePoints[i];
+		double dx = imgPt.x - u;
+		double dy = imgPt.y - v;
+		double error = dx * dx + dy * dy; //square distance
+
+		totalSquaredError += error;
+		totalError += std::sqrt(error);
+	}
+
+	m_meanError = static_cast<float>(totalError / numPoints);
+	m_rmsError = static_cast<float>(std::sqrt(totalSquaredError / numPoints));
 }

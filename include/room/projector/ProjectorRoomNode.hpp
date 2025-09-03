@@ -86,6 +86,8 @@ namespace act {
 			bool					m_showDebugGrid = true;
 			bool					m_showWindowBorders = true;
 
+			float 					m_meanError = 0.0f;
+			float                   m_rmsError = 0.0f;
 
 			void createWindow();
 			void createWindowOnDisplay();
@@ -113,8 +115,7 @@ namespace act {
 			cv::Mat dltSolveP(std::vector<cv::Point3f> objectPoints, std::vector<cv::Point2f> imagePoints); //DLT alg on vector of correspondences
 			cv::Mat dltCreateMat(std::vector<cv::Point3f> objectPoints, std::vector<cv::Point2f> imagePoints);
 
-			bool isRotationMatrix(const cv::Mat& R);
-			ci::vec3 rotationMatrixToEulerAngles(const cv::Mat& R);
+			void calculateErrors(const cv::Mat& P, const std::vector<cv::Point3f>& objectPoints, const std::vector<cv::Point2f>& imagePoints);
 
 		}; using ProjectorRoomNodeRef = std::shared_ptr<ProjectorRoomNode>;
 		
