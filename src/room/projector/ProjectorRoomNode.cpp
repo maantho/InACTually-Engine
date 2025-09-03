@@ -31,7 +31,7 @@ act::room::ProjectorRoomNode::ProjectorRoomNode(std::string name, ci::vec3 posit
 	setIsCalibrating(false);
 
 	updateCameraPersp();
-	calculateProjectionMatrix();
+	calculateViewProjectionMatrix();
 
 	auto colorShader = ci::gl::getStockShader(ci::gl::ShaderDef().color());
 	m_wirePlane = ci::gl::Batch::create(ci::geom::WirePlane().size(ci::vec2(20)).subdivisions(ci::ivec2(100)), colorShader);
@@ -124,7 +124,7 @@ void act::room::ProjectorRoomNode::drawSpecificSettings()
 
 	ImGui::LabelText("Mean Error", "%f", m_meanError);
 	ImGui::LabelText("RMS Error", "%f", m_rmsError);
-	ImGui::LabelText("GL Error", "%f", m_cvToGLError);
+	ImGui::LabelText("GL Error", "%f", m_glMeanError);
 
 	if (ImGui::Button("Calibrate with Test Pairs"))
 	{
@@ -242,7 +242,7 @@ void act::room::ProjectorRoomNode::setFocalLengthPixel(ci::vec2 focalLengthPixel
 	if (updateCam)
 	{
 		updateCameraPersp();
-		calculateProjectionMatrix();
+		calculateViewProjectionMatrix();
 	}
 }
 
@@ -256,7 +256,7 @@ void act::room::ProjectorRoomNode::setSkew(float skew, bool publish, bool update
 	if (updateCam)
 	{
 		updateCameraPersp();
-		calculateProjectionMatrix();
+		calculateViewProjectionMatrix();
 	}
 }
 
@@ -270,7 +270,7 @@ void act::room::ProjectorRoomNode::setPrincipalPoint(ci::vec2 principalPoint, bo
 	if (updateCam)
 	{
 		updateCameraPersp();
-		calculateProjectionMatrix();
+		calculateViewProjectionMatrix();
 	}
 }
 
@@ -337,19 +337,13 @@ void act::room::ProjectorRoomNode::drawProjection()
 	{
 		gl::ScopedMatrices();
 		ci::gl::color(1.0f, 1, 1);
-		glm::mat4 rotationMatrix = glm::toMat4(m_orientation); // Convert quaternion to rotation matrix
-		glm::mat4 translationMatrix = glm::translate(glm::mat4(1.0f), m_position); // Translate to position
-
-		glm::mat4 cameraMatrix = translationMatrix * rotationMatrix;
-
-		// invert
-		glm::mat4 viewMatrix = glm::inverse(cameraMatrix);
 
 		if (m_useCameraPersp)
 			gl::setMatrices(m_cameraPersp);
 		else
-			gl::setProjectionMatrix(m_projectionMatrix);
-		gl::setViewMatrix(viewMatrix);
+			gl::setProjectionMatrix(m_glProjectionMatrix);
+
+		gl::setViewMatrix(m_glViewMatrix);
 
 		gl::ScopedLineWidth lineWidth(3.0f);
 		m_wirePlane->draw();
@@ -416,8 +410,17 @@ void act::room::ProjectorRoomNode::updateCameraPersp()
 	m_cameraPersp.lookAt(vec3(0.0f, 0.0f, -1.0f)); //along negative z (follows from calibration coordinate system convertion)
 }
 
-void act::room::ProjectorRoomNode::calculateProjectionMatrix()
+void act::room::ProjectorRoomNode::calculateViewProjectionMatrix()
 {
+	//view
+	glm::mat4 rotationMatrix = glm::toMat4(m_orientation); // Convert quaternion to rotation matrix
+	glm::mat4 translationMatrix = glm::translate(glm::mat4(1.0f), m_position); // Translate to position
+
+	glm::mat4 cameraMatrix = translationMatrix * rotationMatrix;
+
+	m_glViewMatrix = glm::inverse(cameraMatrix);
+
+	//projection
 	float nearZ = 0.1f, farZ = 30.0f;
 
 	float left = -(m_principalPoint.x) * nearZ / m_focalLenghtPixel.x;
@@ -425,8 +428,8 @@ void act::room::ProjectorRoomNode::calculateProjectionMatrix()
 	float bottom = -(m_resolution.y - m_principalPoint.y) * nearZ / m_focalLenghtPixel.y;
 	float top = (m_principalPoint.y) * nearZ / m_focalLenghtPixel.y;
 
-	m_projectionMatrix = glm::frustum(left, right, bottom, top, nearZ, farZ);
-	m_projectionMatrix[1][0] = m_skew / m_focalLenghtPixel.x;
+	m_glProjectionMatrix = glm::frustum(left, right, bottom, top, nearZ, farZ);
+	m_glProjectionMatrix[1][0] = m_skew / m_focalLenghtPixel.x;
 }
 
 void act::room::ProjectorRoomNode::getTestPairs(std::vector<cv::Point3f>& objectPoints, std::vector<cv::Point2f>& imagePoints)
@@ -629,7 +632,7 @@ void act::room::ProjectorRoomNode::calibrateDLT(const bool useTestPairs)
 	setPrincipalPoint(ci::vec2(K.at<double>(0, 2), K.at<double>(1, 2)), true, false);
 
 	updateCameraPersp();
-	calculateProjectionMatrix();
+	calculateViewProjectionMatrix();
 
 	calculateErrors(m_P, objectPoints, imagePoints);
 
@@ -759,23 +762,15 @@ void act::room::ProjectorRoomNode::calculateErrors(const cv::Mat& P, const std::
 		totalSquaredError += error;
 		totalError += std::sqrt(error);
 
-		//calculate error to projection
-		glm::mat4 rotationMatrix = glm::toMat4(m_orientation); // Convert quaternion to rotation matrix
-		glm::mat4 translationMatrix = glm::translate(glm::mat4(1.0f), m_position); // Translate to position
-
-		glm::mat4 cameraMatrix = translationMatrix * rotationMatrix;
-
-		// invert
-		glm::mat4 viewMatrix = glm::inverse(cameraMatrix);
-
-		glm::vec4 clip = m_projectionMatrix * viewMatrix * glm::vec4(objPt.x, objPt.y, objPt.z, 1.0f);
+		//gL projection
+		glm::vec4 clip = m_glProjectionMatrix * m_glViewMatrix * glm::vec4(objPt.x, objPt.y, objPt.z, 1.0f);
 		
 		glm::vec3 ndc = glm::vec3(clip) / clip.w;
-		float screenX = (ndc.x + 1.0f) * 0.5f * m_resolution.x;
-		float screenY = (ndc.y + 1.0f) * 0.5f * m_resolution.y;
+		float uGL = (ndc.x + 1.0f) * 0.5f * m_resolution.x;
+		float vGL = (ndc.y + 1.0f) * 0.5f * m_resolution.y;
 
-		double dxGL = screenX - u;
-		double dyGL = screenY - v;
+		double dxGL = uGL - u;
+		double dyGL = vGL - v;
 		double errorGL = dxGL * dxGL + dyGL * dyGL; //square distance
 
 		totalGLError += std::sqrt(errorGL);
@@ -783,6 +778,6 @@ void act::room::ProjectorRoomNode::calculateErrors(const cv::Mat& P, const std::
 
 	m_meanError = static_cast<float>(totalError / numPoints);
 	m_rmsError = static_cast<float>(std::sqrt(totalSquaredError / numPoints));
-	m_cvToGLError = static_cast<float>(totalGLError / numPoints);
+	m_glMeanError = static_cast<float>(totalGLError / numPoints);
 
 }

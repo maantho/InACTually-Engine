@@ -66,7 +66,8 @@ namespace act {
 			ci::app::WindowRef		m_window;
 			int						m_DisplayNumber = 2;
 			ci::CameraPersp			m_cameraPersp;
-			ci::mat4				m_projectionMatrix;
+			ci::mat4				m_glProjectionMatrix;
+			ci::mat4				m_glViewMatrix;
 
 			bool					m_useCameraPersp = false;
 
@@ -107,7 +108,7 @@ namespace act {
 
 			float 					m_meanError = 0.0f;
 			float                   m_rmsError = 0.0f;
-			float					m_cvToGLError = 0.0f;
+			float					m_glMeanError = 0.0f;
 
 			void createWindow();
 			void createWindowOnDisplay();
@@ -116,7 +117,7 @@ namespace act {
 			void drawProjection();
 			void drawCalibrationPoint();
 			void updateCameraPersp();
-			void calculateProjectionMatrix();
+			void calculateViewProjectionMatrix();
 			
 			//calibration
 			//correspondences
