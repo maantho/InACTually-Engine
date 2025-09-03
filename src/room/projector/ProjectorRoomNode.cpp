@@ -124,6 +124,7 @@ void act::room::ProjectorRoomNode::drawSpecificSettings()
 
 	ImGui::LabelText("Mean Error", "%f", m_meanError);
 	ImGui::LabelText("RMS Error", "%f", m_rmsError);
+	ImGui::LabelText("GL Error", "%f", m_cvToGLError);
 
 	if (ImGui::Button("Calibrate with Test Pairs"))
 	{
@@ -608,7 +609,7 @@ void act::room::ProjectorRoomNode::calibrateDLT(const bool useTestPairs)
 
 	cv::Mat P = dltSolveP(objectPoints, imagePoints);
 
-	calculateErrors(P, objectPoints, imagePoints);
+	m_P = P;
 
 	cv::Mat K, R, t;
 
@@ -626,8 +627,11 @@ void act::room::ProjectorRoomNode::calibrateDLT(const bool useTestPairs)
 	setFocalLengthPixel(ci::vec2(K.at<double>(0, 0), K.at<double>(1, 1)), true, false);
 	setSkew(K.at<double>(0, 1), true, false);
 	setPrincipalPoint(ci::vec2(K.at<double>(0, 2), K.at<double>(1, 2)), true, false);
+
 	updateCameraPersp();
 	calculateProjectionMatrix();
+
+	calculateErrors(m_P, objectPoints, imagePoints);
 
 	//set extrinsics
 	cv::Mat convertToGL = (cv::Mat_<double>(3, 3) <<
@@ -730,6 +734,7 @@ void act::room::ProjectorRoomNode::calculateErrors(const cv::Mat& P, const std::
 
 	double totalSquaredError = 0.0;
 	double totalError = 0.0;
+	double totalGLError = 0.0;
 
 	for (int i = 0; i < numPoints; ++i)
 	{
@@ -753,8 +758,31 @@ void act::room::ProjectorRoomNode::calculateErrors(const cv::Mat& P, const std::
 
 		totalSquaredError += error;
 		totalError += std::sqrt(error);
+
+		//calculate error to projection
+		glm::mat4 rotationMatrix = glm::toMat4(m_orientation); // Convert quaternion to rotation matrix
+		glm::mat4 translationMatrix = glm::translate(glm::mat4(1.0f), m_position); // Translate to position
+
+		glm::mat4 cameraMatrix = translationMatrix * rotationMatrix;
+
+		// invert
+		glm::mat4 viewMatrix = glm::inverse(cameraMatrix);
+
+		glm::vec4 clip = m_projectionMatrix * viewMatrix * glm::vec4(objPt.x, objPt.y, objPt.z, 1.0f);
+		
+		glm::vec3 ndc = glm::vec3(clip) / clip.w;
+		float screenX = (ndc.x + 1.0f) * 0.5f * m_resolution.x;
+		float screenY = (ndc.y + 1.0f) * 0.5f * m_resolution.y;
+
+		double dxGL = screenX - u;
+		double dyGL = screenY - v;
+		double errorGL = dxGL * dxGL + dyGL * dyGL; //square distance
+
+		totalGLError += std::sqrt(errorGL);
 	}
 
 	m_meanError = static_cast<float>(totalError / numPoints);
 	m_rmsError = static_cast<float>(std::sqrt(totalSquaredError / numPoints));
+	m_cvToGLError = static_cast<float>(totalGLError / numPoints);
+
 }

@@ -94,6 +94,7 @@ namespace act {
 				cv::Point2f(4.0f / 6.0f, 2.0f / 3.0f),
 			};
 
+			cv::Mat					m_P;
 			ci::vec2				m_focalLenghtPixel;
 			float					m_skew;
 			ci::vec2				m_principalPoint;
@@ -106,6 +107,7 @@ namespace act {
 
 			float 					m_meanError = 0.0f;
 			float                   m_rmsError = 0.0f;
+			float					m_cvToGLError = 0.0f;
 
 			void createWindow();
 			void createWindowOnDisplay();
