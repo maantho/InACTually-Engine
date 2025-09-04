@@ -410,29 +410,14 @@ void act::room::ProjectorRoomNode::drawDotPattern()
 	gl::setMatricesWindow(getWindowSize());
 	gl::ScopedColor color(1, 1, 1);
 
-	float spacing = 0.10f; //in meters
 	float radius = 2;
 
 	//5 points in 2 rows
 	for (int i = 0; i < 10; i++)
 	{
-		int row = 0;
+		auto pos = getDotFromIndex(i);
 
-		if (i >= 5)
-			row = 1;
-
-		int collumn = i % 5;
-
-		cv::Mat X = (cv::Mat_<double>(4, 1) << 0, (row + 1) * spacing, (collumn + 1) * spacing, 1.0); //dot in 3D
-
-		//project 
-		cv::Mat x = m_P * X;
-
-		//Unhomogenize reprojectefc point
-		double u = x.at<double>(0, 0) / x.at<double>(2, 0);
-		double v = x.at<double>(1, 0) / x.at<double>(2, 0);
-
-		gl::drawSolidCircle(vec2(u, v), radius);
+		gl::drawSolidCircle(pos, radius);
 	}
 }
 
@@ -475,6 +460,29 @@ void act::room::ProjectorRoomNode::drawDotGroundGrid()
 
 	gl::color(1, 0, 0);
 	gl::drawSolidCircle(vec2(u, v), radius);
+}
+
+ci::vec2 act::room::ProjectorRoomNode::getDotFromIndex(int i)
+{
+	float spacing = 0.10f; //in meters
+
+	int row = 0;
+
+	if (i >= 5)
+		row = 1;
+
+	int collumn = i % 5;
+
+	cv::Mat X = (cv::Mat_<double>(4, 1) << 0, (row + 1) * spacing, (collumn + 1) * spacing, 1.0); //dot in 3D
+
+	//project 
+	cv::Mat x = m_P * X;
+
+	//Unhomogenize reprojectefc point
+	double u = x.at<double>(0, 0) / x.at<double>(2, 0);
+	double v = x.at<double>(1, 0) / x.at<double>(2, 0);
+
+	return ci::vec2(u, v);
 }
 
 

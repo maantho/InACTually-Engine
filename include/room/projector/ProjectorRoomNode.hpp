@@ -120,6 +120,8 @@ namespace act {
 			void drawDotPattern();
 			void drawDotGroundGrid();
 
+			ci::vec2 getDotFromIndex(int i);
+
 			void updateCameraPersp();
 			void calculateViewProjectionMatrix();
 			
