@@ -131,6 +131,9 @@ void act::room::ProjectorRoomNode::drawSpecificSettings()
 		calibrateDLT(true);
 	}
 
+	ImGui::Checkbox("Show Dot Pattern", &m_showDotPattern);
+
+
 	ImGui::Checkbox("Show Debug Grid", &m_showDebugGrid);
 
 	ImGui::Checkbox("Show Window Borders", &m_showWindowBorders);
@@ -333,6 +336,10 @@ void act::room::ProjectorRoomNode::drawProjection()
 			setIsCalibrating(false);
 		}
 	}
+	else if (m_showDotPattern)
+	{
+		drawDotPattern();
+	}
 	else if (m_showDebugGrid)
 	{
 		gl::ScopedMatrices();
@@ -408,6 +415,40 @@ void act::room::ProjectorRoomNode::drawCalibrationPoint()
 
 
 }
+
+void act::room::ProjectorRoomNode::drawDotPattern()
+{
+	gl::ScopedMatrices mat();
+	gl::setMatricesWindow(getWindowSize());
+	gl::ScopedColor color(1, 1, 1);
+
+	float spacing = 0.10f; //in meters
+
+	//5 points in 2 rows
+	for (int i = 0; i < 10; i++)
+	{
+		int row = 0;
+
+		if (i >= 5)
+			row = 1;
+
+		int collumn = i % 5;
+
+		cv::Mat X = (cv::Mat_<double>(4, 1) << 0, (row + 1) * spacing, (collumn + 1) * spacing, 1.0); //dot in 3D
+
+		//project 
+		cv::Mat x = m_P * X;
+
+		//Unhomogenize reprojectefc point
+		double u = x.at<double>(0, 0) / x.at<double>(2, 0);
+		double v = x.at<double>(1, 0) / x.at<double>(2, 0);
+
+		float radius = 2;
+		gl::drawSolidCircle(vec2(u, v), radius);
+	}
+	}
+
+
 
 void act::room::ProjectorRoomNode::updateCameraPersp()
 {

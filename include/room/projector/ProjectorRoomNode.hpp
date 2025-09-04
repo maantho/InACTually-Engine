@@ -103,7 +103,8 @@ namespace act {
 			ci::ivec2				m_mousePos = ivec2(0);
 
 			ci::gl::BatchRef		m_wirePlane;
-			bool					m_showDebugGrid = true;
+			bool					m_showDotPattern = false;
+			bool					m_showDebugGrid = false;
 			bool					m_showWindowBorders = true;
 
 			float 					m_meanError = 0.0f;
@@ -116,6 +117,8 @@ namespace act {
 			void updateProjection();
 			void drawProjection();
 			void drawCalibrationPoint();
+			void drawDotPattern();
+
 			void updateCameraPersp();
 			void calculateViewProjectionMatrix();
 			
