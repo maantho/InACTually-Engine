@@ -129,6 +129,12 @@ void act::room::ProjectorRoomNode::drawSpecificSettings()
 	ImGui::LabelText("Max Error", "%f", m_maxError);
 
 	ImGui::Separator();
+	ImGui::LabelText("True Total Error", "%f", m_trueTotalError);
+	ImGui::LabelText("True Total Square Error", "%f", m_trueTotalSpuareError);
+	ImGui::LabelText("True Min Error", "%f", m_trueMinError);
+	ImGui::LabelText("True Max Error", "%f", m_trueMaxError);
+
+	ImGui::Separator();
 	ImGui::LabelText("Mean Error", "%f", m_meanError);
 	ImGui::LabelText("RMS Error", "%f", m_rmsError);
 	ImGui::LabelText("GL Error", "%f", m_glMeanError);
@@ -145,6 +151,17 @@ void act::room::ProjectorRoomNode::drawSpecificSettings()
 
 	ImGui::Checkbox("Show Window Borders", &m_showWindowBorders);
 
+	if (ImGui::Button("Restart Dot Measurement"))
+	{
+		m_evaluateDots = true;
+		m_currentDot = 0;
+
+		m_trueMaxError = 0.0f;
+		m_trueMinError = std::numeric_limits<double>::max();
+		m_trueTotalError = 0.0f;
+		m_trueTotalSpuareError = 0.0f;
+	}
+
 }
 
 ci::Json act::room::ProjectorRoomNode::toParams()
@@ -155,8 +172,20 @@ ci::Json act::room::ProjectorRoomNode::toParams()
 	json["focalLengthPixel"] = util::valueToJson(getFocalLengthPixel());
 	json["skew"] = getSkew();
 	json["principalPoint"] = util::valueToJson(getPrincipalPoint());
+
 	json["meanError"] = m_meanError;
 	json["rmsError"] = m_rmsError;
+
+	json["totalError"] = m_totalError;
+	json["totalSpuareError"] = m_totalSpuareError;
+	json["minError"] = m_minError;
+	json["maxError"] = m_maxError;
+
+	json["trueTotalError"] = m_trueTotalError;
+	json["trueTotalSpuareError"] = m_trueTotalSpuareError;
+	json["trueMinError"] = m_trueMinError;
+	json["trueMaxError"] = m_trueMaxError;
+
 	json["nextCorrespondence"] = m_nextCorrespondence;
 	json["totalPoints"] = m_totalPoints;
 	json["totalCalibrationRays"] = m_totalCalibrationRays;
@@ -221,6 +250,26 @@ void act::room::ProjectorRoomNode::fromParams(ci::Json json)
 	float rmsError = 0.0f;
 	if (util::setValueFromJson(json, "rmsError", rmsError)) {
 		m_rmsError = rmsError;
+	}
+
+	float trueTotalError = 0.0f;
+	if (util::setValueFromJson(json, "trueTotalError", trueTotalError)) {
+		m_trueTotalError = trueTotalError;
+	}
+
+	float trueTotalSpuareError = 0.0f;
+	if (util::setValueFromJson(json, "trueTotalSpuareError", trueTotalSpuareError)) {
+		m_trueTotalSpuareError = trueTotalSpuareError;
+	}
+
+	float trueMinError = 0.0f;
+	if (util::setValueFromJson(json, "trueMinError", trueMinError)) {
+		m_trueMinError = trueMinError;
+	}
+
+	float trueMaxError = 0.0f;
+	if (util::setValueFromJson(json, "trueMaxError", trueMaxError)) {
+		m_trueMaxError = trueMaxError;
 	}
 
 	int nextCorrespondence = 0;
@@ -312,13 +361,30 @@ void act::room::ProjectorRoomNode::createWindow()
 	m_window->getSignalClose().connect([this]() {
 		m_window = nullptr; // reset the window pointer when closed
 	});
-	m_window->getSignalMouseUp().connect([this](ci::app::MouseEvent evt) {
-		// onMouse()
 
-		auto distance = ci::distance(vec2(m_mousePos), vec2(evt.getPos()));
+	m_window->getSignalMouseDown().connect([this](ci::app::MouseEvent evt) {
+		// onMouse()
+		if (!m_evaluateDots)
+			return;
 
 		m_mousePos = evt.getPos();
-			
+
+		auto dotPos = getDotFromIndex(m_currentDot);
+		auto error = ci::distance(vec2(m_mousePos), dotPos);
+
+		m_trueTotalError += error;
+		m_trueTotalSpuareError += error * error;
+
+		if (error < m_trueMinError)
+			m_trueMinError = error;
+		if (error > m_trueMaxError)
+			m_trueMaxError = error;
+
+		m_currentDot++;
+		if (m_currentDot >= m_totalDots)
+		{
+			m_evaluateDots = false;
+		}
 	});
 }
 
@@ -430,14 +496,20 @@ void act::room::ProjectorRoomNode::drawDotPattern()
 {
 	gl::ScopedMatrices mat();
 	gl::setMatricesWindow(getWindowSize());
-	gl::ScopedColor color(1, 1, 1);
 
 	float radius = 2;
 
 	//5 points in 2 rows
 	for (int i = 0; i < 10; i++)
 	{
+		gl::ScopedColor color(1, 1, 1);
+
 		auto pos = getDotFromIndex(i);
+
+		if (i == m_currentDot)
+		{
+			gl::color(1, 0, 0);
+		}
 
 		gl::drawSolidCircle(pos, radius);
 	}

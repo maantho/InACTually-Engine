@@ -108,11 +108,21 @@ namespace act {
 			bool					m_showWindowBorders = true;
 
 			float					m_totalError = 0.0f;
-			float 					m_meanError = 0.0f;
 			float                   m_minError = 0.0f;
 			float                   m_maxError = 0.0f;
 			float					m_totalSpuareError = 0.0f;
+
+			float 					m_meanError = 0.0f;
 			float                   m_rmsError = 0.0f;
+
+			const int				m_totalDots = 10;
+			bool                    m_evaluateDots = false;
+			int 					m_currentDot = 0;
+
+			float					m_trueTotalError = 0.0f;
+			float					m_trueTotalSpuareError = 0.0f;
+			float                   m_trueMinError = 0.0f;
+			float                   m_trueMaxError = 0.0f;
 
 
 
