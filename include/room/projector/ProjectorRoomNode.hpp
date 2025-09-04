@@ -118,6 +118,7 @@ namespace act {
 			void drawProjection();
 			void drawCalibrationPoint();
 			void drawDotPattern();
+			void drawDotGroundGrid();
 
 			void updateCameraPersp();
 			void calculateViewProjectionMatrix();

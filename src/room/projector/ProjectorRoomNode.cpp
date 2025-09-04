@@ -342,7 +342,10 @@ void act::room::ProjectorRoomNode::drawProjection()
 	}
 	else if (m_showDebugGrid)
 	{
-		gl::ScopedMatrices();
+		drawDotGroundGrid();
+		
+		/*
+		gl::ScopedMatrices mat();
 		ci::gl::color(1.0f, 1, 1);
 
 		if (m_useCameraPersp)
@@ -360,22 +363,7 @@ void act::room::ProjectorRoomNode::drawProjection()
 		gl::drawLine(ci::vec3(0.0f, 0.0f, 0.0f), ci::vec3(0.5f, 0.0f, 0.0f));
 		gl::color(ci::Color(0.5f, 0.9f, 1.0f)); // Blue for Z axis
 		gl::drawLine(ci::vec3(0.0f, 0.0f, 0.0f), ci::vec3(0.0f, 0.0f, 0.5f));
-
-		gl::setMatricesWindow(getWindowSize());
-		cv::Mat X = (cv::Mat_<double>(4, 1) << 0, 0, 0, 1.0);
-
-		//reproject 
-		cv::Mat x = m_P * X;
-
-		//Unhomogenize reprojectefc point
-		double u = x.at<double>(0, 0) / x.at<double>(2, 0);
-		double v = x.at<double>(1, 0) / x.at<double>(2, 0);
-
-		gl::color(1, 0, 0);
-		float radius = 2;
-		gl::drawSolidCircle(vec2(u, v), radius);
-
-
+		*/
 	}
 
 	if (m_showWindowBorders)
@@ -423,6 +411,7 @@ void act::room::ProjectorRoomNode::drawDotPattern()
 	gl::ScopedColor color(1, 1, 1);
 
 	float spacing = 0.10f; //in meters
+	float radius = 2;
 
 	//5 points in 2 rows
 	for (int i = 0; i < 10; i++)
@@ -443,10 +432,50 @@ void act::room::ProjectorRoomNode::drawDotPattern()
 		double u = x.at<double>(0, 0) / x.at<double>(2, 0);
 		double v = x.at<double>(1, 0) / x.at<double>(2, 0);
 
-		float radius = 2;
 		gl::drawSolidCircle(vec2(u, v), radius);
 	}
+}
+
+
+
+void act::room::ProjectorRoomNode::drawDotGroundGrid()
+{
+	gl::ScopedMatrices mat();
+	gl::setMatricesWindow(getWindowSize());
+	gl::ScopedColor color(1, 1, 1);
+
+	float spacing = 0.20f; //in meters
+	float radius = 5;
+
+	for (int x = -50; x <= 50; x++)
+	{
+		for (int z = -50; z <= 50; z++)
+		{
+			cv::Mat X = (cv::Mat_<double>(4, 1) << x * spacing, 0, z * spacing, 1.0); //dot in 3D
+
+			//project 
+			cv::Mat x = m_P * X;
+
+			//Unhomogenize reprojectefc point
+			double u = x.at<double>(0, 0) / x.at<double>(2, 0);
+			double v = x.at<double>(1, 0) / x.at<double>(2, 0);
+
+			gl::drawSolidCircle(vec2(u, v), radius);
+		}
 	}
+
+	cv::Mat X = (cv::Mat_<double>(4, 1) << 0, 0, 0, 1.0);
+
+	//reproject 
+	cv::Mat x = m_P * X;
+
+	//Unhomogenize reprojectefc point
+	double u = x.at<double>(0, 0) / x.at<double>(2, 0);
+	double v = x.at<double>(1, 0) / x.at<double>(2, 0);
+
+	gl::color(1, 0, 0);
+	gl::drawSolidCircle(vec2(u, v), radius);
+}
 
 
 
