@@ -121,11 +121,18 @@ void act::room::ProjectorRoomNode::drawSpecificSettings()
 	{
 		setPrincipalPoint(m_principalPoint);
 	}
+	ImGui::Separator();
+	ImGui::Text("Calibration Error Metrics:");
+	ImGui::LabelText("Total Error", "%f", m_totalError);
+	ImGui::LabelText("Total Square Error", "%f", m_totalSpuareError);
+	ImGui::LabelText("Min Error", "%f", m_minError);
+	ImGui::LabelText("Max Error", "%f", m_maxError);
 
+	ImGui::Separator();
 	ImGui::LabelText("Mean Error", "%f", m_meanError);
 	ImGui::LabelText("RMS Error", "%f", m_rmsError);
 	ImGui::LabelText("GL Error", "%f", m_glMeanError);
-
+	ImGui::Separator();
 	if (ImGui::Button("Calibrate with Test Pairs"))
 	{
 		calibrateDLT(true);
@@ -189,6 +196,21 @@ void act::room::ProjectorRoomNode::fromParams(ci::Json json)
 	ci::vec3 objectPoint;
 	if (util::setValueFromJson(json, "objectPoint", objectPoint)) {
 		addCorrespondence(cv::Point3f(objectPoint.x, objectPoint.y, objectPoint.z));
+	}
+
+	float totalError = 0.0f;
+	if (util::setValueFromJson(json, "totalError", totalError)) {
+		m_totalError = totalError;
+	}
+
+	float minError = 0.0f;
+	if (util::setValueFromJson(json, "minError", minError)) {
+		m_minError = minError;
+	}
+
+	float maxError = 0.0f;
+	if (util::setValueFromJson(json, "maxError", maxError)) {
+		m_maxError = maxError;
 	}
 
 	float meanError = 0.0f;
@@ -831,6 +853,9 @@ void act::room::ProjectorRoomNode::calculateErrors(const cv::Mat& P, const std::
 	double totalError = 0.0;
 	double totalGLError = 0.0;
 
+	double minError = std::numeric_limits<double>::max();
+	double maxError = 0.0;
+
 	for (int i = 0; i < numPoints; ++i)
 	{
 		const cv::Point3f& objPt = objectPoints[i];
@@ -849,10 +874,15 @@ void act::room::ProjectorRoomNode::calculateErrors(const cv::Mat& P, const std::
 		const cv::Point2f& imgPt = imagePoints[i];
 		double dx = imgPt.x - u;
 		double dy = imgPt.y - v;
-		double error = dx * dx + dy * dy; //square distance
+		double error = std::sqrt(dx * dx + dy * dy); //distance
 
-		totalSquaredError += error;
-		totalError += std::sqrt(error);
+		if (error < minError)
+			minError = error;
+		if (error > maxError)
+			maxError = error;
+
+		totalError += error;
+		totalSquaredError += error * error;
 
 		//gL projection
 		glm::vec4 clip = m_glProjectionMatrix * m_glViewMatrix * glm::vec4(objPt.x, objPt.y, objPt.z, 1.0f);
@@ -867,6 +897,12 @@ void act::room::ProjectorRoomNode::calculateErrors(const cv::Mat& P, const std::
 
 		totalGLError += std::sqrt(errorGL);
 	}
+
+	m_totalError = static_cast<float>(totalError);
+	m_totalSpuareError = static_cast<float>(totalSquaredError);
+
+	m_minError = static_cast<float>(minError);
+	m_maxError = static_cast<float>(maxError);
 
 	m_meanError = static_cast<float>(totalError / numPoints);
 	m_rmsError = static_cast<float>(std::sqrt(totalSquaredError / numPoints));

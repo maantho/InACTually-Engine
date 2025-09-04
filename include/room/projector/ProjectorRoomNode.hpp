@@ -107,8 +107,15 @@ namespace act {
 			bool					m_showDebugGrid = false;
 			bool					m_showWindowBorders = true;
 
+			float					m_totalError = 0.0f;
 			float 					m_meanError = 0.0f;
+			float                   m_minError = 0.0f;
+			float                   m_maxError = 0.0f;
+			float					m_totalSpuareError = 0.0f;
 			float                   m_rmsError = 0.0f;
+
+
+
 			float					m_glMeanError = 0.0f;
 
 			void createWindow();
