@@ -115,7 +115,7 @@ namespace act {
 			float 					m_meanError = 0.0f;
 			float                   m_rmsError = 0.0f;
 
-			const int				m_totalDots = 10;
+			const int				m_totalDots = 24;
 			bool                    m_evaluateDots = false;
 			int 					m_currentDot = 0;
 

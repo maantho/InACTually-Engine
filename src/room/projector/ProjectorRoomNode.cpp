@@ -500,7 +500,7 @@ void act::room::ProjectorRoomNode::drawDotPattern()
 	float radius = 2;
 
 	//5 points in 2 rows
-	for (int i = 0; i < 10; i++)
+	for (int i = 0; i < m_totalDots; i++)
 	{
 		gl::ScopedColor color(1, 1, 1);
 
@@ -558,14 +558,20 @@ void act::room::ProjectorRoomNode::drawDotGroundGrid()
 
 ci::vec2 act::room::ProjectorRoomNode::getDotFromIndex(int i)
 {
-	float spacing = 0.10f; //in meters
+	float spacing = 0.20f; //in meters
 
 	int row = 0;
 
-	if (i >= 5)
+	if (i >= 6)
 		row = 1;
+	if (i >= 12)
+		row = 2;
+	if (i >= 18)
+	{
+		row = 3;
+	}
 
-	int collumn = i % 5;
+	int collumn = i % 6;
 
 	cv::Mat X = (cv::Mat_<double>(4, 1) << 0, (row + 1) * spacing, (collumn + 1) * spacing, 1.0); //dot in 3D
 
