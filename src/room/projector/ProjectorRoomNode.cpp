@@ -75,95 +75,102 @@ void act::room::ProjectorRoomNode::draw()
 
 void act::room::ProjectorRoomNode::drawSpecificSettings()
 {
-	if(ImGui::Button("Open Projector Window"))
-	{
-		createWindowOnDisplay();
+	//Parameters
+	if (ImGui::CollapsingHeader("Parameters")) {
+		if (ImGui::DragInt2("Resolution", &m_resolution, 1.0, 0.0, 10000, "%i"))
+		{
+			setResolution(m_resolution);
+		}
+
+		if (ImGui::DragFloat2("Focal Length", &m_focalLenghtPixel))
+		{
+			setFocalLengthPixel(m_focalLenghtPixel);
+		}
+
+		if (ImGui::DragFloat("Skew", &m_skew))
+		{
+			setSkew(m_skew);
+		}
+
+		if (ImGui::DragFloat2("Principle Point", &m_principalPoint))
+		{
+			setPrincipalPoint(m_principalPoint);
+		}
 	}
 
-	if (ImGui::InputInt("Display", &m_DisplayNumber)) {
-		createWindowOnDisplay();
+	//Window
+	if (ImGui::CollapsingHeader("Window")) {
+		if(ImGui::Button("Open Projector Window"))
+		{
+			createWindowOnDisplay();
+		}
+
+		if (ImGui::InputInt("Display", &m_DisplayNumber)) {
+			createWindowOnDisplay();
+		}
 	}
 
-	ImGui::Checkbox("Use cameraPersp", &m_useCameraPersp);
-
-
-	if (ImGui::DragInt2("Resolution", &m_resolution, 1.0, 0.0, 10000, "%i"))
-	{
-		setResolution(m_resolution);
+	//Rendering
+	if (ImGui::CollapsingHeader("Drawing")) {
+		//ImGui::Checkbox("Use cameraPersp", &m_useCameraPersp);
+		ImGui::Checkbox("Show Debug Grid", &m_showDebugGrid);
+		ImGui::Checkbox("Show Debug Grid CV", &m_showDebugGridCV);
+		ImGui::Checkbox("Show Window Borders", &m_showWindowBorders);
 	}
 
-	ImGui::InputInt("Total Points", &m_totalPoints);
+	//Calibration
+	if (ImGui::CollapsingHeader("Calibration")) {
+		ImGui::InputInt("Total Points", &m_totalPoints);
+		ImGui::InputInt("Total Rays", &m_totalCalibrationRays);
+		if (ImGui::Checkbox("Calibrate with HMD", &m_isCalibrating))
+		{
+			setIsCalibrating(m_isCalibrating);
+		}
+		if (ImGui::Button("Reset Correspondences"))
+		{
+			resetCorrespondences();
+		}
 
-	ImGui::InputInt("Total Rays", &m_totalCalibrationRays);
+		ImGui::Separator();
 
-
-	if (ImGui::Checkbox("Calibrate", &m_isCalibrating))
-	{
-		setIsCalibrating(m_isCalibrating);
+		if (ImGui::Button("Calibrate with Test Pairs"))
+		{
+			calibrateDLT(true);
+		}
 	}
 
-	if (ImGui::Button("Reset Correspondences"))
-	{
-		resetCorrespondences();
+	if (ImGui::CollapsingHeader("Evaluate Calibration")) {
+
+		ImGui::Text("Calibration Error Metrics:");
+		ImGui::LabelText("DLT Total Error", "%f", m_totalError);
+		ImGui::LabelText("DLT Total Square Error", "%f", m_totalSpuareError);
+		ImGui::LabelText("DLT Min Error", "%f", m_minError);
+		ImGui::LabelText("DLT Max Error", "%f", m_maxError);
+
+		ImGui::Separator();
+		ImGui::LabelText("DLT Mean Error", "%f", m_meanError);
+		ImGui::LabelText("DLT GL Mean Error", "%f", m_glMeanError);
+		ImGui::LabelText("DLT RMS Error", "%f", m_rmsError);
+
+		ImGui::Separator();
+		ImGui::LabelText("Ground Truth Total Error", "%f", m_trueTotalError);
+		ImGui::LabelText("Ground Truth Square Error", "%f", m_trueTotalSpuareError);
+		ImGui::LabelText("Ground Truth Min Error", "%f", m_trueMinError);
+		ImGui::LabelText("Ground Truth Max Error", "%f", m_trueMaxError);
+
+		ImGui::Separator();
+		ImGui::Checkbox("Show Evaluation Dot Pattern", &m_showDotPattern);
+		if (ImGui::Button("Restart Dot Measurement"))
+		{
+			m_evaluateDots = true;
+			m_currentDot = 0;
+
+			m_trueMaxError = 0.0f;
+			m_trueMinError = std::numeric_limits<double>::max();
+			m_trueTotalError = 0.0f;
+			m_trueTotalSpuareError = 0.0f;
+		}
 	}
-
-	if (ImGui::DragFloat2("Focal Length", &m_focalLenghtPixel))
-	{
-		setFocalLengthPixel(m_focalLenghtPixel);
-	}
-
-	if (ImGui::DragFloat("Skew", &m_skew))
-	{
-		setSkew(m_skew);
-	}
-
-	if (ImGui::DragFloat2("Principle Point", &m_principalPoint))
-	{
-		setPrincipalPoint(m_principalPoint);
-	}
-	ImGui::Separator();
-	ImGui::Text("Calibration Error Metrics:");
-	ImGui::LabelText("Total Error", "%f", m_totalError);
-	ImGui::LabelText("Total Square Error", "%f", m_totalSpuareError);
-	ImGui::LabelText("Min Error", "%f", m_minError);
-	ImGui::LabelText("Max Error", "%f", m_maxError);
-
-	ImGui::Separator();
-	ImGui::LabelText("True Total Error", "%f", m_trueTotalError);
-	ImGui::LabelText("True Total Square Error", "%f", m_trueTotalSpuareError);
-	ImGui::LabelText("True Min Error", "%f", m_trueMinError);
-	ImGui::LabelText("True Max Error", "%f", m_trueMaxError);
-
-	ImGui::Separator();
-	ImGui::LabelText("Mean Error", "%f", m_meanError);
-	ImGui::LabelText("RMS Error", "%f", m_rmsError);
-	ImGui::LabelText("GL Error", "%f", m_glMeanError);
-	ImGui::Separator();
-	if (ImGui::Button("Calibrate with Test Pairs"))
-	{
-		calibrateDLT(true);
-	}
-
-	ImGui::Checkbox("Show Dot Pattern", &m_showDotPattern);
-
-
-	ImGui::Checkbox("Show Debug Grid", &m_showDebugGrid);
-	ImGui::Checkbox("Show Debug Grid CV", &m_showDebugGridCV);
-	ImGui::DragFloat("Test Skew", &m_testSkew);
-
-	ImGui::Checkbox("Show Window Borders", &m_showWindowBorders);
-
-	if (ImGui::Button("Restart Dot Measurement"))
-	{
-		m_evaluateDots = true;
-		m_currentDot = 0;
-
-		m_trueMaxError = 0.0f;
-		m_trueMinError = std::numeric_limits<double>::max();
-		m_trueTotalError = 0.0f;
-		m_trueTotalSpuareError = 0.0f;
-	}
-
 }
 
 ci::Json act::room::ProjectorRoomNode::toParams()
