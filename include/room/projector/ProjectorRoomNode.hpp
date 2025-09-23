@@ -131,8 +131,8 @@ namespace act {
 
 			float					m_glMeanError = 0.0f;
 
-			void createWindow();
-			void createWindowOnDisplay();
+			bool createWindow(bool onlyRecreate = false);
+			bool createWindowOnDisplay(bool onlyRecreate = false);
 
 			void updateProjection();
 			void drawProjection();

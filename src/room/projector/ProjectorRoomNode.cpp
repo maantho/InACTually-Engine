@@ -106,7 +106,7 @@ void act::room::ProjectorRoomNode::drawSpecificSettings()
 		}
 
 		if (ImGui::InputInt("Display", &m_DisplayNumber)) {
-			createWindowOnDisplay();
+			createWindowOnDisplay(true);
 		}
 	}
 
@@ -357,12 +357,14 @@ void act::room::ProjectorRoomNode::setPrincipalPoint(ci::vec2 principalPoint, bo
 	}
 }
 
-void act::room::ProjectorRoomNode::createWindow()
+bool act::room::ProjectorRoomNode::createWindow(bool onlyRecreate)
 {
-	if (m_window) 
+	if (m_window)
 		m_window->close();
+	else if (onlyRecreate)
+		return false;
 	
-	m_window = WindowData::createWindow(getName(), ivec2(1920, 1080));
+	m_window = WindowData::createWindow(getName(), ivec2(m_resolution.x, m_resolution.y));
 	CallbackDrawableRef drawable = CallbackDrawable::create();
 	drawable->setDrawCallback(std::bind(&ProjectorRoomNode::drawProjection, this));
 	drawable->setUpdateCallback(std::bind(&ProjectorRoomNode::updateProjection, this));
@@ -395,11 +397,15 @@ void act::room::ProjectorRoomNode::createWindow()
 			m_evaluateDots = false;
 		}
 	});
+
+	return true;
 }
 
-void act::room::ProjectorRoomNode::createWindowOnDisplay()
+bool act::room::ProjectorRoomNode::createWindowOnDisplay(bool onlyRecreate)
 {
-	createWindow(); // create new window otherwise context will be wrong
+	if (!createWindow(onlyRecreate)) // create new window otherwise context will be wrong
+		return false;
+
 	FullScreenOptions fullScreenOptions;
 	if (m_DisplayNumber >= 0 && m_DisplayNumber < Display::getDisplays().size()) {
 		fullScreenOptions.display(Display::getDisplays()[m_DisplayNumber]);
@@ -408,6 +414,8 @@ void act::room::ProjectorRoomNode::createWindowOnDisplay()
 	else {
 		m_window->setFullScreen(false);
 	}
+
+	return true;
 }
 
 void act::room::ProjectorRoomNode::updateProjection()
