@@ -141,6 +141,8 @@ void act::room::ProjectorRoomNode::drawSpecificSettings()
 
 	if (ImGui::CollapsingHeader("Evaluate Calibration")) {
 
+		ImGui::Checkbox("Serialize Errors", &m_serializeErrors);
+		ImGui::Separator();
 		ImGui::Text("Calibration Error Metrics:");
 		ImGui::LabelText("DLT Total Error", "%f", m_totalError);
 		ImGui::LabelText("DLT Total Square Error", "%f", m_totalSpuareError);
@@ -177,29 +179,35 @@ ci::Json act::room::ProjectorRoomNode::toParams()
 {
 	ci::Json json = ci::Json::object();
 
+	//Parameters
 	json["resolution"] = util::valueToJson(getResolution());
 	json["focalLengthPixel"] = util::valueToJson(getFocalLengthPixel());
 	json["skew"] = getSkew();
 	json["principalPoint"] = util::valueToJson(getPrincipalPoint());
 
-	json["meanError"] = m_meanError;
-	json["rmsError"] = m_rmsError;
-
-	json["totalError"] = m_totalError;
-	json["totalSpuareError"] = m_totalSpuareError;
-	json["minError"] = m_minError;
-	json["maxError"] = m_maxError;
-
-	json["trueTotalError"] = m_trueTotalError;
-	json["trueTotalSpuareError"] = m_trueTotalSpuareError;
-	json["trueMinError"] = m_trueMinError;
-	json["trueMaxError"] = m_trueMaxError;
-
+	//Calibration
+	json["isCalibrating"] = getIsCalibrating();
 	json["nextCorrespondence"] = m_nextCorrespondence;
 	json["totalPoints"] = m_totalPoints;
 	json["totalCalibrationRays"] = m_totalCalibrationRays;
 
+	// Error metrics
+	if (m_serializeErrors)
+	{
+		json["meanError"] = m_meanError;
+		json["glMeanError"] = m_glMeanError;
+		json["rmsError"] = m_rmsError;
 
+		json["totalError"] = m_totalError;
+		json["totalSpuareError"] = m_totalSpuareError;
+		json["minError"] = m_minError;
+		json["maxError"] = m_maxError;
+
+		json["trueTotalError"] = m_trueTotalError;
+		json["trueTotalSpuareError"] = m_trueTotalSpuareError;
+		json["trueMinError"] = m_trueMinError;
+		json["trueMaxError"] = m_trueMaxError;
+	}
 
 	return json;
 }
@@ -226,16 +234,33 @@ void act::room::ProjectorRoomNode::fromParams(ci::Json json)
 		setPrincipalPoint(principalPoint, false);
 	}
 
+	int nextCorrespondence = 0;
+	if (util::setValueFromJson(json, "nextCorrespondence", nextCorrespondence)) {
+		m_nextCorrespondence = nextCorrespondence;
+	}
+
+	int totalPoints = 0;
+	if (util::setValueFromJson(json, "totalPoints", totalPoints)) {
+		m_totalPoints = totalPoints;
+	}
+
+	int totalCalibrationRays = 0;
+	if (util::setValueFromJson(json, "totalCalibrationRays", totalCalibrationRays)) {
+		m_totalCalibrationRays = totalCalibrationRays;
+	}
+
 	bool isCalibrating;
 	if (util::setValueFromJson(json, "isCalibrating", isCalibrating)) {
 		setIsCalibrating(isCalibrating, false);
 	}
 
+	//correspondence from frontend (not serialized)
 	ci::vec3 objectPoint;
 	if (util::setValueFromJson(json, "objectPoint", objectPoint)) {
 		addCorrespondence(cv::Point3f(objectPoint.x, objectPoint.y, objectPoint.z));
 	}
 
+	//Error metrics
 	float totalError = 0.0f;
 	if (util::setValueFromJson(json, "totalError", totalError)) {
 		m_totalError = totalError;
@@ -254,6 +279,11 @@ void act::room::ProjectorRoomNode::fromParams(ci::Json json)
 	float meanError = 0.0f;
 	if (util::setValueFromJson(json, "meanError", meanError)) {
 		m_meanError = meanError;
+	}
+
+	float glMeanError = 0.0f;
+	if (util::setValueFromJson(json, "glMeanError", glMeanError)) {
+		m_glMeanError = glMeanError;
 	}
 
 	float rmsError = 0.0f;
@@ -279,21 +309,6 @@ void act::room::ProjectorRoomNode::fromParams(ci::Json json)
 	float trueMaxError = 0.0f;
 	if (util::setValueFromJson(json, "trueMaxError", trueMaxError)) {
 		m_trueMaxError = trueMaxError;
-	}
-
-	int nextCorrespondence = 0;
-	if (util::setValueFromJson(json, "nextCorrespondence", nextCorrespondence)) {
-		m_nextCorrespondence = nextCorrespondence;
-	}
-
-	int totalPoints = 0;
-	if (util::setValueFromJson(json, "totalPoints", totalPoints)) {
-		m_totalPoints = totalPoints;
-	}
-
-	int totalCalibrationRays = 0;
-	if (util::setValueFromJson(json, "totalCalibrationRays", totalCalibrationRays)) {
-		m_totalCalibrationRays = totalCalibrationRays;
 	}
 }
 
@@ -844,6 +859,7 @@ void act::room::ProjectorRoomNode::calibrateDLT(const bool useTestPairs)
 	setSkew(K.at<double>(0, 1), true, false);
 	setPrincipalPoint(ci::vec2(K.at<double>(0, 2), K.at<double>(1, 2)), true, false);
 
+	//calculate Matrices
 	updateCameraPersp();
 	calculateViewProjectionMatrix();
 

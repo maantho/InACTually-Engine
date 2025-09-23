@@ -117,6 +117,7 @@ namespace act {
 			};
 
 			//Error metrics
+			bool					m_serializeErrors = false;
 			float					m_totalError = 0.0f;
 			float                   m_minError = 0.0f;
 			float                   m_maxError = 0.0f;
