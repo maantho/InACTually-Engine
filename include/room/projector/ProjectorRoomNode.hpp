@@ -63,17 +63,38 @@ namespace act {
 			ci::vec2 getPrincipalPoint() { return m_principalPoint; };
 			
 		private:
+			//Window
 			ci::app::WindowRef		m_window;
 			int						m_DisplayNumber = 2;
+
+			//Rendering
 			ci::CameraPersp			m_cameraPersp;
+			bool					m_useCameraPersp = false;
+
 			ci::mat4				m_glProjectionMatrix;
 			ci::mat4				m_glViewMatrix;
 
-			bool					m_useCameraPersp = false;
+			cv::Mat					m_P; //CV Projection matrix
 
+			
+			ci::gl::BatchRef		m_wirePlane;
+			bool					m_showDotPattern = false;
+			bool					m_showDebugGrid = false;
+			bool					m_showDebugGridCV = false;
+			bool					m_showWindowBorders = true;
+
+			//Intrinsics
 			ci::ivec2				m_resolution;
+			ci::vec2				m_focalLenghtPixel;
+			float					m_skew;
+			ci::vec2				m_principalPoint;
 
+
+
+			//Calibration
 			bool					m_isCalibrating;
+			std::vector<cv::Point3f> m_objectPoints;
+			std::vector<cv::Point2f> m_imagePoints;
 
 			int						m_nextCorrespondence = 0;
 			int						m_totalPoints = 6;
@@ -95,27 +116,14 @@ namespace act {
 				cv::Point2f(4.0f / 6.0f, 2.0f / 3.0f),
 			};
 
-			cv::Mat					m_P;
-			ci::vec2				m_focalLenghtPixel;
-			float					m_skew;
-			ci::vec2				m_principalPoint;
-			float					m_testSkew = 0;
-
-
-			ci::ivec2				m_mousePos = ivec2(0);
-
-			ci::gl::BatchRef		m_wirePlane;
-			bool					m_showDotPattern = false;
-			bool					m_showDebugGrid = false;
-			bool					m_showDebugGridCV = false;
-			bool					m_showWindowBorders = true;
-
+			//Error metrics
 			float					m_totalError = 0.0f;
 			float                   m_minError = 0.0f;
 			float                   m_maxError = 0.0f;
 			float					m_totalSpuareError = 0.0f;
 
 			float 					m_meanError = 0.0f;
+			float					m_glMeanError = 0.0f;
 			float                   m_rmsError = 0.0f;
 
 			const int				m_totalDots = 24;
@@ -126,10 +134,6 @@ namespace act {
 			float					m_trueTotalSpuareError = 0.0f;
 			float                   m_trueMinError = 0.0f;
 			float                   m_trueMaxError = 0.0f;
-
-
-
-			float					m_glMeanError = 0.0f;
 
 			bool createWindow(bool onlyRecreate = false);
 			bool createWindowOnDisplay(bool onlyRecreate = false);
@@ -148,8 +152,6 @@ namespace act {
 			//calibration
 			//correspondences
 			void getTestPairs(std::vector<cv::Point3f>& objectPoints, std::vector<cv::Point2f>& imagePoints);
-			std::vector<cv::Point3f> m_objectPoints;
-			std::vector<cv::Point2f> m_imagePoints;
 
 			void addCorrespondence(cv::Point3f objectPoint, bool calibrateIfPossible = true);
 			int getCurrentRay();

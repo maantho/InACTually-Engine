@@ -378,10 +378,10 @@ bool act::room::ProjectorRoomNode::createWindow(bool onlyRecreate)
 		if (!m_evaluateDots)
 			return;
 
-		m_mousePos = evt.getPos();
+		auto mousePos = evt.getPos();
 
 		auto dotPos = getDotFromIndex(m_currentDot);
-		auto error = ci::distance(vec2(m_mousePos), dotPos);
+		auto error = ci::distance(vec2(mousePos), dotPos);
 
 		m_trueTotalError += error;
 		m_trueTotalSpuareError += error * error;
@@ -683,7 +683,7 @@ void act::room::ProjectorRoomNode::getTestPairs(std::vector<cv::Point3f>& object
 	double fy = 800.0;
 	double cx = 1920.0 / 2.0;   
 	double cy = 240.0;
-	double skew = m_testSkew;  
+	double skew = 100;  
 
 	//camera rotation
 	double pitch = -45.0 * CV_PI / 180.0; // rotation around X
