@@ -99,12 +99,15 @@ namespace act {
 			ci::vec2				m_focalLenghtPixel;
 			float					m_skew;
 			ci::vec2				m_principalPoint;
+			float					m_testSkew = 0;
+
 
 			ci::ivec2				m_mousePos = ivec2(0);
 
 			ci::gl::BatchRef		m_wirePlane;
 			bool					m_showDotPattern = false;
 			bool					m_showDebugGrid = false;
+			bool					m_showDebugGridCV = false;
 			bool					m_showWindowBorders = true;
 
 			float					m_totalError = 0.0f;

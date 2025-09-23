@@ -148,6 +148,8 @@ void act::room::ProjectorRoomNode::drawSpecificSettings()
 
 
 	ImGui::Checkbox("Show Debug Grid", &m_showDebugGrid);
+	ImGui::Checkbox("Show Debug Grid CV", &m_showDebugGridCV);
+	ImGui::DragFloat("Test Skew", &m_testSkew);
 
 	ImGui::Checkbox("Show Window Borders", &m_showWindowBorders);
 
@@ -428,30 +430,33 @@ void act::room::ProjectorRoomNode::drawProjection()
 	{
 		drawDotPattern();
 	}
-	else if (m_showDebugGrid)
+	else
 	{
-		drawDotGroundGrid();
-		
-		/*
-		gl::ScopedMatrices mat();
-		ci::gl::color(1.0f, 1, 1);
+		if (m_showDebugGrid) {
+			gl::ScopedMatrices mat();
+			ci::gl::color(1.0f, 1, 1);
 
-		if (m_useCameraPersp)
-			gl::setMatrices(m_cameraPersp);
-		else
-			gl::setProjectionMatrix(m_glProjectionMatrix);
+			if (m_useCameraPersp)
+				gl::setMatrices(m_cameraPersp);
+			else
+				gl::setProjectionMatrix(m_glProjectionMatrix);
 
-		gl::setViewMatrix(m_glViewMatrix);
+			gl::setViewMatrix(m_glViewMatrix);
 
-		gl::ScopedLineWidth lineWidth(3.0f);
-		m_wirePlane->draw();
+			gl::ScopedLineWidth lineWidth(3.0f);
+			m_wirePlane->draw();
 
-		gl::ScopedLineWidth lineWidth2(5.0f);
-		gl::color(ci::Color(1.0f, 0.5f, 0.5f)); // red for X axis
-		gl::drawLine(ci::vec3(0.0f, 0.0f, 0.0f), ci::vec3(0.5f, 0.0f, 0.0f));
-		gl::color(ci::Color(0.5f, 0.9f, 1.0f)); // Blue for Z axis
-		gl::drawLine(ci::vec3(0.0f, 0.0f, 0.0f), ci::vec3(0.0f, 0.0f, 0.5f));
-		*/
+			gl::ScopedLineWidth lineWidth2(5.0f);
+			gl::color(ci::Color(1.0f, 0.5f, 0.5f)); // red for X axis
+			gl::drawLine(ci::vec3(0.0f, 0.0f, 0.0f), ci::vec3(0.5f, 0.0f, 0.0f));
+			gl::color(ci::Color(0.5f, 0.9f, 1.0f)); // Blue for Z axis
+			gl::drawLine(ci::vec3(0.0f, 0.0f, 0.0f), ci::vec3(0.0f, 0.0f, 0.5f));
+		}
+
+		if(m_showDebugGridCV )
+		{
+			drawDotGroundGrid();
+		}
 	}
 
 	if (m_showWindowBorders)
@@ -622,13 +627,13 @@ void act::room::ProjectorRoomNode::calculateViewProjectionMatrix()
 	float top = (m_principalPoint.y) * nearZ / m_focalLenghtPixel.y;
 
 	m_glProjectionMatrix = glm::frustum(left, right, bottom, top, nearZ, farZ);
-	m_glProjectionMatrix[0][1] = 2 * m_skew / m_resolution.x;
+	m_glProjectionMatrix[1][0] = -2.0f * m_skew / m_resolution.x;
 }
 
 void act::room::ProjectorRoomNode::getTestPairs(std::vector<cv::Point3f>& objectPoints, std::vector<cv::Point2f>& imagePoints)
 {
 	//points from calibration
-	///*
+	/*
 	objectPoints = {
 	{-0.969012201,  0.104362249,  1.51150644},
 	{-0.353259593,  0.495392919,  1.27609563},
@@ -653,7 +658,7 @@ void act::room::ProjectorRoomNode::getTestPairs(std::vector<cv::Point3f>& object
 	//*/
 
 	// synthetic test pairs
-	/*
+	///*
 	objectPoints = {
 		{-1, -1, -1}, {1, -1, -1}, {1, 1, -1}, {-1, 1, -1},
 		{-1, -1, 1},  {1, -1, 1},  {1, 1, 1},  {-1, 1, 1}
@@ -663,11 +668,11 @@ void act::room::ProjectorRoomNode::getTestPairs(std::vector<cv::Point3f>& object
 	double fy = 800.0;
 	double cx = 1920.0 / 2.0;   
 	double cy = 240.0;
-	double skew = 0;  
+	double skew = m_testSkew;  
 
 	//camera rotation
-	double pitch = 0.0 * CV_PI / 180.0; // rotation around X
-	double yaw = 0.0 * CV_PI / 180.0; // rotation around Y
+	double pitch = -45.0 * CV_PI / 180.0; // rotation around X
+	double yaw = 45.0 * CV_PI / 180.0; // rotation around Y
 	double roll = 0.0 * CV_PI / 180.0; // rotation around Z
 
 
@@ -690,9 +695,9 @@ void act::room::ProjectorRoomNode::getTestPairs(std::vector<cv::Point3f>& object
 	cv::Mat R = Ry * Rx * Rz;
 	R = R.t(); //to inverse world to cam rotation
 	
-	//camera center
-	cv::Mat t = (cv::Mat_<double>(3, 1) << 0.0, 0.0, 5);
-	t = -R * t; //to world to cam translation
+	//camera center in world space
+	cv::Mat t = (cv::Mat_<double>(3, 1) << 5, 5, 5);
+	t = R * -t; //to world to cam translation
 
 	//calculate correspondences
 	for (auto& p : objectPoints) {
@@ -701,11 +706,11 @@ void act::room::ProjectorRoomNode::getTestPairs(std::vector<cv::Point3f>& object
 
 		double Xc = Pc.at<double>(0);
 		double Yc = Pc.at<double>(1);
-		double Zc = Pc.at<double>(2);
+		double Zc = -Pc.at<double>(2); // negative z
 
-		double u = fx * Xc / Zc + skew * Yc / Zc + cx;
-		double v = fy * Yc / Zc + cy;
-		v = m_resolution.y - v;
+		double u = fx * Xc / Zc - skew * Yc / Zc + cx; // negative skew cause y flipped
+		double v = fy * Yc / Zc + m_resolution.y - cy;
+		v = m_resolution.y - v; //flip y
 
 		imagePoints.push_back(cv::Point2f(u, v));
 	}
