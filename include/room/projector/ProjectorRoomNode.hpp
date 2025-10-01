@@ -149,7 +149,8 @@ namespace act {
 			ci::vec2 getDotFromIndex(int i);
 
 			void updateCameraPersp();
-			void calculateViewProjectionMatrix();
+			void calculateViewMatrix();
+			void calculateProjectionMatrix();
 			
 			//calibration
 			//correspondences

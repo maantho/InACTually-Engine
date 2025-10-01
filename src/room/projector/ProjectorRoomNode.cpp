@@ -32,7 +32,7 @@ act::room::ProjectorRoomNode::ProjectorRoomNode(std::string name, ci::vec3 posit
 	setIsCalibrating(false);
 
 	updateCameraPersp();
-	calculateViewProjectionMatrix();
+	calculateProjectionMatrix();
 
 	auto colorShader = ci::gl::getStockShader(ci::gl::ShaderDef().color());
 	m_wirePlane = ci::gl::Batch::create(ci::geom::WirePlane().size(ci::vec2(20)).subdivisions(ci::ivec2(100)), colorShader);
@@ -351,7 +351,7 @@ void act::room::ProjectorRoomNode::setFocalLengthPixel(ci::vec2 focalLengthPixel
 	if (updateCam)
 	{
 		updateCameraPersp();
-		calculateViewProjectionMatrix();
+		calculateProjectionMatrix();
 	}
 }
 
@@ -365,7 +365,7 @@ void act::room::ProjectorRoomNode::setSkew(float skew, bool publish, bool update
 	if (updateCam)
 	{
 		updateCameraPersp();
-		calculateViewProjectionMatrix();
+		calculateProjectionMatrix();
 	}
 }
 
@@ -379,7 +379,7 @@ void act::room::ProjectorRoomNode::setPrincipalPoint(ci::vec2 principalPoint, bo
 	if (updateCam)
 	{
 		updateCameraPersp();
-		calculateViewProjectionMatrix();
+		calculateProjectionMatrix();
 	}
 }
 
@@ -473,6 +473,7 @@ void act::room::ProjectorRoomNode::drawProjection()
 	}
 	else
 	{
+		//normal rendering
 		if (m_showDebugGrid) {
 			gl::ScopedMatrices mat();
 			ci::gl::color(1.0f, 1, 1);
@@ -482,6 +483,7 @@ void act::room::ProjectorRoomNode::drawProjection()
 			else
 				gl::setProjectionMatrix(m_glProjectionMatrix);
 
+			calculateViewMatrix();
 			gl::setViewMatrix(m_glViewMatrix);
 
 			gl::ScopedLineWidth lineWidth(3.0f);
@@ -649,7 +651,7 @@ void act::room::ProjectorRoomNode::updateCameraPersp()
 	m_cameraPersp.lookAt(vec3(0.0f, 0.0f, -1.0f)); //along negative z (follows from calibration coordinate system convertion)
 }
 
-void act::room::ProjectorRoomNode::calculateViewProjectionMatrix()
+void act::room::ProjectorRoomNode::calculateViewMatrix()
 {
 	//view
 	glm::mat4 rotationMatrix = glm::toMat4(m_orientation); // Convert quaternion to rotation matrix
@@ -658,7 +660,10 @@ void act::room::ProjectorRoomNode::calculateViewProjectionMatrix()
 	glm::mat4 cameraMatrix = translationMatrix * rotationMatrix;
 
 	m_glViewMatrix = glm::inverse(cameraMatrix);
+}
 
+void act::room::ProjectorRoomNode::calculateProjectionMatrix()
+{
 	//projection
 	float nearZ = 0.1f, farZ = 1000.0f;
 
@@ -872,7 +877,7 @@ void act::room::ProjectorRoomNode::calibrateDLT(const bool useTestPairs)
 
 	//calculate Matrices
 	updateCameraPersp();
-	calculateViewProjectionMatrix();
+	calculateProjectionMatrix();
 
 	calculateErrors(m_P, objectPoints, imagePoints);
 
