@@ -875,12 +875,6 @@ void act::room::ProjectorRoomNode::calibrateDLT(const bool useTestPairs)
 	setSkew(K.at<double>(0, 1), true, false);
 	setPrincipalPoint(ci::vec2(K.at<double>(0, 2), K.at<double>(1, 2)), true, false);
 
-	//calculate Matrices
-	updateCameraPersp();
-	calculateProjectionMatrix();
-
-	calculateErrors(m_P, objectPoints, imagePoints);
-
 	//set extrinsics
 	cv::Mat convertToGL = (cv::Mat_<double>(3, 3) <<
 		1, 0, 0,
@@ -899,6 +893,13 @@ void act::room::ProjectorRoomNode::calibrateDLT(const bool useTestPairs)
 	t = t.rowRange(0, 3) / t.at<double>(3); //unhomogenize and cut W
 	//t = R * t; //transform to position in world coordinates... not necesarry is already in world coordinates
 	setPosition(ci::vec3(t.at<double>(0), t.at<double>(1), t.at<double>(2)));
+
+	//calculate Matrices
+	updateCameraPersp();
+	calculateViewMatrix();
+	calculateProjectionMatrix();
+
+	calculateErrors(m_P, objectPoints, imagePoints);
 }
 
 cv::Mat act::room::ProjectorRoomNode::dltSolveP(const std::vector<cv::Point3f> objectPoints, const std::vector<cv::Point2f> imagePoints)
@@ -989,6 +990,7 @@ void act::room::ProjectorRoomNode::calculateErrors(const cv::Mat& P, const std::
 	for (int i = 0; i < numPoints; ++i)
 	{
 		const cv::Point3f& objPt = objectPoints[i];
+		const cv::Point2f& imgPt = imagePoints[i];
 
 		//Convert to homogeneous coordinates
 		cv::Mat X = (cv::Mat_<double>(4, 1) << objPt.x, objPt.y, objPt.z, 1.0);
@@ -1001,7 +1003,6 @@ void act::room::ProjectorRoomNode::calculateErrors(const cv::Mat& P, const std::
 		double v = x.at<double>(1, 0) / x.at<double>(2, 0);
 
 		//Compute error
-		const cv::Point2f& imgPt = imagePoints[i];
 		double dx = imgPt.x - u;
 		double dy = imgPt.y - v;
 		double error = std::sqrt(dx * dx + dy * dy); //distance
