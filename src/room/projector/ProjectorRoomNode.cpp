@@ -13,6 +13,7 @@
 
 	contributors:
 	Lars Engeln - mail@lars-engeln.de
+	Anton Hörig - dev@antonhoerig.de
 */
 
 #include "roompch.hpp"
