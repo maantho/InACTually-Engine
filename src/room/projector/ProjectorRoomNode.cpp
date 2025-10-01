@@ -188,9 +188,11 @@ ci::Json act::room::ProjectorRoomNode::toParams()
 
 	//Calibration
 	json["isCalibrating"] = getIsCalibrating();
+	/*
 	json["nextCorrespondence"] = m_nextCorrespondence;
 	json["totalPoints"] = m_totalPoints;
 	json["totalCalibrationRays"] = m_totalCalibrationRays;
+	*/
 
 	// Error metrics
 	if (m_serializeErrors)
@@ -235,6 +237,7 @@ void act::room::ProjectorRoomNode::fromParams(ci::Json json)
 		setPrincipalPoint(principalPoint, false);
 	}
 
+	/*
 	int nextCorrespondence = 0;
 	if (util::setValueFromJson(json, "nextCorrespondence", nextCorrespondence)) {
 		m_nextCorrespondence = nextCorrespondence;
@@ -249,10 +252,17 @@ void act::room::ProjectorRoomNode::fromParams(ci::Json json)
 	if (util::setValueFromJson(json, "totalCalibrationRays", totalCalibrationRays)) {
 		m_totalCalibrationRays = totalCalibrationRays;
 	}
+	*/
 
+	//communication with frontend (not serialized)
 	bool isCalibrating;
 	if (util::setValueFromJson(json, "isCalibrating", isCalibrating)) {
 		setIsCalibrating(isCalibrating, false);
+	}
+
+	bool tmp;
+	if (util::setValueFromJson(json, "resetCorrespondences",  tmp)) {
+		resetCorrespondences();
 	}
 
 	//correspondence from frontend (not serialized)
