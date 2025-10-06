@@ -59,10 +59,10 @@ namespace act {
 			std::vector<int> getMarkerIDs() { return m_markerIDs; }
 			std::vector<std::string> getMarkerIDsAsStrings();
 
+			MarkerRoomNodeRef getMarkerByID(int id);
 
 		private:
 			
-			MarkerRoomNodeRef getMarkerByID(int id);
 			int m_originMarkerID = 0;
 			float m_markerSize = 0.18f;
 

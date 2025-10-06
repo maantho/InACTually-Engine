@@ -135,6 +135,8 @@ void act::room::ProjectorRoomNode::drawSpecificSettings()
 		ImGui::Checkbox("Show Debug Grid", &m_showDebugGrid);
 		ImGui::Checkbox("Show Debug Grid CV", &m_showDebugGridCV);
 		ImGui::Checkbox("Show Window Borders", &m_showWindowBorders);
+		ImGui::Checkbox("Show Projection to Marker", &m_showProjectionMarker);
+
 	}
 
 	//Calibration
@@ -491,6 +493,29 @@ void act::room::ProjectorRoomNode::drawProjection()
 	}
 	else
 	{
+		if (m_showProjectionMarker) {
+			gl::ScopedMatrices mat();
+			ci::gl::color(1.0f, 1, 1);
+
+			if (m_useCameraPersp)
+				gl::setMatrices(m_cameraPersp);
+			else
+				gl::setProjectionMatrix(m_glProjectionMatrix);
+
+			calculateViewMatrix();
+			gl::setViewMatrix(m_glViewMatrix);
+
+			auto marker = m_markerMgr->getMarkerByID(3);
+			gl::translate(marker->getPosition());
+			gl::rotate(marker->getOrientation());
+
+			ci::gl::ScopedColor color(ci::Color(1.0f, 1.0f, 1.0f));
+			Rectf drawRect(-10, -10, 10, 10);
+			auto img = loadImage(loadAsset("texture_06.png"));
+			auto texture = gl::Texture::create(img);
+			gl::draw(texture, drawRect);
+		}
+
 		//normal rendering
 		if (m_showDebugGrid) {
 			gl::ScopedMatrices mat();

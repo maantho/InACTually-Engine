@@ -89,6 +89,7 @@ namespace act {
 			bool					m_showDebugGrid = false;
 			bool					m_showDebugGridCV = false;
 			bool					m_showWindowBorders = true;
+			bool					m_showProjectionMarker = false;
 
 			//Intrinsics
 			ci::ivec2				m_resolution;
