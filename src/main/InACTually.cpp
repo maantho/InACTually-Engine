@@ -105,7 +105,7 @@ void InACTually::init()
 	m_roomMgrs.displayMgr		= room::DisplayManager::create();
 	m_roomMgrs.computerMgr		= room::ComputerManager::create();
 	m_roomMgrs.actionspaceMgr	= room::ActionspaceManager::create();
-	m_roomMgrs.projectorMgr		= room::ProjectorManager::create();
+	m_roomMgrs.projectorMgr		= room::ProjectorManager::create(m_roomMgrs.markerMgr);
 
 	m_roomMgrs.bodyTrackingMgr	= room::BodyTrackingManager::create(m_roomMgrs.kinectMgr);
 

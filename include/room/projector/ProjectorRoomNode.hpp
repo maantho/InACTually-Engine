@@ -20,6 +20,7 @@
 
 #include "RoomNodeBase.hpp"
 #include <cinder/app/App.h>
+#include <marker/MarkerManager.hpp>
 
 
 using namespace ci;
@@ -34,10 +35,13 @@ namespace act {
 		{
 		public:
 			ProjectorRoomNode(std::string name, ci::vec3 position, ci::vec3 rotation, float radius, act::UID replyUID = "");
+			ProjectorRoomNode(std::string name, MarkerManagerRef markerMgr, ci::vec3 position, ci::vec3 rotation, float radius, act::UID replyUID = "");
+
 
 			virtual ~ProjectorRoomNode();
 
-			static std::shared_ptr<ProjectorRoomNode> create(std::string name, ci::vec3 position = ci::vec3(0.0f, 1.0f, 0.0f), ci::vec3 rotation = ci::vec3(0.0f,0.0f,0.0f), float radius = 0.5f, act::UID replyUID = "") { return std::make_shared<ProjectorRoomNode>(name, position, rotation, radius, replyUID); };
+			static std::shared_ptr<ProjectorRoomNode> create(std::string name, ci::vec3 position = ci::vec3(0.0f, 1.0f, 0.0f), ci::vec3 rotation = ci::vec3(0.0f, 0.0f, 0.0f), float radius = 0.5f, act::UID replyUID = "") { return std::make_shared<ProjectorRoomNode>(name, position, rotation, radius, replyUID); };
+			static std::shared_ptr<ProjectorRoomNode> create(std::string name, MarkerManagerRef markerMgr, ci::vec3 position = ci::vec3(0.0f, 1.0f, 0.0f), ci::vec3 rotation = ci::vec3(0.0f,0.0f,0.0f), float radius = 0.5f, act::UID replyUID = "") { return std::make_shared<ProjectorRoomNode>(name, markerMgr, position, rotation, radius, replyUID); };
 
 			virtual void setup()	override;
 			virtual void update()	override;
@@ -64,6 +68,8 @@ namespace act {
 			ci::vec2 getPrincipalPoint() { return m_principalPoint; };
 			
 		private:
+			MarkerManagerRef		m_markerMgr;
+
 			//Window
 			ci::app::WindowRef		m_window;
 			int						m_DisplayNumber = 2;

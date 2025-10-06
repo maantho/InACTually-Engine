@@ -21,6 +21,9 @@
 #include "RoomNodeManagerBase.hpp"
 
 #include "projector/ProjectorRoomNode.hpp"
+#include <marker/MarkerManager.hpp>
+
+
 
 
 namespace act {
@@ -29,9 +32,10 @@ namespace act {
 		class ProjectorManager : public RoomNodeManagerBase {
 		public:
 			ProjectorManager();
+			ProjectorManager(MarkerManagerRef markerMgr);
 			~ProjectorManager();
 
-			static	std::shared_ptr<ProjectorManager> create() { return std::make_shared<ProjectorManager>(); };
+			static	std::shared_ptr<ProjectorManager> create(MarkerManagerRef markerMgr) { return std::make_shared<ProjectorManager>(markerMgr); };
 
 			void	setup() override;
 			// void	update() override;
@@ -49,6 +53,7 @@ namespace act {
 		private:
 			void update();		
 
+			MarkerManagerRef m_markerMgr;
 		};
 		using ProjectorManagerRef = std::shared_ptr<ProjectorManager>;
 	}

@@ -26,6 +26,12 @@ act::room::ProjectorManager::ProjectorManager()
 {
 }
 
+act::room::ProjectorManager::ProjectorManager(MarkerManagerRef markerMgr)
+	: RoomNodeManagerBase("projectorManager")
+{
+	m_markerMgr = markerMgr;
+}
+
 act::room::ProjectorManager::~ProjectorManager()
 {
 	m_nodes.clear();
@@ -100,7 +106,7 @@ act::room::ProjectorRoomNodeRef act::room::ProjectorManager::getProjector(act::U
 
 act::room::RoomNodeBaseRef act::room::ProjectorManager::addDevice(std::string name)
 {
-	auto node = ProjectorRoomNode::create(name);
+	auto node = ProjectorRoomNode::create(name, m_markerMgr);
 	m_nodes.push_back(node);
 
 	return node;

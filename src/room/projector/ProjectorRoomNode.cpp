@@ -20,6 +20,7 @@
 #include "projector/ProjectorRoomNode.hpp"
 #include "WindowData.hpp"
 #include "CallbackDrawable.hpp"
+#include <marker/MarkerManager.hpp>
 
 
 act::room::ProjectorRoomNode::ProjectorRoomNode(std::string name, ci::vec3 position, ci::vec3 rotation, float radius, act::UID replyUID)
@@ -29,6 +30,23 @@ act::room::ProjectorRoomNode::ProjectorRoomNode(std::string name, ci::vec3 posit
 	setFocalLengthPixel(ci::vec2(800, 800));
 	setSkew(0);
 	setPrincipalPoint(ci::vec2(0,0));
+	setIsCalibrating(false);
+
+	updateCameraPersp();
+	calculateProjectionMatrix();
+
+	auto colorShader = ci::gl::getStockShader(ci::gl::ShaderDef().color());
+	m_wirePlane = ci::gl::Batch::create(ci::geom::WirePlane().size(ci::vec2(20)).subdivisions(ci::ivec2(100)), colorShader);
+}
+
+act::room::ProjectorRoomNode::ProjectorRoomNode(std::string name, MarkerManagerRef markerMgr, ci::vec3 position, ci::vec3 rotation, float radius, act::UID replyUID)
+	: RoomNodeBase("projector", position, rotation, radius, replyUID)
+{
+	m_markerMgr = markerMgr;
+	setResolution(ci::ivec2(1920, 1080));
+	setFocalLengthPixel(ci::vec2(800, 800));
+	setSkew(0);
+	setPrincipalPoint(ci::vec2(0, 0));
 	setIsCalibrating(false);
 
 	updateCameraPersp();
