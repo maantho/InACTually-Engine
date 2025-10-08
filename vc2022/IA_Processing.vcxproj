@@ -233,6 +233,8 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\include\processing\AFSynthProcNode.hpp" />
+    <ClInclude Include="..\include\processing\Audio3DPlayerTimestretchProcNode.hpp" />
     <ClInclude Include="..\include\processing\Audio3DProcNode.hpp" />
     <ClInclude Include="..\include\processing\Audio3DPlayerProcNode.hpp" />
     <ClInclude Include="..\include\processing\AudioInProcNode.hpp" />

@@ -204,6 +204,9 @@
     <ClCompile Include="..\src\processing\NoiseProcNode.cpp">
       <Filter>Source Files\utility</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\processing\AFSynthProcNode.cpp">
+      <Filter>Source Files\audio</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\include\processing\AudioPlayerProcNode.hpp">
@@ -379,6 +382,9 @@
     </ClInclude>
     <ClInclude Include="..\include\processing\NoiseProcNode.hpp">
       <Filter>Source Files\utility</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\processing\AFSynthProcNode.hpp">
+      <Filter>Source Files\audio</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
