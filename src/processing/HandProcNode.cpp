@@ -22,16 +22,11 @@
 act::proc::HandProcNode::HandProcNode() : ProcNodeBase("Hand") {
 	m_drawSize = ivec2(250, 250);
 
-	m_leftHandClosed = OutputPort<bool>::create(PT_BOOL, "is left closed");
-	m_leftHandOpend = OutputPort<bool>::create(PT_BOOL, "is left opened");
-	m_rightHandClosed = OutputPort<bool>::create(PT_BOOL, "is right closed");
-	m_rightHandOpend = OutputPort<bool>::create(PT_BOOL, "is right opened");
+	m_leftHandClosed = createBoolOutput("is left closed");
+	m_leftHandOpend = createBoolOutput("is left opened");
+	m_rightHandClosed = createBoolOutput("is right closed");
+	m_rightHandOpend = createBoolOutput("is right opened");
 	//m_orientation = OutputPort<ci::quat>::create(PT_QUAT, "orientation");
-	m_outputPorts.push_back(m_leftHandClosed);
-	m_outputPorts.push_back(m_leftHandOpend);
-	m_outputPorts.push_back(m_rightHandClosed);
-	m_outputPorts.push_back(m_rightHandOpend);
-	//m_outputPorts.push_back(m_orientation);
 
 	auto skeleton = InputPort<std::tuple<uint32_t, k4abt_skeleton_t>>::create(PT_BODY, "Skeleton", [&](std::tuple<uint32_t, k4abt_skeleton_t> skeletonTuple) { onBody(std::get<1>(skeletonTuple)); });
 	m_inputPorts.push_back(skeleton);

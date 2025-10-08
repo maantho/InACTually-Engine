@@ -70,9 +70,9 @@ namespace act {
 			cv::UMat	m_backgroundCutout;
 			cv::UMat	m_backgroundImg;
 
-			OutputPortRef<cv::UMat>	m_fgMaskPort;
-			OutputPortRef<cv::UMat>	m_fgCutoutPort;
-			OutputPortRef<cv::UMat>	m_bgCutoutPort;
+			ImageOutputPortRef	m_fgMaskPort;
+			ImageOutputPortRef	m_fgCutoutPort;
+			ImageOutputPortRef	m_bgCutoutPort;
 
 		}; using BackgroundSubstractionProcNodeRef = std::shared_ptr<BackgroundSubstractionProcNode>;
 

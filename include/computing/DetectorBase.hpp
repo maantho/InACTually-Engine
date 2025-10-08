@@ -39,7 +39,7 @@ namespace act {
 			DetectorBase(std::string name, room::CameraRoomNodeRef camera = nullptr)
 				: m_name(name)
 			{
-				m_cameraImageInPort = proc::InputPort<cv::UMat>::create(proc::PT_IMAGE, "cameraImage", [&](cv::UMat image) {
+				m_cameraImageInPort = proc::ImageInputPort::create(proc::PT_IMAGE, "cameraImage", [&](cv::UMat image) {
 					if (image.empty())
 						return;
 
@@ -140,7 +140,7 @@ namespace act {
 		private:
 			std::string m_name;
 
-			proc::InputPortRef<cv::UMat> m_cameraImageInPort;
+			proc::ImageInputPortRef m_cameraImageInPort;
 			bool m_hasNewImage = false;
 
 			bool m_detecting = false;

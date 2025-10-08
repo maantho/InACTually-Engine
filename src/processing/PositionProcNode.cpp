@@ -23,13 +23,11 @@ act::proc::PositionProcNode::PositionProcNode() : ProcNodeBase("Position") {
 
 	m_t = 0.0f;
 
-	m_tPort = InputPort<float>::create(PT_NUMBER, "t", [&](float t) {
+	m_tPort = createNumberInput("t", [&](float t) {
 		m_t = t; m_positionPort->send(m_positionRoomNode->evaluatePosition(m_t));
 		});
-	m_inputPorts.push_back(m_tPort);
 
-	m_positionPort = OutputPort<ci::vec3>::create(PT_VEC3, "position");
-	m_outputPorts.push_back(m_positionPort);
+	m_positionPort = createVec3Output("position");
 }
 
 act::proc::PositionProcNode::~PositionProcNode() {

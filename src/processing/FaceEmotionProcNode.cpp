@@ -23,15 +23,10 @@ act::proc::FaceEmotionProcNode::FaceEmotionProcNode() : ProcNodeBase("FaceEmotio
 
 	m_displayScale = 0.8f;
 	
-	auto image = InputPort<cv::UMat>::create(PT_IMAGE, "image", [&](cv::UMat mat) { this->onMat(mat); });
-	m_inputPorts.push_back(image);
+	auto image = createImageInput("image", [&](cv::UMat mat) { this->onMat(mat); });
 
-	m_imagePort = OutputPort<cv::UMat>::create(PT_IMAGE, "pass-through image");
-	m_outputPorts.push_back(m_imagePort);
-
-	
-	m_emotionPort = OutputPort<feature>::create(PT_FEATURE, "emotion");
-	m_outputPorts.push_back(m_emotionPort);
+	m_imagePort = createImageOutput("pass-through image");
+	m_emotionPort = createFeatureOutput("emotion");
 
 	//init network
 	std::string onnxFile = ci::app::getAssetPath("3rd/emotion/emotion-ferplus-8.onnx").string();

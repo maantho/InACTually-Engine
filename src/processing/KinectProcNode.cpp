@@ -22,7 +22,7 @@ act::proc::KinectProcNode::KinectProcNode() : ProcNodeBase("Kinect", NT_INPUT)
 {
 	m_drawSize = ivec2(336, 189);
 
-	m_kinectImageInPort = InputPort<cv::UMat>::create(PT_IMAGE, "RGB", [&](cv::UMat image) {
+	m_kinectImageInPort = createImageInput("RGB", [&](cv::UMat image) {
 		if (image.rows == 0)
 			return;
 
@@ -30,9 +30,9 @@ act::proc::KinectProcNode::KinectProcNode() : ProcNodeBase("Kinect", NT_INPUT)
 			onRGBImage(image);
 
 		m_kinectImageOutPort->send(image);
-		});
+	}, false);
 
-	m_kinectDepthInPort = InputPort<cv::UMat>::create(PT_IMAGE, "Depth", [&](cv::UMat image) {
+	m_kinectDepthInPort = createImageInput("Depth", [&](cv::UMat image) {
 		if (image.rows == 0)
 			return;
 
@@ -78,9 +78,9 @@ act::proc::KinectProcNode::KinectProcNode() : ProcNodeBase("Kinect", NT_INPUT)
 		cv::applyColorMap(filled, visual, cv::COLORMAP_VIRIDIS);
 		m_kinectDepthVisualizedOutPort->send(visual);
 		*/
-		});
+		}, false);
 
-	m_kinectInfraRedInPort = InputPort<cv::UMat>::create(PT_IMAGE, "IR", [&](cv::UMat image) {
+	m_kinectInfraRedInPort = createImageInput("IR", [&](cv::UMat image) {
 		if (image.rows == 0)
 			return;
 
@@ -88,9 +88,9 @@ act::proc::KinectProcNode::KinectProcNode() : ProcNodeBase("Kinect", NT_INPUT)
 			onIRImage(image);
 
 		m_kinectInfraRedOutPort->send(image);
-		});
+	}, false);
 
-	m_kinectBIMInPort = InputPort<cv::UMat>::create(PT_IMAGE, "BodyIndexMap", [&](cv::UMat image) {
+	m_kinectBIMInPort = createImageInput("BodyIndexMap", [&](cv::UMat image) {
 		if (image.rows == 0)
 			return;
 
@@ -113,7 +113,7 @@ act::proc::KinectProcNode::KinectProcNode() : ProcNodeBase("Kinect", NT_INPUT)
 		m_kinectVisualizedBIMOutPort->send(visual);
 
 		m_kinectBIMOutPort->send(image);
-		});
+	}, false);
 
 	m_kinectBodiesInPort = InputPort<room::BodyRefList>::create(PT_BODYLIST, "Bodies", [&](room::BodyRefList bodies) {
 		//if (bodies.empty())
@@ -122,29 +122,20 @@ act::proc::KinectProcNode::KinectProcNode() : ProcNodeBase("Kinect", NT_INPUT)
 		if (m_isRecording || m_isPreparedForRecording)
 			onBodies(bodies);
 		m_kinectBodiesOutPort->send(bodies);
-		});
+	});
 
-	m_kinectImageOutPort = OutputPort<cv::UMat>::create(PT_IMAGE, "RGB");
-	m_kinectDepthRawOutPort = OutputPort<cv::UMat>::create(PT_IMAGE, "raw Depth");
-	m_kinectDepthOutPort = OutputPort<cv::UMat>::create(PT_IMAGE, "Depth");
-	m_kinectDepthFilledOutPort = OutputPort<cv::UMat>::create(PT_IMAGE, "filled Depth");
-	m_kinectDepthVisualizedOutPort = OutputPort<cv::UMat>::create(PT_IMAGE, "visualized Depth");
-	m_kinectInfraRedOutPort = OutputPort<cv::UMat>::create(PT_IMAGE, "IR");
-	m_kinectBIMOutPort = OutputPort<cv::UMat>::create(PT_IMAGE, "BodyIndexMap");
-	m_kinectVisualizedBIMOutPort = OutputPort<cv::UMat>::create(PT_IMAGE, "visualized BodyIndexMap");
+	m_kinectImageOutPort = createImageOutput("RGB");
+	m_kinectDepthRawOutPort = createImageOutput("raw Depth");
+	m_kinectDepthOutPort = createImageOutput("Depth");
+	m_kinectDepthFilledOutPort = createImageOutput("filled Depth");
+	m_kinectDepthVisualizedOutPort = createImageOutput("visualized Depth");
+	m_kinectInfraRedOutPort = createImageOutput("IR");
+	m_kinectBIMOutPort = createImageOutput("BodyIndexMap");
+	m_kinectVisualizedBIMOutPort = createImageOutput("visualized BodyIndexMap");
+	m_kinectFOVPort = createVec2Output("FOV");
+
 	m_kinectBodiesOutPort = OutputPort<room::BodyRefList>::create(PT_BODYLIST, "Bodies");
-	m_kinectFOVPort = OutputPort<ci::vec2>::create(PT_VEC2, "FOV");
-
-	m_outputPorts.push_back(m_kinectImageOutPort);
-	m_outputPorts.push_back(m_kinectDepthOutPort);
-	m_outputPorts.push_back(m_kinectDepthRawOutPort);
-	m_outputPorts.push_back(m_kinectDepthFilledOutPort);
-	m_outputPorts.push_back(m_kinectDepthVisualizedOutPort);
-	m_outputPorts.push_back(m_kinectInfraRedOutPort);
-	m_outputPorts.push_back(m_kinectBIMOutPort);
-	m_outputPorts.push_back(m_kinectVisualizedBIMOutPort);
 	m_outputPorts.push_back(m_kinectBodiesOutPort);
-	m_outputPorts.push_back(m_kinectFOVPort);
 
 	m_kinectImageOutPort->setConnectionCB([&]() {if (m_kinect) m_kinect->setIsCapturingImage(true); });
 	m_kinectImageOutPort->setDisconnectionCB([&]() {if (m_kinect) m_kinect->setIsCapturingImage(false); });

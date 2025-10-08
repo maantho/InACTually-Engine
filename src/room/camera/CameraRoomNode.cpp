@@ -17,6 +17,7 @@
 
 #include "roompch.hpp"
 #include "camera/CameraRoomNode.hpp"
+#include "PortMsg.hpp"
 
 #include "computing/DepthDetector.hpp"
 
@@ -34,7 +35,7 @@ act::room::CameraRoomNode::CameraRoomNode(CameraDeviceRef camera, std::string na
 	}*/
 	m_displaySize = ivec2(m_camera->getCaptureSize().x * 0.25, m_camera->getCaptureSize().y * 0.25);
 
-	m_cameraImagePort = act::proc::OutputPort<cv::UMat>::create(act::proc::PT_IMAGE, "cameraImage");
+	m_cameraImagePort = proc::ImageOutputPort::create(act::proc::PT_IMAGE, "cameraImage");
 
 	m_cameraPersp = ci::CameraPersp(m_camera->getCaptureSize().x, m_camera->getCaptureSize().y, 70, 0.1f, 5.0f);
 	m_cameraPersp.setEyePoint(vec3(0.0f));
@@ -57,7 +58,7 @@ act::room::CameraRoomNode::CameraRoomNode(ci::Capture::DeviceRef deviceRef, std:
 {
 	m_camera = CameraDevice::create(deviceRef);
 
-	m_cameraImagePort = act::proc::OutputPort<cv::UMat>::create(act::proc::PT_IMAGE, "cameraImage");
+	m_cameraImagePort = proc::ImageOutputPort::create(act::proc::PT_IMAGE, "cameraImage");
 
 	m_cameraPersp = ci::CameraPersp(m_camera->getCaptureSize().x, m_camera->getCaptureSize().y, 70, 0.1f, 5.0f);
 	m_cameraPersp.setEyePoint(vec3(0.0f));

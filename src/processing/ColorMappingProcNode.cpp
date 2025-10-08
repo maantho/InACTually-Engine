@@ -25,18 +25,11 @@ act::proc::ColorMappingProcNode::ColorMappingProcNode() : ProcNodeBase("ColorMap
 	init = true;
 	 
 
-	auto hue = InputPort<float>::create(PT_NUMBER, "hue", [&](float num) { this->onHue(num); });
-	m_inputPorts.push_back(hue);
+	auto hue = createNumberInput("hue", [&](float num) { this->onHue(num); });
+	auto saturation = createNumberInput("saturation", [&](float num) { this->onSaturation(num); });
+	auto lightness = createNumberInput("lightness", [&](float num) { this->onLightness(num); });
 
-	auto saturation = InputPort<float>::create(PT_NUMBER, "saturation", [&](float num) { this->onSaturation(num); });
-	m_inputPorts.push_back(saturation);
-
-	auto lightness = InputPort<float>::create(PT_NUMBER, "lightness", [&](float num) { this->onLightness(num); });
-	m_inputPorts.push_back(lightness);
-
-
-	m_colorPort = OutputPort<Color>::create(PT_COLOR, "color");
-	m_outputPorts.push_back(m_colorPort);
+	m_colorPort = createColorOutput("color");
 
 
 	m_hue = 0.0;
@@ -70,6 +63,10 @@ void act::proc::ColorMappingProcNode::draw() {
 
 ci::Json act::proc::ColorMappingProcNode::toParams() {
 	ci::Json json = ci::Json::object();
+
+	json["hue"] = m_hue;
+	json["saturation"] = m_saturation;
+	json["lightness"] = m_lightness;
 	 
 	return json;
 }

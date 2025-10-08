@@ -27,32 +27,32 @@ act::proc::OSCMsgProcNode::OSCMsgProcNode() : ProcNodeBase("OSCMsg") {
 
 	m_msgName = "/value";  // TODO: maybe remove this, for not keeping OSCMsgNode in WebUIServer (ports will survive in connection-chain)
 	
-	auto number = InputPort<float>::create(PT_NUMBER, "number", [&](float n) {
+	auto number = createNumberInput("number", [&](float n) {
 		auto osc = ci::osc::Message(m_msgName);
 		osc.append(n);
 		m_oscPort->send(osc);
 	});
 
-	auto text = InputPort<std::string>::create(PT_TEXT, "text", [&](std::string t) {
+	auto text = createTextInput("text", [&](std::string t) {
 		auto osc = ci::osc::Message(m_msgName);
 		osc.append(t);
 		m_oscPort->send(osc);
 	});
 
-	auto boolean = InputPort<bool>::create(PT_BOOL, "bool", [&](bool b) {
+	auto boolean = createBoolInput("bool", [&](bool b) {
 		auto osc = ci::osc::Message(m_msgName);
 		osc.append(b);
 		m_oscPort->send(osc);
 	});
 
-	auto vec2D = InputPort<glm::vec2>::create(PT_VEC2, "vec2", [&](glm::vec2 v) {
+	auto vec2D = createVec2Input("vec2", [&](glm::vec2 v) {
 		auto osc = ci::osc::Message(m_msgName);
 		osc.append(v.x);
 		osc.append(v.y);
 		m_oscPort->send(osc);
 	});
 
-	auto vec3D = InputPort<glm::vec3>::create(PT_VEC3, "vec3", [&](glm::vec3 v) {
+	auto vec3D = createVec3Input("vec3", [&](glm::vec3 v) {
 		auto osc = ci::osc::Message(m_msgName);
 		osc.append(v.x);
 		osc.append(v.y);
@@ -60,7 +60,7 @@ act::proc::OSCMsgProcNode::OSCMsgProcNode() : ProcNodeBase("OSCMsg") {
 		m_oscPort->send(osc);
 	});
 
-	auto quaternion = InputPort<glm::quat>::create(PT_QUAT, "quat", [&](glm::quat q) {
+	auto quaternion = createQuatInput("quat", [&](glm::quat q) {
 		auto osc = ci::osc::Message(m_msgName);
 		osc.append(q.w);
 		osc.append(q.x);
@@ -69,13 +69,13 @@ act::proc::OSCMsgProcNode::OSCMsgProcNode() : ProcNodeBase("OSCMsg") {
 		m_oscPort->send(osc);
 	});
 
-	auto json = InputPort<ci::Json>::create(PT_JSON, "json", [&](ci::Json j) {
+	auto json = createJsonInput("json", [&](ci::Json j) {
 		auto osc = ci::osc::Message(m_msgName);
 		osc.append(j.dump());
 		m_oscPort->send(osc);
 	});
 
-	auto color = InputPort<ci::Color>::create(PT_COLOR, "color", [&](ci::Color c) {
+	auto color = createColorInput("color", [&](ci::Color c) {
 		auto osc = ci::osc::Message(m_msgName);
 		osc.append(c.r);
 		osc.append(c.g);
@@ -83,14 +83,14 @@ act::proc::OSCMsgProcNode::OSCMsgProcNode() : ProcNodeBase("OSCMsg") {
 		m_oscPort->send(osc);
 	});
 
-	auto stringfloat = InputPort<feature>::create(PT_FEATURE, "labeled number", [&](std::pair<std::string, float> sf) {
+	auto stringfloat = createFeatureInput("labeled number", [&](std::pair<std::string, float> sf) {
 		auto osc = ci::osc::Message(m_msgName);
 		osc.append(sf.first);
 		osc.append(sf.second);
 		m_oscPort->send(osc);
 	});
 
-	auto image = InputPort<cv::UMat>::create(PT_IMAGE, "image", [&](cv::UMat uMat) {
+	auto image = createImageInput("image", [&](cv::UMat uMat) {
 		std::string base64 = matToBase64(uMat.getMat(cv::ACCESS_FAST), ".jpg", 89, false, 1280);
 
 		int chunkSize = 2048;
@@ -140,16 +140,6 @@ act::proc::OSCMsgProcNode::OSCMsgProcNode() : ProcNodeBase("OSCMsg") {
 		}
 	});
 
-	m_inputPorts.push_back(number);
-	m_inputPorts.push_back(boolean);
-	m_inputPorts.push_back(text);
-	m_inputPorts.push_back(vec2D);
-	m_inputPorts.push_back(vec3D);
-	m_inputPorts.push_back(quaternion);
-	m_inputPorts.push_back(color);
-	m_inputPorts.push_back(stringfloat);
-	m_inputPorts.push_back(image);
-	m_inputPorts.push_back(json);
 	m_inputPorts.push_back(bodies);
 
 	m_allInputPorts.assign(m_inputPorts.begin(), m_inputPorts.end());

@@ -59,7 +59,7 @@ namespace act {
 			cv::VideoWriter					m_writer;
 
 			ImageOutputPortRef				m_cameraImageOutPort;
-			InputPortRef<cv::UMat>			m_cameraImageInPort;
+			ImageInputPortRef				m_cameraImageInPort;
 
 			void attachCamera(act::room::CameraRoomNodeRef camera);
 			act::room::CameraRoomNodeRef	m_cameraRoomNode;

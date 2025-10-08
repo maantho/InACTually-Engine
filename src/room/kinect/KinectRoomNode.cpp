@@ -17,6 +17,7 @@
 
 #include "roompch.hpp"
 #include "kinect/KinectRoomNode.hpp"
+#include "PortMsg.hpp"
 
 act::room::KinectRoomNode::KinectRoomNode(KinectDeviceRef kinect, std::string deviceName, std::string name, ci::vec3 position, ci::vec3 rotation, float radius, act::UID replyUID)
 	: RoomNodeBase(deviceName, position, rotation, radius, replyUID)
@@ -43,10 +44,10 @@ act::room::KinectRoomNode::KinectRoomNode(KinectDeviceRef kinect, std::string de
 	{
 	}
 
-	m_kinectImageOutPort	= act::proc::OutputPort<cv::UMat>::create(act::proc::PT_IMAGE, "kinectImage");
-	m_kinectDepthOutPort	= act::proc::OutputPort<cv::UMat>::create(act::proc::PT_IMAGE, "kinectDepth");
-	m_kinectIROutPort		= act::proc::OutputPort<cv::UMat>::create(act::proc::PT_IMAGE, "kinectIR");
-	m_kinectBIMOutPort		= act::proc::OutputPort<cv::UMat>::create(act::proc::PT_IMAGE, "kinectBIM");
+	m_kinectImageOutPort	= proc::ImageOutputPort::create(act::proc::PT_IMAGE, "kinectImage");
+	m_kinectDepthOutPort	= proc::ImageOutputPort::create(act::proc::PT_IMAGE, "kinectDepth");
+	m_kinectIROutPort		= proc::ImageOutputPort::create(act::proc::PT_IMAGE, "kinectIR");
+	m_kinectBIMOutPort		= proc::ImageOutputPort::create(act::proc::PT_IMAGE, "kinectBIM");
 
 	m_kinectBodiesOutPort	= act::proc::OutputPort<room::BodyRefList>::create(act::proc::PT_BODYLIST, "bodies");
 

@@ -26,11 +26,9 @@ act::proc::VideoPlayerProcNode::VideoPlayerProcNode() : ProcNodeBase("VideoPlaye
 	m_isPlaying = false;
 	m_isLooping = true;
 
-	auto trigger = InputPort<bool>::create(PT_BOOL, "fire", [&](bool event) { this->onTrigger(event); });
-	m_inputPorts.push_back(trigger);
+	auto trigger = createBoolInput("fire", [&](bool event) { this->onTrigger(event); });
 
-	m_videoImageOutPort = OutputPort<cv::UMat>::create(PT_IMAGE, "videoImage");
-	m_outputPorts.push_back(m_videoImageOutPort);
+	m_videoImageOutPort = createImageOutput("videoImage");
 }
 
 act::proc::VideoPlayerProcNode::~VideoPlayerProcNode() {

@@ -25,7 +25,7 @@ act::proc::VideoRecorderProcNode::VideoRecorderProcNode() : ProcNodeBase("VideoR
 	m_isRecording = false;
 	m_isSaveDialog = false;
 
-	m_videoImageInPort = InputPort<cv::UMat>::create(PT_IMAGE, "image", [&](cv::UMat image) { this->onImage(image); });
+	m_videoImageInPort = createImageInput("image", [&](cv::UMat image) { this->onImage(image); });
 	m_inputPorts.push_back(m_videoImageInPort);
 
 }

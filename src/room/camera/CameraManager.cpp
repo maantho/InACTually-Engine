@@ -176,7 +176,7 @@ act::room::CameraRoomNodeRef act::room::CameraManager::getCameraByIndex(int inde
 	return nullptr;
 }
 
-act::proc::OutputPortRef<cv::UMat> act::room::CameraManager::getCameraPort(act::UID cameraUID)
+act::proc::ImageOutputPortRef act::room::CameraManager::getCameraPort(act::UID cameraUID)
 {
 	auto nodeIter = std::find_if(m_nodes.begin(), m_nodes.end(),
 		[cameraUID](RoomNodeBaseRef node) {

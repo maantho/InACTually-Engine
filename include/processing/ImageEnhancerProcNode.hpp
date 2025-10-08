@@ -47,7 +47,7 @@ namespace act {
 		private:
 			ci::gl::Texture2dRef	m_texture;
 
-			OutputPortRef<cv::UMat>	m_imagePort;
+			ImageOutputPortRef	m_imagePort;
 
 			bool m_toGrayScale;
 			bool m_equalize;

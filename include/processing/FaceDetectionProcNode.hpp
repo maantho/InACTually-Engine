@@ -61,7 +61,7 @@ namespace act {
 			std::deque<std::vector<ci::Rectf>>		mFacesHistory;
 			int										mFaceHistorySize;
 
-			OutputPortRef<cv::UMat>	m_faceImagePort;
+			ImageOutputPortRef	m_faceImagePort;
 			OutputPortRef<bool>		m_faceAvailablePort;
 
 		}; using FaceDetectionProcNodeRef = std::shared_ptr<FaceDetectionProcNode>;

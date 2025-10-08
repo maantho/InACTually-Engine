@@ -9,7 +9,7 @@
 	Licensed under the MIT License.
 	See LICENSE file in the project root for full license information.
 
-	This file is created and substantially modified: 2022-2024
+	This file is created and substantially modified: 2022-2025
 
 	contributors:
 	Lars Engeln - mail@lars-engeln.de
@@ -34,6 +34,7 @@ act::proc::Audio3DPlayerProcNode::Audio3DPlayerProcNode() : ProcNodeBase("Audio3
 	m_isOpenDialog		= false;
 	m_isPlaying			= false;
 	m_isLooping			= false;
+	m_noTimestretch		= true;
 
 	m_falseCount		= 0;
 	m_countFalseUpTo	= 1;
@@ -45,21 +46,15 @@ act::proc::Audio3DPlayerProcNode::Audio3DPlayerProcNode() : ProcNodeBase("Audio3
 	addRPC("play", [&]() { return play(); });
 	addRPC("stop", [&]() { return stop(); });
 	
-	auto trigger	= InputPort<bool>::create(PT_BOOL,		"fire",		[&](bool event) { this->onTrigger(event); });
-	auto gain		= InputPort<bool>::create(PT_NUMBER,	"gain",		[&](bool event) { m_soundRoomNode->setVolume(audio::linearToDecibel(event)); });
-	auto position	= InputPort<vec3>::create(PT_VEC3,		"position", [&](vec3 event) { set3DPosition(event); });
-	auto speed		= InputPort<float>::create(PT_NUMBER,	"speed",	[&](float event) { setPlaySpeed(event); });
-	m_inputPorts.push_back(trigger);
-	m_inputPorts.push_back(gain);
-	m_inputPorts.push_back(position);
-	m_inputPorts.push_back(speed);
+	auto trigger	= createBoolInput("fire",		[&](bool event)  { this->onTrigger(event); });
+	auto gain		= createNumberInput("gain",		[&](float event)  { m_soundRoomNode->setVolume(audio::linearToDecibel(event)); });
+	auto position	= createVec3Input("position",	[&](vec3 event)  { set3DPosition(event); });
+	auto speed		= createNumberInput("speed",	[&](float event) { setPlaySpeed(event); });
 	
+	m_playPosPort	= createNumberOutput("playing at");
+	m_bufferPort	= createAudioOutput("buffer");
 
-	m_playPosPort	= OutputPort<float>::create(PT_NUMBER,	"playing at");
-	m_bufferPort	= OutputPort<ci::audio::BufferRef>::create(PT_AUDIO, "buffer");
-
-	m_outputPorts.push_back(m_playPosPort);
-	m_outputPorts.push_back(m_bufferPort);
+	m_currentVolumePort = createNumberOutput("current volume");
 
 	auto ctx = audio::Context::master();
 	//ctx->disable();
@@ -94,7 +89,7 @@ void act::proc::Audio3DPlayerProcNode::update() {
 			m_playPosition = m_soundRoomNode->getPlayPosition();
 			m_playPosPort->send(m_playPosition);
 		};
-		
+	
 
 		if (m_soundRoomNode->getBufferPlayer()->isEof()) {
 			m_playPosition = 0.0f;
@@ -110,6 +105,10 @@ void act::proc::Audio3DPlayerProcNode::update() {
 		}
 
 		m_soundRoomNode->update();
+
+		m_currentVolumePort->send(m_soundRoomNode->getCurrentVolume());
+		//m_currentVolumePort->send(std::clamp((m_soundRoomNode->getCurrentVolume() + 100) * 0.01f, 0.0f, 1.0f));
+
 	}
 }
 
@@ -154,12 +153,15 @@ void act::proc::Audio3DPlayerProcNode::draw() {
 	}
 
 	ImGui::SetNextItemWidth(m_drawSize.x);
-	if (ImGui::SliderFloat("speed", &m_playSpeed, 0.0f, 4.f)) {
+	if (ImGui::SliderFloat("speed", &m_playSpeed, 0.0f, 6.f)) {
 		setPlaySpeed(m_playSpeed);
 		prvntDrag = true;
 	}
 
-		
+	if (ImGui::Checkbox("noTimestretch", &m_noTimestretch)) {
+		m_soundRoomNode = m_audioMgr->createSoundFile(m_3DPosition, m_path, 0.2f, m_soundRoomNode->getName(), m_noTimestretch);
+
+	}
 
 	if (ImGui::Checkbox("looping", &m_isLooping)) {
 		m_soundRoomNode->loop(m_isLooping);
@@ -220,17 +222,17 @@ void act::proc::Audio3DPlayerProcNode::onTrigger(bool event) {
 			m_falseCount++;
 	}
 	
-	if (/*m_falseCount < m_countFalseUpTo &&*/ !m_isPlaying) {
-		stop();
+	if (event && !m_isPlaying) {
+		//stop();
 		//size_t positionFrames = floor(m_playPosition * m_soundRoomNode->getBufferPlayer()->getNumFrames());
 		play();
 		//m_soundRoomNode->getBufferPlayer()->seek(positionFrames);
 		
 		m_isPlaying = true;
 	}
-	else if (m_isPlaying) {
-		play();
-		//m_isPlaying = false;
+	else if (m_isPlaying && !event) {
+		stop();
+		m_isPlaying = false;
 	}
 }
 
@@ -247,7 +249,7 @@ bool act::proc::Audio3DPlayerProcNode::stop()
 	bool wasPlaying = m_isPlaying;
 	m_isPlaying = false;
 	m_soundRoomNode->stop();
-	m_playPosition = 0.0f;
+	//m_playPosition = 0.0f;
 	return !wasPlaying;
 }
 
@@ -260,7 +262,7 @@ void act::proc::Audio3DPlayerProcNode::setPlaySpeed(float speed)
 void act::proc::Audio3DPlayerProcNode::loadSound(std::filesystem::path path) {
 	if(path != "") {
 		try {
-			m_soundRoomNode = m_audioMgr->createSoundFile(m_3DPosition, path, 0.2f, path.filename().string());
+			m_soundRoomNode = m_audioMgr->createSoundFile(m_3DPosition, path, 0.2f, path.filename().string(), m_noTimestretch);
 			
 			m_soundRoomNode->setVolume(m_toVolume);
 			m_soundRoomNode->setFadeIn(m_fadeInPosition);
@@ -309,7 +311,8 @@ ci::Json act::proc::Audio3DPlayerProcNode::toParams() {
 	json["fadeInPosition"]  = m_fadeInPosition;
 	json["fadeOutPosition"] = m_fadeOutPosition;
 	json["playPosition"]	= m_playPosition;
-	json["length"]			= m_length;
+	json["length"] = m_length;
+	json["noTimestretch"]			= m_noTimestretch;
 	vec3 pos;
 	if (m_soundRoomNode) {
 		pos = m_soundRoomNode->getPosition();
@@ -331,10 +334,12 @@ void act::proc::Audio3DPlayerProcNode::fromParams(ci::Json json) {
 	float newY;
 	float newZ;
 
+	util::setValueFromJson(json, "noTimestretch", m_noTimestretch);
+
 	if (util::setValueFromJson(json, "path", m_path)) {
 		init();
 	};
-	if (util::setValueFromJson(json, "isplaying", shallPlay)) {
+	if (util::setValueFromJson(json, "isPlaying", shallPlay)) {
 		if (shallPlay != m_isPlaying) {
 			onTrigger(true);
 		};

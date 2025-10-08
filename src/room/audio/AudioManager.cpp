@@ -64,9 +64,9 @@ act::room::SoundRoomNodeRef act::room::AudioManager::createSound(vec3 position, 
 	return sound;
 }
 
-act::room::SoundFileRoomNodeRef act::room::AudioManager::createSoundFile(vec3 position, std::filesystem::path path, float radius, std::string name)
+act::room::SoundFileRoomNodeRef act::room::AudioManager::createSoundFile(vec3 position, std::filesystem::path path, float radius, std::string name, bool noTimestretch)
 {
-	auto sound = room::SoundFileRoomNode::create(position, path, radius, name);
+	auto sound = room::SoundFileRoomNode::create(position, path, radius, name, noTimestretch);
 	m_sounds.push_back(sound);
 	m_nodes.push_back(sound);
 	m_mixerMgr->connectSound(sound);

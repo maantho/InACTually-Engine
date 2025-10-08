@@ -22,8 +22,7 @@
 act::proc::SkeletonFilterProcNode::SkeletonFilterProcNode() : ProcNodeBase("SkeletonFilter") {
 	m_drawSize = ivec2(250, 250);
 
-	m_positionOutPort = OutputPort<vec3>::create(PT_VEC3, "Position");
-	m_outputPorts.push_back(m_positionOutPort);
+	m_positionOutPort = createVec3Output("Position");
 
 	auto skeleton = InputPort<std::tuple<uint32_t, k4abt_skeleton_t>>::create(PT_BODY, "Skeleton", [&](std::tuple<uint32_t, k4abt_skeleton_t> skeletonTuple) { this->onSkeleton(skeletonTuple); });
 	m_inputPorts.push_back(skeleton);

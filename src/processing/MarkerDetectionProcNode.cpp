@@ -30,16 +30,11 @@ act::proc::MarkerDetectionProcNode::MarkerDetectionProcNode() : ProcNodeBase("Ma
 	m_approximation = 20.0f;
 	m_distanceThreshold = 4.0f;
 	
-	auto image = InputPort<cv::UMat>::create(PT_IMAGE, "image", [&](cv::UMat mat) { this->onMat(mat); });
-	m_inputPorts.push_back(image);
+	auto image = createImageInput("image", [&](cv::UMat mat) { this->onMat(mat); });
 
-	m_markerPort = OutputPort<cv::UMat>::create(PT_IMAGE, "marker image");
-	m_tinyMarkerPort = OutputPort<cv::UMat>::create(PT_IMAGE, "thresholded image");
-	m_markerIDPort = OutputPort<float>::create(PT_NUMBER, "marker id");
-
-	m_outputPorts.push_back(m_markerPort);
-	m_outputPorts.push_back(m_tinyMarkerPort);
-	m_outputPorts.push_back(m_markerIDPort);
+	m_markerPort = createImageOutput("marker image");
+	m_tinyMarkerPort = createImageOutput("thresholded image");
+	m_markerIDPort = createNumberOutput("marker id");
 }
 
 act::proc::MarkerDetectionProcNode::~MarkerDetectionProcNode() {

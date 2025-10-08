@@ -26,16 +26,12 @@ act::proc::MultiBodyPositionsProcNode::MultiBodyPositionsProcNode() : ProcNodeBa
 		{
 			std::stringstream strstr;
 			strstr << "Position " << (i + 1);
-			auto positionOutPort = OutputPort<vec3>::create(PT_VEC3, strstr.str());
-			m_outputPorts.push_back(positionOutPort);
-			m_positionPorts.push_back(positionOutPort);
+			auto positionOutPort = createVec3Output(strstr.str());
 		}
 		{
 			std::stringstream strstr;
 			strstr << "Number " << (i + 1);
-			auto distanceOutPort = OutputPort<float>::create(PT_NUMBER, strstr.str());
-			m_outputPorts.push_back(distanceOutPort);
-			m_distancePorts.push_back(distanceOutPort);
+			auto distanceOutPort = createNumberOutput(strstr.str());
 		}
 	}
 

@@ -47,7 +47,7 @@ namespace act {
 			// void	draw() override;
 
 			act::room::SoundRoomNodeRef createSound(vec3 position, float radius, std::string name);
-			act::room::SoundFileRoomNodeRef createSoundFile(vec3 position, std::filesystem::path path, float radius, std::string name);
+			act::room::SoundFileRoomNodeRef createSoundFile(vec3 position, std::filesystem::path path, float radius, std::string name, bool noTimestretch);
 			room::SpeakerRoomNodeRef	addSpeaker(int channel);
 			room::SubwooferRoomNodeRef	addSubwoofer(int channel);
 			room::MicrophoneRoomNodeRef	addMicrophone(int channel);

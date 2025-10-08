@@ -26,10 +26,9 @@ act::proc::HeadProcNode::HeadProcNode() : ProcNodeBase("Head") {
 	m_horizontal = vec3(0.0f, 0.0f, 1.0f);
 	m_vertical = vec3(0.0f, 1.0f, 0.0f);
 
-	m_directionOutput = OutputPort<ci::vec3>::create(PT_VEC3, "direction");
+	m_directionOutput = createVec3Output("direction");
 	//m_orientation = OutputPort<ci::quat>::create(PT_QUAT, "orientation");
-	m_outputPorts.push_back(m_directionOutput);
-	//m_outputPorts.push_back(m_orientation);
+
 
 	auto skeleton = InputPort<std::tuple<uint32_t, k4abt_skeleton_t>>::create(PT_BODY, "Skeleton", [&](std::tuple<uint32_t, k4abt_skeleton_t> skeletonTuple) { onBody(std::get<1>(skeletonTuple)); });
 	m_inputPorts.push_back(skeleton);

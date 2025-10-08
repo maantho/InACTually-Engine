@@ -24,11 +24,9 @@
 act::proc::SpeedProcNode::SpeedProcNode() : ProcNodeBase("Speed") {
 	m_drawSize = ivec2(300, 300);
 
-	auto positionInput = InputPort<vec3>::create(PT_VEC3, "position", [&](vec3 pos) { this->onPosition(pos); });
-	m_inputPorts.push_back(positionInput);
+	auto positionInput = createVec3Input("position", [&](vec3 pos) { this->onPosition(pos); });
 	
-	m_speedPort = OutputPort<float>::create(PT_NUMBER, "speed");
-	m_outputPorts.push_back(m_speedPort);
+	m_speedPort = createNumberOutput("speed");
 	
 
 }

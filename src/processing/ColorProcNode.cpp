@@ -24,14 +24,12 @@ act::proc::ColorProcNode::ColorProcNode() : ProcNodeBase("Color") {
 
 	init = true;
 
-	m_colorPort = OutputPort<Color>::create(PT_COLOR, "color");
-	m_outputPorts.push_back(m_colorPort);
+	m_colorPort = createColorOutput("color");
 
-	auto triggerInput = InputPort<bool>::create(PT_BOOL, "trigger", [&](bool triggered) {
+	auto triggerInput = createBoolInput("trigger", [&](bool triggered) {
 		if (triggered)
 			m_colorPort->send(m_color);
 		});
-	m_inputPorts.push_back(triggerInput);
 }
 
 act::proc::ColorProcNode::~ColorProcNode() {

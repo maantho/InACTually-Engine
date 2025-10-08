@@ -35,16 +35,10 @@ act::proc::FaceDetectionProcNode::FaceDetectionProcNode() : ProcNodeBase("FaceDe
 	mFaceCascade.load(getAssetPath("3rd/haarcascade_cuda/haarcascade_frontalface_alt.xml").string());
 	mFaceHistorySize = 20;
 
-	m_faceImagePort = OutputPort<cv::UMat>::create(PT_IMAGE, "biggest face image");
-	m_outputPorts.push_back(m_faceImagePort);
+	m_faceImagePort = createImageOutput("biggest face image");
+	m_faceAvailablePort = createBoolOutput("face is available");
 
-	m_faceAvailablePort = OutputPort<bool>::create(PT_BOOL, "face is available");
-	m_outputPorts.push_back(m_faceAvailablePort);
-
-	auto image = InputPort<cv::UMat>::create(PT_IMAGE, "image", [&](cv::UMat mat) { this->onMat(mat); });
-	m_inputPorts.push_back(image);
-
-	
+	auto image = createImageInput("image", [&](cv::UMat mat) { this->onMat(mat); });
 }
 
 act::proc::FaceDetectionProcNode::~FaceDetectionProcNode() {

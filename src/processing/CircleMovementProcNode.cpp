@@ -26,8 +26,8 @@ act::proc::CircleMovementProcNode::CircleMovementProcNode() : ProcNodeBase("Circ
 	m_speed = 0.1f;
 	m_radius = 1.0f;
 
-	m_positionPort = OutputPort<vec3> ::create(PT_VEC3, "position");
-	m_outputPorts.push_back(m_positionPort);
+	m_positionPort = createVec3Output("position");
+
 }
 
 act::proc::CircleMovementProcNode::~CircleMovementProcNode() {

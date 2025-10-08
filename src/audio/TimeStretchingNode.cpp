@@ -185,4 +185,7 @@ void act::aio::TimeStretchingNode::process(ci::audio::Buffer* buffer) {
 	if (!m_isPaused) {
 		m_ringBuffer->read(buffer->getChannel(0), buffer->getNumFrames());
 	}
+	else {
+		m_currentPlayPosition = 0;
+	}
 }

@@ -24,7 +24,6 @@
 #include "camera/CameraDevice.hpp"
 #include "pointcloud/PointcloudRoomNode.hpp"
 
-
 using namespace ci;
 using namespace ci::app;
 
@@ -57,7 +56,7 @@ namespace act {
 			virtual ci::Json toParams() override;
 			virtual void fromParams(ci::Json json) override;
 
-			act::proc::OutputPortRef<cv::UMat> getCameraImagePort() { return m_cameraImagePort; }
+			std::shared_ptr<proc::OutputPort<proc::image, std::shared_ptr<CameraRoomNode>>> getCameraImagePort() { return m_cameraImagePort; }
 			std::string getDeviceName() { return m_camera->getName(); }
 			cv::Mat getRotMat() { return m_rotMat; }
 			void setRotMat(cv::Mat rotMat) { m_rotMat = rotMat;	}
@@ -85,7 +84,7 @@ namespace act {
 
 			ci::CameraPersp			m_cameraPersp;
 		
-			act::proc::OutputPortRef<cv::UMat> m_cameraImagePort;
+			std::shared_ptr<proc::OutputPort<proc::image, std::shared_ptr<CameraRoomNode>>> m_cameraImagePort;
 
 			bool					m_isDetectingMarkers	= true;
 			bool					m_isDetectingDepth		= false;

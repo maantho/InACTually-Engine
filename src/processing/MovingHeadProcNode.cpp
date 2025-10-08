@@ -27,19 +27,15 @@ act::proc::MovingHeadProcNode::MovingHeadProcNode() : ProcNodeBase("MovingHead",
 	m_lookAt = vec3(0.0f);
 	m_isLookingAt = false;
 
-	auto dimmer		= InputPort<float>::create(PT_NUMBER,		"dimmer",			[&](float dim) { this->onDimmer(dim); });
-	auto color		= InputPort<ci::Color>::create(PT_COLOR,	"color",			[&](ci::Color color) { this->onColor(color); });
-	auto islooking	= InputPort<bool>::create(PT_BOOL,			"isLookingAt",		[&](bool isLookingAt) { m_isLookingAt = isLookingAt; });
-	auto lookAt		= InputPort<vec3>::create(PT_VEC3,			"lookAt",			[&](vec3 lookAt) { this->onLookAt(lookAt); });
-	auto lookInDir	= InputPort<vec3>::create(PT_VEC3,			"lookInDirection",	[&](vec3 lookDir) { 
+	auto dimmer		= createNumberInput("dimmer",			[&](float dim) { this->onDimmer(dim); });
+	auto color		= createColorInput("color",				[&](ci::Color color) { this->onColor(color); });
+	auto islooking	= createBoolInput("isLookingAt",		[&](bool isLookingAt) { m_isLookingAt = isLookingAt; });
+	auto lookAt		= createVec3Input("lookAt",				[&](vec3 lookAt) { this->onLookAt(lookAt); });
+	auto lookInDir	= createVec3Input("lookInDirection",	[&](vec3 lookDir) { 
 		if(m_movingHead)
 			this->onLookAt(m_movingHead->getPosition() + (ci::normalize(lookDir) * 2.0f));
 	});
-	m_inputPorts.push_back(dimmer);
-	m_inputPorts.push_back(color);
-	m_inputPorts.push_back(islooking);
-	m_inputPorts.push_back(lookAt);
-	m_inputPorts.push_back(lookInDir);
+
 
 	if (m_movingHead) {
 		m_movingHead->setDimmer(m_dim);

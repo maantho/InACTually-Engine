@@ -9,7 +9,7 @@
 	Licensed under the MIT License.
 	See LICENSE file in the project root for full license information.
 
-	This file is created and substantially modified: 2021-2024
+	This file is created and substantially modified: 2021-2025
 
 	contributors:
 	Lars Engeln - mail@lars-engeln.de
@@ -43,21 +43,16 @@ act::proc::AudioPlayerProcNode::AudioPlayerProcNode() : ProcNodeBase("AudioPlaye
 
 	m_drawSize	= ivec2(400, 150);
 	
-	auto trigger = InputPort<bool>::create(PT_BOOL, "fire", [&](bool event) { this->onTrigger(event); });
-	auto gain = InputPort<float>::create(PT_NUMBER, "gain", [&](float event) { m_gain->setValue(event); m_volume = audio::linearToDecibel(event); });
-	auto speed = InputPort<float>::create(PT_NUMBER, "speed", [&](float event) { setPlaySpeed(event); });
-	m_inputPorts.push_back(trigger);
-	m_inputPorts.push_back(gain);
-	m_inputPorts.push_back(speed);
-	
-	//m_imagePort = OutputPort<cv::UMat>::create(PT_IMAGE, "pass-through image");
-	//m_outputPorts.push_back(m_imagePort);
+	auto trigger = createBoolInput("fire", [&](bool event) { this->onTrigger(event); });
+	auto gain = createNumberInput("gain", [&](float event) { m_gain->setValue(event); m_volume = audio::linearToDecibel(event); });
+	auto speed = createNumberInput("speed", [&](float event) { setPlaySpeed(event); });
 
-	m_audioOut = OutputPort<audio::NodeRef>::create(PT_AUDIONODE, "audioOut");
-	m_outputPorts.push_back(m_audioOut);
+	
+	//m_imagePort = createImageOutput("pass-through image");
+
+	m_audioOut = createAudioNodeOutput("audioOut");
 	// This output port is used to let the Frontend Observe, if the Player plays
-	m_isPlayingOut = OutputPort<bool>::create(PT_BOOL, "isPlayingOut");
-	m_outputPorts.push_back(m_isPlayingOut);
+	m_isPlayingOut = createBoolOutput("isPlayingOut");
 	//-----------------------------------------------------------------------------
 	auto ctx = audio::Context::master();
 	//ctx->disable();

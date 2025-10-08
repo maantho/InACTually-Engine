@@ -30,6 +30,8 @@
 
 #include "camera/CameraRoomNode.hpp"
 
+#include "PortMsg.hpp"
+
 
 namespace act {
 	namespace room {
@@ -52,7 +54,7 @@ namespace act {
 
 			act::room::CameraRoomNodeRef		getCamera(act::UID cameraUID);
 			act::room::CameraRoomNodeRef		getCameraByIndex(int index);
-			act::proc::OutputPortRef<cv::UMat>	getCameraPort(act::UID cameraUID);
+			act::proc::ImageOutputPortRef		getCameraPort(act::UID cameraUID);
 			std::vector<std::string>			getUsedCameraNames() { return m_usedDevicesNames; }
 
 			bool hasAvailableDevice(std::string deviceName);

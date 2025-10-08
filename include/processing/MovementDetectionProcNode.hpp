@@ -59,7 +59,7 @@ namespace act {
 
 			cv::UMat	m_previous;
 
-			OutputPortRef<cv::UMat>	m_imagePort;
+			ImageOutputPortRef	m_imagePort;
 			OutputPortRef<float>	m_movementPort;
 			OutputPortRef<bool>		m_isMovingPort;
 

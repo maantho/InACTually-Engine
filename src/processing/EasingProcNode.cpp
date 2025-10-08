@@ -28,14 +28,12 @@ act::proc::EasingProcNode::EasingProcNode() : ProcNodeBase("Easing") {
 	//m_tween = ci::Tween<float>();
 
 
-	m_valuePort = OutputPort<float> ::create(PT_NUMBER, "out");
-	m_outputPorts.push_back(m_valuePort);
+	m_valuePort = createNumberOutput("out");
 
-	auto valInput = InputPort<float>::create(PT_NUMBER, "in", [&](float value) {
+	auto valInput = createNumberInput("in", [&](float value) {
 		m_value = value;
 		m_valuePort->send(ease(m_value));
 		});
-	m_inputPorts.push_back(valInput);
 }
 
 act::proc::EasingProcNode::~EasingProcNode() {

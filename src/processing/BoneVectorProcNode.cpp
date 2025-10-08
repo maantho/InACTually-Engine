@@ -24,8 +24,7 @@ act::proc::BoneVectorProcNode::BoneVectorProcNode() : ProcNodeBase("BoneVector")
 
 	m_doNormalize = false;
 
-	m_positionOutPort = OutputPort<vec3>::create(PT_VEC3, "Position");
-	m_outputPorts.push_back(m_positionOutPort);
+	m_positionOutPort = createVec3Output("Position");
 
 	auto skeleton = InputPort<room::BodyRef>::create(PT_BODY, "Body", [&](room::BodyRef body) { this->onSkeleton(body); });
 	m_inputPorts.push_back(skeleton);

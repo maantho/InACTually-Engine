@@ -9,7 +9,7 @@
 	Licensed under the MIT License.
 	See LICENSE file in the project root for full license information.
 
-	This file is created and substantially modified: 2022
+	This file is created and substantially modified: 2022-2025
 
 	contributors:
 	Lars Engeln - mail@lars-engeln.de
@@ -29,10 +29,10 @@ namespace act {
 
 		class SoundFileRoomNode : public SoundRoomNode {
 		public:
-			SoundFileRoomNode(ci::vec3 position, std::filesystem::path path, float radius, std::string name = "");
+			SoundFileRoomNode(ci::vec3 position, std::filesystem::path path, float radius, std::string name = "", bool noTimestretch = true);
 			~SoundFileRoomNode();
 
-			static std::shared_ptr<SoundFileRoomNode> create(ci::vec3 position, std::filesystem::path path, float radius, std::string name = "") { return std::make_shared<SoundFileRoomNode>(position, path, radius, name); };
+			static std::shared_ptr<SoundFileRoomNode> create(ci::vec3 position, std::filesystem::path path, float radius, std::string name = "", bool noTimestretch = true) { return std::make_shared<SoundFileRoomNode>(position, path, radius, name, noTimestretch); };
 
 			std::string		getName() { return m_name; };
 
@@ -57,10 +57,13 @@ namespace act {
 			int getNumChannels()	{ return  (int)(m_bufferPlayerNode->getNumChannels());	};
 			ci::audio::BufferPlayerNodeRef getBufferPlayer() { return m_bufferPlayerNode; };
 
+			float getCurrentVolume() { return m_monitorNode->getVolume(); };
+
 			void setFadeIn(float fadeInPosition)   { m_fadeInPosition = fadeInPosition; }
 			void setFadeOut(float fadeOutPosition) { m_fadeOutPosition = fadeOutPosition; }
 
 			void setSpeed(float speed);
+			void setVolume(float volume, float rampDuration = 0.1f) override;
 
 		private: 
 			std::string m_name;
@@ -68,6 +71,9 @@ namespace act {
 			ci::audio::BufferPlayerNodeRef		m_bufferPlayerNode;
 
 			aio::TimeStrechingNodeRef			m_stretcherNode;
+			bool m_noTimestretch = true;
+
+			audio::MonitorNodeRef				m_monitorNode;
 
 			bool m_isPlaying = false;
 			bool m_isLooping = false;

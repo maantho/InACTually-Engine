@@ -20,7 +20,7 @@
 #include "RoomManagers.hpp"
 #include "procpch.hpp"
 
-
+#include "PortMsg.hpp"
 
 using namespace ci;
 using namespace ci::app;
@@ -48,9 +48,6 @@ namespace act {
 		{
 		public:
 			ProcNodeBase(std::string name, ProcNodeType type = ProcNodeType::NT_PROCESSOR) : m_name(name), m_title(name), m_nodeType(type), m_position(vec2(0,0)) {
-				m_visualOutputPort = OutputPort<cv::UMat>::create(PT_IMAGE, "visual");
-				m_valueOutputPort = OutputPort<ci::Json>::create(PT_JSON, "values");
-
 				setPosition(vec2(0, 0));
 			};
 			virtual ~ProcNodeBase() {
@@ -228,12 +225,47 @@ namespace act {
 			unsigned int m_outputNodeColor			= IM_COL32(util::Design::primaryColor().r * 255, util::Design::primaryColor().b * 255, util::Design::primaryColor().g * 255, 255);
 			unsigned int m_containerNodeColor		= IM_COL32(util::Design::primaryColor().g * 255, util::Design::primaryColor().b * 255, util::Design::primaryColor().r * 255, 255);
 
-			OutputPortRef<cv::UMat>	 m_visualOutputPort;
-			OutputPortRef<ci::Json>  m_valueOutputPort;
-
 			std::vector<PortBaseRef> m_inputPorts;
 			std::vector<PortBaseRef> m_outputPorts;
 
+
+			InputPortRef<ci::Json>					createJsonInput			(std::string label, std::function<void(ci::Json)> cb, bool display = true)				{ auto port = InputPort<ci::Json>::create(PT_JSON, label, cb);						if (display) m_inputPorts.push_back(port); return port; }
+			InputPortRef<bool>						createBoolInput			(std::string label, std::function<void(bool)> cb, bool display = true)					{ auto port = InputPort<bool>::create(PT_BOOL, label, cb);							if (display) m_inputPorts.push_back(port); return port; }
+			InputPortRef<number>					createNumberInput		(std::string label, std::function<void(number)> cb, bool display = true)				{ auto port = InputPort<number>::create(PT_NUMBER, label, cb);						if (display) m_inputPorts.push_back(port); return port; }
+			InputPortRef<std::vector<number>>		createNumberListInput	(std::string label, std::function<void(std::vector<number>)> cb, bool display = true)	{ auto port = InputPort<std::vector<number>>::create(PT_NUMBERLIST, label, cb);		if (display) m_inputPorts.push_back(port); return port; }
+			InputPortRef<vec2>						createVec2Input			(std::string label, std::function<void(vec2)> cb, bool display = true)					{ auto port = InputPort<vec2>::create(PT_VEC2, label, cb);							if (display) m_inputPorts.push_back(port); return port; }
+			InputPortRef<std::vector<vec2>>			createVec2ListInput		(std::string label, std::function<void(std::vector<vec2>)> cb, bool display = true)		{ auto port = InputPort<std::vector<vec2>>::create(PT_VEC2LIST, label, cb);			if (display) m_inputPorts.push_back(port); return port; }
+			InputPortRef<vec3>						createVec3Input			(std::string label, std::function<void(vec3)> cb, bool display = true)					{ auto port = InputPort<vec3>::create(PT_VEC3, label, cb);							if (display) m_inputPorts.push_back(port); return port; }
+			InputPortRef<std::vector<vec3>>			createVec3ListInput		(std::string label, std::function<void(std::vector<vec3>)> cb, bool display = true)		{ auto port = InputPort<std::vector<vec3>>::create(PT_VEC3LIST, label, cb);			if (display) m_inputPorts.push_back(port); return port; }
+			InputPortRef<quat>						createQuatInput			(std::string label, std::function<void(quat)> cb, bool display = true)					{ auto port = InputPort<quat>::create(PT_QUAT, label, cb);							if (display) m_inputPorts.push_back(port); return port; }
+			InputPortRef<ci::Color>					createColorInput		(std::string label, std::function<void(ci::Color)> cb, bool display = true)				{ auto port = InputPort<ci::Color>::create(PT_COLOR, label, cb);					if (display) m_inputPorts.push_back(port); return port; }
+			InputPortRef<std::vector<ci::Color>>	createColorListInput	(std::string label, std::function<void(std::vector<ci::Color>)> cb, bool display = true){ auto port = InputPort<std::vector<ci::Color>>::create(PT_COLORLIST, label, cb);	if (display) m_inputPorts.push_back(port); return port; }
+			InputPortRef<std::string>				createTextInput			(std::string label, std::function<void(std::string)> cb, bool display = true)			{ auto port = InputPort<std::string>::create(PT_TEXT, label, cb);					if (display) m_inputPorts.push_back(port); return port; }
+			ImageInputPortRef						createImageInput		(std::string label, std::function<void(image)> cb, bool display = true)					{ auto port = ImageInputPort::create(PT_IMAGE, label, cb);						if (display) m_inputPorts.push_back(port); return port; }
+			InputPortRef<ci::audio::BufferRef>		createAudioInput		(std::string label, std::function<void(ci::audio::BufferRef)> cb, bool display = true)	{ auto port = InputPort<ci::audio::BufferRef>::create(PT_AUDIO, label, cb);			if (display) m_inputPorts.push_back(port); return port; }
+			InputPortRef<ci::audio::NodeRef>		createAudioNodeInput	(std::string label, std::function<void(ci::audio::NodeRef)> cb, bool display = true)	{ auto port = InputPort<ci::audio::NodeRef>::create(PT_AUDIONODE, label, cb);		if (display) m_inputPorts.push_back(port); return port; }
+			InputPortRef<feature>					createFeatureInput		(std::string label, std::function<void(feature)> cb, bool display = true)				{ auto port = InputPort<feature>::create(PT_FEATURE, label, cb);					if (display) m_inputPorts.push_back(port); return port; }
+			InputPortRef<featureList>				createFeatureListInput	(std::string label, std::function<void(featureList)> cb, bool display = true)			{ auto port = InputPort<featureList>::create(PT_FEATURELIST, label, cb);			if (display) m_inputPorts.push_back(port); return port; }
+
+
+			OutputPortRef<ci::Json>					createJsonOutput		(std::string label, bool display = true) { auto port = OutputPort<ci::Json>::create(PT_JSON, label);					if (display) m_outputPorts.push_back(port); return port; }
+			OutputPortRef<bool>						createBoolOutput		(std::string label, bool display = true) { auto port = OutputPort<bool>::create(PT_BOOL, label);						if (display) m_outputPorts.push_back(port); return port; }
+			OutputPortRef<number>					createNumberOutput		(std::string label, bool display = true) { auto port = OutputPort<number>::create(PT_NUMBER, label);					if (display) m_outputPorts.push_back(port); return port; }
+			OutputPortRef<std::vector<number>>		createNumberListOutput	(std::string label, bool display = true) { auto port = OutputPort<std::vector<number>>::create(PT_NUMBERLIST, label);	if (display) m_outputPorts.push_back(port); return port; }
+			OutputPortRef<vec2>						createVec2Output		(std::string label, bool display = true) { auto port = OutputPort<vec2>::create(PT_VEC2, label);						if (display) m_outputPorts.push_back(port); return port; }
+			OutputPortRef<std::vector<vec2>>		createVec2ListOutput	(std::string label, bool display = true) { auto port = OutputPort<std::vector<vec2>>::create(PT_VEC2LIST, label);		if (display) m_outputPorts.push_back(port); return port; }
+			OutputPortRef<vec3>						createVec3Output		(std::string label, bool display = true) { auto port = OutputPort<vec3>::create(PT_VEC3, label);						if (display) m_outputPorts.push_back(port); return port; }
+			OutputPortRef<std::vector<vec3>>		createVec3ListOutput	(std::string label, bool display = true) { auto port = OutputPort<std::vector<vec3>>::create(PT_VEC3LIST, label);		if (display) m_outputPorts.push_back(port); return port; }
+			OutputPortRef<quat>						createQuatOutput		(std::string label, bool display = true) { auto port = OutputPort<quat>::create(PT_QUAT, label);						if (display) m_outputPorts.push_back(port); return port; }
+			OutputPortRef<ci::Color>				createColorOutput		(std::string label, bool display = true) { auto port = OutputPort<ci::Color>::create(PT_COLOR, label);					if (display) m_outputPorts.push_back(port); return port; }
+			OutputPortRef<std::vector<ci::Color>>	createColorListOutput	(std::string label, bool display = true) { auto port = OutputPort<std::vector<ci::Color>>::create(PT_COLORLIST, label);	if (display) m_outputPorts.push_back(port); return port; }
+			OutputPortRef<std::string>				createTextOutput		(std::string label, bool display = true) { auto port = OutputPort<std::string>::create(PT_TEXT, label);					if (display) m_outputPorts.push_back(port); return port; }
+			ImageOutputPortRef						createImageOutput		(std::string label, bool display = true) { auto port = ImageOutputPort::create(PT_IMAGE, label);						if (display) m_outputPorts.push_back(port); return port; }
+			OutputPortRef<ci::audio::BufferRef>		createAudioOutput		(std::string label, bool display = true) { auto port = OutputPort<ci::audio::BufferRef>::create(PT_AUDIO, label);		if (display) m_outputPorts.push_back(port); return port; }
+			OutputPortRef<ci::audio::NodeRef>		createAudioNodeOutput	(std::string label, bool display = true) { auto port = OutputPort<ci::audio::NodeRef>::create(PT_AUDIONODE, label);		if (display) m_outputPorts.push_back(port); return port; }
+			OutputPortRef<feature>					createFeatureOutput		(std::string label, bool display = true) { auto port = OutputPort<feature>::create(PT_FEATURE, label);					if (display) m_outputPorts.push_back(port); return port; }
+			OutputPortRef<featureList>				createFeatureListOutput	(std::string label, bool display = true) { auto port = OutputPort<featureList>::create(PT_FEATURELIST, label);			if (display) m_outputPorts.push_back(port); return port; }
+			
 		private:
 			std::string	m_name;
 

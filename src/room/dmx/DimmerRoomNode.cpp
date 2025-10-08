@@ -9,7 +9,7 @@
 	Licensed under the MIT License.
 	See LICENSE file in the project root for full license information.
 
-	This file is created and substantially modified: 2021
+	This file is created and substantially modified: 2021-2025
 
 	contributors:
 	Lars Engeln - mail@lars-engeln.de
@@ -81,6 +81,7 @@ void act::room::DimmerRoomNode::draw()
 
 void act::room::DimmerRoomNode::cleanUp()
 {
+	setDimmer(0.0f);
 }
 
 void act::room::DimmerRoomNode::drawSpecificSettings()
@@ -92,19 +93,26 @@ void act::room::DimmerRoomNode::drawSpecificSettings()
 ci::Json act::room::DimmerRoomNode::toParams()
 {
 	ci::Json json = ci::Json::object();
+	json["startAddress"] = getStartAddress();
+	json["fixtureName"] = getFixtureName();
+	json["dimmer"] = m_dimmer.getValue();
  
 	return json;
 }
 
 void act::room::DimmerRoomNode::fromParams(ci::Json json)
 {
-	m_isFixed = true;
- 
+	util::setValueFromJson(json, "dimmer", m_dimmer.value);
+	
+	int startAdress = 0;
+	if (util::setValueFromJson(json, "startAddress", startAdress)) {
+		setStartAddress(startAdress);
+	}
 }
  
 void act::room::DimmerRoomNode::setDimmer(float dim)
 {
 	m_dimmer.setValue(dim);
-	setValue("dimmer1", m_dimmer.getValue());
+	setValue("dimmer", m_dimmer.getValue() * 255);
 }
  

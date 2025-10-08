@@ -9,7 +9,7 @@
 	Licensed under the MIT License.
 	See LICENSE file in the project root for full license information.
 
-	This file is created and substantially modified: 2024
+	This file is created and substantially modified: 2024-2025
 
 	contributors:
 	Lars Engeln - mail@lars-engeln.de
@@ -28,7 +28,7 @@ act::proc::Audio3DProcNode::Audio3DProcNode() : ProcNodeBase("Audio3D", NT_OUTPU
 
 	m_drawSize = ivec2(400, 150);
 	
-	auto in = InputPort<ci::audio::NodeRef>::create(PT_AUDIONODE, "audio in", [&](ci::audio::NodeRef node) {
+	auto in = createAudioNodeInput("audio in", [&](ci::audio::NodeRef node) {
 		node >> m_soundRoomNode->getIn();
 	});
 	in->setConnectionCB([&]() {
@@ -38,17 +38,14 @@ act::proc::Audio3DProcNode::Audio3DProcNode() : ProcNodeBase("Audio3D", NT_OUTPU
 
 	});
 
-	auto gain = InputPort<bool>::create(PT_NUMBER, "gain", [&](bool event) {
+	auto gain = createNumberInput("gain", [&](bool event) {
 		m_volume = audio::linearToDecibel(event);
 		m_soundRoomNode->setVolume(m_volume); 
 	});
-	auto position = InputPort<vec3>::create(PT_VEC3, "position", [&](vec3 event) { set3DPosition(event); });
+	auto position = createVec3Input("position", [&](vec3 event) { set3DPosition(event); });
 
-	m_inputPorts.push_back(in);
-	m_inputPorts.push_back(gain);
-	m_inputPorts.push_back(position);
 
-	m_outPort = OutputPort<ci::audio::NodeRef>::create(PT_AUDIONODE, "audio out");
+	m_outPort = createAudioNodeOutput("audio out");
 	m_outPort->setConnectionCB([&]() {
 		m_outPort->send(m_soundRoomNode->getOut());
 	});
@@ -56,7 +53,6 @@ act::proc::Audio3DProcNode::Audio3DProcNode() : ProcNodeBase("Audio3D", NT_OUTPU
 
 	});
 
-	m_outputPorts.push_back(m_outPort);
 
 	auto ctx = audio::Context::master();
 	//ctx->disable();
@@ -134,7 +130,11 @@ void act::proc::Audio3DProcNode::fromParams(ci::Json json) {
 		set3DPosition(pos);
 	};
 
-	util::setValueFromJson(json, "volume", m_volume.value());
+	float vol = m_volume.value();
+	util::setValueFromJson(json, "volume", vol);
+	m_volume.value() = vol;
+	if (m_soundRoomNode)
+		m_soundRoomNode->setVolume(m_volume.value());
 	if (util::setValueFromJson(json, "tovolume", m_toVolume)) {
 		if(m_soundRoomNode)
 			m_soundRoomNode->setVolume(m_toVolume);

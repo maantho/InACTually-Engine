@@ -26,12 +26,9 @@ act::proc::BodyToSoundProcNode::BodyToSoundProcNode() : ProcNodeBase("BodyToSoun
 	auto body = InputPort<room::BodyRef>::create(PT_BODY, "Body", [&](room::BodyRef body) { this->onBody(body); });
 	m_inputPorts.push_back(body);
 
-	m_audioOutPort = OutputPort<audio::NodeRef>::create(PT_AUDIONODE, "audioNode");
-	m_outputPorts.push_back(m_audioOutPort);
-	m_localMovementPort = OutputPort<float>::create(PT_NUMBER, "localMovement");
-	m_outputPorts.push_back(m_localMovementPort);
-	m_globalMovementPort = OutputPort<float>::create(PT_NUMBER, "globalMovement");
-	m_outputPorts.push_back(m_globalMovementPort);
+	m_audioOutPort = createAudioNodeOutput("audioNode");
+	m_localMovementPort = createNumberOutput("localMovement");
+	m_globalMovementPort = createNumberOutput("globalMovement");
 
 	m_localMovement = 0.0f;
 	m_globalMovement = 0.0f;

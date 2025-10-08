@@ -27,8 +27,7 @@ act::proc::MicrophoneProcNode::MicrophoneProcNode() : ProcNodeBase("Microphone",
 	m_selectedInput = 0;
 
 	
-	m_audioNodeOutPort = OutputPort<ci::audio::NodeRef>::create(PT_AUDIONODE, "inputNode");
-	m_outputPorts.push_back(m_audioNodeOutPort);
+	m_audioNodeOutPort = createAudioNodeOutput("inputNode");
 
 	m_audioNodeOutPort->setConnectionCB([&]() {
 		if(m_microphone)

@@ -31,18 +31,11 @@ act::proc::MovementDetectionProcNode::MovementDetectionProcNode() : ProcNodeBase
 	m_useKNN = false;
 	m_movementThreshold = 0.0;
 
-	auto image = InputPort<cv::UMat>::create(PT_IMAGE, "image", [&](cv::UMat mat) { this->onMat(mat); });
-	m_inputPorts.push_back(image);
+	auto image = createImageInput("image", [&](cv::UMat mat) { this->onMat(mat); });
 
-	m_movementPort = OutputPort<float>::create(PT_NUMBER, "movement value");
-	m_imagePort = OutputPort<cv::UMat>::create(PT_IMAGE, "visualized difference");
-
-	m_isMovingPort = OutputPort<bool>::create(PT_BOOL, "movement over threshold");
-
-	m_outputPorts.push_back(m_movementPort);
-	m_outputPorts.push_back(m_imagePort);
-	m_outputPorts.push_back(m_isMovingPort);
-
+	m_movementPort = createNumberOutput("movement value");
+	m_imagePort = createImageOutput("visualized difference");
+	m_isMovingPort = createBoolOutput("movement over threshold");
 
 	init();
 }

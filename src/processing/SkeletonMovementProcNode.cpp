@@ -26,10 +26,8 @@ act::proc::SkeletonMovementProcNode::SkeletonMovementProcNode() : ProcNodeBase("
 	auto body = InputPort<room::BodyRef>::create(PT_BODY, "Body", [&](room::BodyRef body) { this->onBody(body); });
 	m_inputPorts.push_back(body);
 
-	m_localMovementPort = OutputPort<float> ::create(PT_NUMBER, "localMovement");
-	m_outputPorts.push_back(m_localMovementPort);
-	m_globalMovementPort = OutputPort<float> ::create(PT_NUMBER, "globalMovement");
-	m_outputPorts.push_back(m_globalMovementPort);
+	m_localMovementPort = createNumberOutput("localMovement");
+	m_globalMovementPort = createNumberOutput("globalMovement");
 
 	m_localMovement = 0.0f;
 	m_globalMovement = 0.0f;
