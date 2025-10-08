@@ -245,6 +245,7 @@
     <ClInclude Include="..\include\processing\BoneVectorProcNode.hpp" />
     <ClInclude Include="..\include\processing\CameraProcNode.hpp" />
     <ClInclude Include="..\include\processing\CircleMovementProcNode.hpp" />
+    <ClInclude Include="..\include\processing\ClockProcNode.hpp" />
     <ClInclude Include="..\include\processing\ColorMappingProcNode.hpp" />
     <ClInclude Include="..\include\processing\ColorProcNode.hpp" />
     <ClInclude Include="..\include\processing\ContainerProcNode.hpp" />
@@ -306,6 +307,7 @@
     <ClCompile Include="..\src\processing\BoneVectorProcNode.cpp" />
     <ClCompile Include="..\src\processing\CameraProcNode.cpp" />
     <ClCompile Include="..\src\processing\CircleMovementProcNode.cpp" />
+    <ClCompile Include="..\src\processing\ClockProcNode.cpp" />
     <ClCompile Include="..\src\processing\ColorMappingProcNode.cpp" />
     <ClCompile Include="..\src\processing\ColorProcNode.cpp" />
     <ClCompile Include="..\src\processing\ContainerProcNode.cpp" />
