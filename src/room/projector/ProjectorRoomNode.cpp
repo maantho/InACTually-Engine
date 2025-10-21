@@ -121,8 +121,13 @@ void act::room::ProjectorRoomNode::drawSpecificSettings()
 
 	//Calibration
 	if (ImGui::CollapsingHeader("Calibration")) {
-		ImGui::InputInt("Total Points", &m_totalPoints);
-		ImGui::InputInt("Total Rays", &m_totalCalibrationRays);
+		if (ImGui::InputInt("Total Points", &m_totalPoints)) {
+			if (m_totalPoints < 6) m_totalPoints = 6;
+		}
+		if (ImGui::InputInt("Total Rays", &m_totalCalibrationRays)) {
+			if (m_totalCalibrationRays < 4) m_totalCalibrationRays = 4;
+			if (m_totalCalibrationRays > 10) m_totalCalibrationRays = 10;
+		}
 		if (ImGui::Checkbox("Calibrate with HMD", &m_isCalibrating))
 		{
 			setIsCalibrating(m_isCalibrating);
