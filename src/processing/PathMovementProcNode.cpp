@@ -23,11 +23,9 @@ act::proc::PathMovementProcNode::PathMovementProcNode() : ProcNodeBase("PathMove
 
 	m_position = vec3(0.0f, 0.0f, 0.0f);
 
-	auto tIn = InputPort<float>::create(PT_NUMBER, "position on path", [&](float t) { evaluate(t); });
-	m_inputPorts.push_back(tIn);
+	auto tIn = createNumberInput("position on path", [&](float t) { evaluate(t); });
 
-	m_positionPort = OutputPort<vec3> ::create(PT_VEC3, "position");
-	m_outputPorts.push_back(m_positionPort);
+	m_positionPort = createVec3Output("position");
 }
 
 act::proc::PathMovementProcNode::~PathMovementProcNode() {

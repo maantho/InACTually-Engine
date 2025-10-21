@@ -25,18 +25,19 @@
 
 #include <functional>
 
-
+#ifndef incl_camRN
 #include "camera/CameraRoomNode.hpp"
+#define incl_camRN
+#endif // !1
+
+
 
  
 namespace act {
 	namespace proc {
-
-		
-		using ImageInputPort		= InputPort<cv::UMat, room::CameraRoomNodeRef>;
+		using ImageInputPort		= InputPort<image, room::CameraRoomNodeRef>;
 		using ImageInputPortRef		= std::shared_ptr<ImageInputPort>;
-		using ImageOutputPort		= OutputPort<cv::UMat, room::CameraRoomNodeRef>;
+		using ImageOutputPort		= OutputPort<image, room::CameraRoomNodeRef>;
 		using ImageOutputPortRef	= std::shared_ptr<ImageOutputPort>;
-
 	}
 }

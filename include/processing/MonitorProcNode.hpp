@@ -52,7 +52,7 @@ namespace act {
 			ci::ivec2 adaptSize(ci::ivec2 size);
 			float	m_displayScale;
 
-			OutputPortRef<cv::UMat>				m_imagePort;
+			ImageOutputPortRef				m_imagePort;
 			OutputPortRef<ci::gl::Texture2dRef>	m_texturePort;
 
 		}; using MonitorProcNodeRef = std::shared_ptr<MonitorProcNode>;

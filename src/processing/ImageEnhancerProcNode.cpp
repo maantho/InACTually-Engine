@@ -43,11 +43,8 @@ act::proc::ImageEnhancerProcNode::ImageEnhancerProcNode() : ProcNodeBase("ImageE
 	m_claheClip = 4;
 	m_clahe->setClipLimit(m_claheClip);
 	
-	auto image = InputPort<cv::UMat>::create(PT_IMAGE, "image", [&](cv::UMat mat) { this->onMat(mat); });
-	m_inputPorts.push_back(image);
-
-	m_imagePort = OutputPort<cv::UMat>::create(PT_IMAGE, "enhanced image");
-	m_outputPorts.push_back(m_imagePort);
+	auto image = createImageInput("image", [&](cv::UMat mat) { this->onMat(mat); });
+	m_imagePort = createImageOutput("enhanced image");
 }
 
 act::proc::ImageEnhancerProcNode::~ImageEnhancerProcNode() {

@@ -46,7 +46,7 @@ namespace act {
 			ci::ivec2															adaptSize(ci::ivec2 size);
 			float																m_displayScale;
 
-			OutputPortRef<cv::UMat>												m_imagePort;
+			ImageOutputPortRef												m_imagePort;
 			OutputPortRef<std::pair<std::string, float>>						m_emotionPort;
 
 			static bool															m_registered;

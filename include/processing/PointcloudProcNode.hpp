@@ -50,8 +50,8 @@ namespace act {
 			bool					m_scanWholeRoom;
 
 			OutputPortRef<act::room::Pointcloud> m_pointcloudOutPort;
-			InputPortRef<cv::UMat>  m_colorImageInPort;
-			InputPortRef<cv::UMat>	m_depthImageInPort;
+			ImageInputPortRef  m_colorImageInPort;
+			ImageInputPortRef	m_depthImageInPort;
 			InputPortRef<ci::vec2>	m_fovInPort;
 
 			cv::UMat m_colorImageCache;

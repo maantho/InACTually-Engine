@@ -64,21 +64,21 @@ namespace act {
 
 			ci::gl::Texture2dRef	m_captureTexture;
 
-			InputPortRef<cv::UMat>  m_kinectImageInPort;
-			InputPortRef<cv::UMat>  m_kinectDepthInPort;
-			InputPortRef<cv::UMat>  m_kinectInfraRedInPort;
-			InputPortRef<cv::UMat>  m_kinectBIMInPort;
+			ImageInputPortRef  m_kinectImageInPort;
+			ImageInputPortRef  m_kinectDepthInPort;
+			ImageInputPortRef  m_kinectInfraRedInPort;
+			ImageInputPortRef  m_kinectBIMInPort;
 
 			InputPortRef<room::BodyRefList> m_kinectBodiesInPort;
 
-			OutputPortRef<cv::UMat> m_kinectImageOutPort;
-			OutputPortRef<cv::UMat> m_kinectDepthRawOutPort;
-			OutputPortRef<cv::UMat> m_kinectDepthOutPort;
-			OutputPortRef<cv::UMat> m_kinectDepthFilledOutPort;
-			OutputPortRef<cv::UMat> m_kinectDepthVisualizedOutPort;
-			OutputPortRef<cv::UMat> m_kinectInfraRedOutPort;
-			OutputPortRef<cv::UMat> m_kinectBIMOutPort;
-			OutputPortRef<cv::UMat> m_kinectVisualizedBIMOutPort;
+			ImageOutputPortRef m_kinectImageOutPort;
+			ImageOutputPortRef m_kinectDepthRawOutPort;
+			ImageOutputPortRef m_kinectDepthOutPort;
+			ImageOutputPortRef m_kinectDepthFilledOutPort;
+			ImageOutputPortRef m_kinectDepthVisualizedOutPort;
+			ImageOutputPortRef m_kinectInfraRedOutPort;
+			ImageOutputPortRef m_kinectBIMOutPort;
+			ImageOutputPortRef m_kinectVisualizedBIMOutPort;
 			OutputPortRef<ci::vec2> m_kinectFOVPort;
 
 			OutputPortRef<room::BodyRefList> m_kinectBodiesOutPort;

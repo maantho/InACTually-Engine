@@ -259,7 +259,7 @@ void act::room::KinectManager::fromJson(ci::Json json)
 	}
 }
 
-act::proc::OutputPortRef<cv::UMat> act::room::KinectManager::getKinectPort(std::string kinectName, kinectImagePort port)
+act::proc::ImageOutputPortRef act::room::KinectManager::getKinectPort(std::string kinectName, kinectImagePort port)
 {
 	auto nodeIter = std::find_if(m_nodes.begin(), m_nodes.end(),
 		[kinectName](RoomNodeBaseRef node) {

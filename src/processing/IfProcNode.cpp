@@ -24,21 +24,15 @@
 act::proc::IfProcNode::IfProcNode() : ProcNodeBase("If") {
 	m_drawSize = ivec2(300, 300);
 
-	auto number = InputPort<float>::create(PT_NUMBER, "number", [&](float num) { this->onNumber(num); });
-	auto text = InputPort<std::string>::create(PT_TEXT, "text", [&](std::string text) { this->onText(text); });
-	auto feat = InputPort<feature>::create(PT_FEATURE, "feature", [&](feature f) { this->onFeature(f); });
-	auto featList = InputPort<featureList>::create(PT_FEATURELIST, "feature list", [&](featureList fl) { this->onFeatures(fl); });
-	auto vecCompare = InputPort<vec3>::create(PT_VEC3, "vec3", [&](vec3 pos) {this->onVec(pos); });
-	m_inputPorts.push_back(number);
-	m_inputPorts.push_back(text);
-	m_inputPorts.push_back(feat);
-	m_inputPorts.push_back(featList);
-	m_inputPorts.push_back(vecCompare);
+	auto number = createNumberInput("number", [&](float num) { this->onNumber(num); });
+	auto text = createTextInput("text", [&](std::string text) { this->onText(text); });
+	auto feat = createFeatureInput("feature", [&](feature f) { this->onFeature(f); });
+	auto featList = createFeatureListInput("feature list", [&](featureList fl) { this->onFeatures(fl); });
+	auto vecCompare = createVec3Input("vec3", [&](vec3 pos) {this->onVec(pos); });
+
 	
-	m_resultPort = OutputPort<bool>::create(PT_BOOL, "result");
-	m_outputPorts.push_back(m_resultPort);
-	m_resultPort_neg = OutputPort<bool>::create(PT_BOOL, "result negated");
-	m_outputPorts.push_back(m_resultPort_neg);
+	m_resultPort = createBoolOutput("result");
+	m_resultPort_neg = createBoolOutput("result negated");
 	
 	m_compareOptions.push_back("==");
 	m_compareOptions.push_back("!=");

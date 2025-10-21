@@ -46,8 +46,8 @@ namespace act {
 			ci::gl::Texture2dRef	m_texture;
 			float	m_displayScale;
 
-			OutputPortRef<cv::UMat>		m_markerPort;
-			OutputPortRef<cv::UMat>		m_tinyMarkerPort;
+			ImageOutputPortRef		m_markerPort;
+			ImageOutputPortRef		m_tinyMarkerPort;
 			OutputPortRef<float>			m_markerIDPort;
 
 			int		m_min, m_max;

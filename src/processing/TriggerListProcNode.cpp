@@ -25,7 +25,7 @@ act::proc::TriggerListProcNode::TriggerListProcNode() : ProcNodeBase("TriggerLis
 	init = true;
 
 
-	m_fireInputPort = InputPort<bool>::create(PT_BOOL, "fire", [&](bool triggered) { 
+	m_fireInputPort = createBoolInput("fire", [&](bool triggered) { 
 		if (triggered && !m_isTriggering) {
 			fireTrigger(); 
 			m_isTriggering = true;
@@ -34,16 +34,10 @@ act::proc::TriggerListProcNode::TriggerListProcNode() : ProcNodeBase("TriggerLis
 			m_isTriggering = false;
 		}
 	});
-	m_inputPorts.push_back(m_fireInputPort);
 
-	m_stepUpInputPort = InputPort<bool>::create(PT_BOOL, "step up", [&](bool triggered) { if (triggered) stepUp(); });
-	m_inputPorts.push_back(m_stepUpInputPort);
-
-	m_stepDownInputPort = InputPort<bool>::create(PT_BOOL, "step down", [&](bool triggered){ if (triggered) stepDown(); });
-	m_inputPorts.push_back(m_stepDownInputPort);
-
-	m_resetInputPort = InputPort<bool>::create(PT_BOOL, "reset", [&](bool triggered) { if (triggered) reset(); });
-	m_inputPorts.push_back(m_resetInputPort);
+	m_stepUpInputPort = createBoolInput("step up", [&](bool triggered) { if (triggered) stepUp(); });
+	m_stepDownInputPort = createBoolInput("step down", [&](bool triggered){ if (triggered) stepDown(); });
+	m_resetInputPort = createBoolInput("reset", [&](bool triggered) { if (triggered) reset(); });
 }
 
 act::proc::TriggerListProcNode::~TriggerListProcNode() {
@@ -166,9 +160,8 @@ void act::proc::TriggerListProcNode::fromParams(ci::Json json) {
 		std::string name = t["name"];
 		std::string caption = t["caption"];
 
-		auto port = OutputPort<bool>::create(PT_BOOL, name);
+		auto port = createBoolOutput( name);
 		port->setCaption(caption);
-		m_outputPorts.push_back(port);
 	}
 }
 
@@ -212,7 +205,7 @@ void act::proc::TriggerListProcNode::reset()
 
 void act::proc::TriggerListProcNode::addTrigger(int index)
 {
-	auto port = OutputPort<bool>::create(PT_BOOL, "Trigger" + UniqueIDBase().getUID());
+	auto port = createBoolOutput("Trigger" + UniqueIDBase().getUID(), false);
 	port->setCaption("new Trigger");
 	
 	if (index >= 0 && index < m_outputPorts.size())

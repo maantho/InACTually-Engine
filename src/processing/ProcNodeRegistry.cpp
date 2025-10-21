@@ -18,9 +18,11 @@
 #include "ProcNodeRegistry.hpp"
 
 #include "Audio3DPlayerProcNode.hpp"
+#include "Audio3DPlayerTimestretchProcNode.hpp"
 #include "Audio3DProcNode.hpp"
 #include "AudioInProcNode.hpp"
 #include "AudioPlayerProcNode.hpp"
+#include "AFSynthProcNode.hpp"
 #include "SpectrumProcNode.hpp"
 #include "BackgroundSubstractionProcNode.hpp"
 #include "BlobDetectionProcNode.hpp"
@@ -35,11 +37,13 @@
 #include "CameraProcNode.hpp"
 #include "JsonMsgProcNode.hpp"
 #include "OSCMsgProcNode.hpp"
+#include "OSCSplitterProcNode.hpp"
 #include "MarkerProcNode.hpp"
 #include "MicrophoneProcNode.hpp"
 #include "MonitorProcNode.hpp"
 #include "MultiBodyPositionsProcNode.hpp"
 #include "NetworkProcNode.hpp"
+#include "OSCRecieverProcNode.hpp"
 #include "OSCSenderProcNode.hpp"
 #include "VideoPlayerProcNode.hpp"
 #include "BodyTrackingProcNode.hpp"
@@ -60,6 +64,7 @@
 #include "PointcloudProcNode.hpp"
 #include "EasingProcNode.hpp"
 #include "TriggerListProcNode.hpp"
+#include "ClockProcNode.hpp"
 #include "ColorProcNode.hpp"
 #include "IfProcNode.hpp"
 #include "ImageEnhancerProcNode.hpp"
@@ -74,7 +79,7 @@ act::proc::ProcNodeRegistry::ProcNodeRegistry()
     act::proc::ProcNodeRegistry::add("", "Linker", act::proc::LinkerProcNode::create);
 
     act::proc::ProcNodeRegistry::add("Utility", "Color", act::proc::ColorProcNode::create);
-    act::proc::ProcNodeRegistry::add("Utility", "ColorMapper", act::proc::ColorMappingProcNode::create);
+    act::proc::ProcNodeRegistry::add("Utility", "ColorMapping", act::proc::ColorMappingProcNode::create);
     act::proc::ProcNodeRegistry::add("Utility", "If", act::proc::IfProcNode::create);
     act::proc::ProcNodeRegistry::add("Utility", "ImageEnhancer", act::proc::ImageEnhancerProcNode::create);
     act::proc::ProcNodeRegistry::add("Utility", "NumberEnhancer", act::proc::NumberEnhancerProcNode::create);
@@ -83,8 +88,10 @@ act::proc::ProcNodeRegistry::ProcNodeRegistry()
     act::proc::ProcNodeRegistry::add("Utility", "BackgroundSubstraction", act::proc::BackgroundSubstractionProcNode::create);
     act::proc::ProcNodeRegistry::add("Utility", "Noise", act::proc::NoiseProcNode::create);
 
+    act::proc::ProcNodeRegistry::add("Audio", "AFSynth", act::proc::AFSynthProcNode::create);
     act::proc::ProcNodeRegistry::add("Audio", "Audio3D", act::proc::Audio3DProcNode::create);
     act::proc::ProcNodeRegistry::add("Audio", "Audio3DPlayer", act::proc::Audio3DPlayerProcNode::create);
+    act::proc::ProcNodeRegistry::add("Audio", "Audio3DPlayerTimestretch", act::proc::Audio3DPlayerTimestretchProcNode::create);
     act::proc::ProcNodeRegistry::add("Audio", "AudioIn", act::proc::AudioInProcNode::create);
     act::proc::ProcNodeRegistry::add("Audio", "AudioPlayer", act::proc::AudioPlayerProcNode::create);
     act::proc::ProcNodeRegistry::add("Audio", "Spectrum", act::proc::SpectrumProcNode::create);
@@ -106,9 +113,11 @@ act::proc::ProcNodeRegistry::ProcNodeRegistry()
     act::proc::ProcNodeRegistry::add("general IO", "Microphone", act::proc::MicrophoneProcNode::create);
    
     act::proc::ProcNodeRegistry::add("Network", "JsonMsg", act::proc::JsonMsgProcNode::create);
-    act::proc::ProcNodeRegistry::add("Network", "Network", act::proc::NetworkProcNode::create);
+    act::proc::ProcNodeRegistry::add("Network", "JsonSender", act::proc::NetworkProcNode::create);
     act::proc::ProcNodeRegistry::add("Network", "OSCMsg", act::proc::OSCMsgProcNode::create);
+    act::proc::ProcNodeRegistry::add("Network", "OSCSplitter", act::proc::OSCSplitterProcNode::create);
     act::proc::ProcNodeRegistry::add("Network", "OSCSender", act::proc::OSCSenderProcNode::create);
+    act::proc::ProcNodeRegistry::add("Network", "OSCReciever", act::proc::OSCRecieverProcNode::create);
     
     act::proc::ProcNodeRegistry::add("Azure Kinect", "Kinect", act::proc::KinectProcNode::create);
     act::proc::ProcNodeRegistry::add("Azure Kinect", "SkeletonFilter", act::proc::SkeletonFilterProcNode::create);
@@ -132,6 +141,7 @@ act::proc::ProcNodeRegistry::ProcNodeRegistry()
 
     act::proc::ProcNodeRegistry::add("Timeline", "Easing", act::proc::EasingProcNode::create);
     act::proc::ProcNodeRegistry::add("Timeline", "TriggerList", act::proc::TriggerListProcNode::create);
+    act::proc::ProcNodeRegistry::add("Timeline", "Clock", act::proc::ClockProcNode::create);
 }
 
 bool act::proc::ProcNodeRegistry::add(std::string group, const std::string name, nodeCreateFunc funcCreate)

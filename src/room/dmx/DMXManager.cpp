@@ -118,7 +118,6 @@ ci::Json act::room::DMXManager::toJson()
 	for (auto&& node : m_nodes) {
 		auto device = std::dynamic_pointer_cast<act::room::DMXRoomNodeBase>(node);
 		auto nodeJson = node->toJson();
-		
 		nodes.push_back(nodeJson);
 	}
 	json["nodes"] = nodes;

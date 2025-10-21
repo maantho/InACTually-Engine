@@ -52,8 +52,8 @@ namespace act {
 
 			cv::UMat	m_previous;
 
-			OutputPortRef<cv::UMat>	m_imagePort;
-			OutputPortRef<cv::UMat>	m_flowPort;
+			ImageOutputPortRef	m_imagePort;
+			ImageOutputPortRef	m_flowPort;
 			OutputPortRef<float>		m_movementPort;
 
 		}; using FlowDetectionProcNodeRef = std::shared_ptr<FlowDetectionProcNode>;

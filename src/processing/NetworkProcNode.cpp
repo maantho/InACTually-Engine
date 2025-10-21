@@ -20,11 +20,9 @@
 
 act::proc::NetworkProcNode::NetworkProcNode() : ProcNodeBase("Network") {
 
-	auto image = InputPort<ci::Json>::create(PT_JSON, "json", [&](ci::Json json) { this->onJson(json); });
-	m_inputPorts.push_back(image);
+	auto image = createJsonInput("json", [&](ci::Json json) { this->onJson(json); });
 
-	//m_imagePort = OutputPort<cv::UMat>::create(PT_IMAGE, "pass-through image");
-	//m_outputPorts.push_back(m_imagePort);
+	//m_imagePort = createImageOutput("pass-through image");
 
 	m_port = 9002;
 	

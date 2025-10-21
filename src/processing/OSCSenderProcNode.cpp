@@ -22,7 +22,7 @@ act::proc::OSCSenderProcNode::OSCSenderProcNode() : ProcNodeBase("OSCSender", NT
 	m_drawSize = ivec2(200, 200);
 
 	auto osc = InputPort<ci::osc::Message>::create(PT_OSC, "osc", [&](ci::osc::Message osc) { this->onOSC(osc); });
-	m_inputPorts.push_back(osc);;
+	m_inputPorts.push_back(osc);
 
 	m_port = 10001;
 	m_addressString = "broadcast";

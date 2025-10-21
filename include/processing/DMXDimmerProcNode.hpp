@@ -9,7 +9,7 @@
 	Licensed under the MIT License.
 	See LICENSE file in the project root for full license information.
 
-	This file is created and substantially modified: 2022
+	This file is created and substantially modified: 2022-2025
 
 	contributors:
 	Lars Engeln - mail@lars-engeln.de
@@ -18,10 +18,10 @@
 #pragma once
 
 #include "ProcNodeBase.hpp"
+#include "room/dmx/DimmerRoomNode.hpp"
 
 using namespace ci;
 using namespace ci::app;
-
 
 namespace act {
 	namespace proc {
@@ -36,6 +36,7 @@ namespace act {
 
 			void update()			override;
 			void draw()				override;
+			void setup(act::room::RoomManagers roomMgrs) override;
 
 			ci::Json toParams() override;
 			void fromParams(ci::Json json) override;
@@ -43,6 +44,9 @@ namespace act {
 		private:
 			OutputPortRef<float>	m_dimPort;
 			float m_dim;
+			room::DimmerRoomNodeRef	m_dimmer;
+			int		m_selectedDimmer;
+			room::DMXManagerRef		m_dmxMgr;
 
 		}; using DMXDimmerProcNodeRef = std::shared_ptr<DMXDimmerProcNode>;
 

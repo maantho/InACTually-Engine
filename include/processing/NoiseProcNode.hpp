@@ -9,7 +9,7 @@
 	Licensed under the MIT License.
 	See LICENSE file in the project root for full license information.
 
-	This file is created and substantially modified: 2023
+	This file is created and substantially modified: 2023-2025
 
 	contributors:
 	Lars Engeln - mail@lars-engeln.de
@@ -50,6 +50,7 @@ namespace act {
 
 			number							m_noise;
 
+			float							m_off = false;
 			float							m_min;
 			float							m_max;
 			float							m_speed;

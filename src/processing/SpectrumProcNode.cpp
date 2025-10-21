@@ -26,20 +26,16 @@ act::proc::SpectrumProcNode::SpectrumProcNode() : ProcNodeBase("Spectrum") {
 
 	m_show = false;
 
-	m_spectrumOutPort = OutputPort<numberList>::create(PT_NUMBERLIST, "spectrum");
-	m_centroidOutPort = OutputPort<number>::create(PT_NUMBER, "centroid");
-	m_outputPorts.push_back(m_spectrumOutPort);
-	m_outputPorts.push_back(m_centroidOutPort);
+	m_spectrumOutPort = createNumberListOutput("spectrum");
+	m_centroidOutPort = createNumberOutput("centroid");
 
 
-	auto audioNodeIn = InputPort<audio::NodeRef>::create(
-		PT_AUDIONODE,
+	auto audioNodeIn = createAudioNodeInput(
 		"audioNode",
 		[&](audio::NodeRef audioNode) {
 		audioNode >> m_monitorSpectralNode;
 		}
 	);
-	m_inputPorts.push_back(audioNodeIn);
 
 }
 

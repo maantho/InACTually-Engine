@@ -51,15 +51,14 @@ act::proc::AudioInProcNode::AudioInProcNode() : ProcNodeBase("AudioIn") {
 	m_bufferPlayer >> m_spectralNode;
 	m_bufferPlayer >> m_volumeNode;
 
-	m_audioNodePort = OutputPort<audio::NodeRef>::create(PT_AUDIONODE, "audioNode");
-	m_outputPorts.push_back(m_audioNodePort);
+	m_audioNodePort = createAudioNodeOutput("audioNode");
 
-	m_sharpnessPort = createOutputPort("sharpness");
-	m_regularityPort = createOutputPort("regularity");
-	m_sizePort = createOutputPort("size");
-	m_temperaturePort = createOutputPort("temperature");
-	m_contrastPort = createOutputPort("contrast");
-	m_saturationPort = createOutputPort("saturation");
+	m_sharpnessPort		= createOutputPort("sharpness");
+	m_regularityPort	= createOutputPort("regularity");
+	m_sizePort			= createOutputPort("size");
+	m_temperaturePort	= createOutputPort("temperature");
+	m_contrastPort		= createOutputPort("contrast");
+	m_saturationPort	= createOutputPort("saturation");
 
 }
 
@@ -386,7 +385,6 @@ void act::proc::AudioInProcNode::fromParams(ci::Json json) {
 
 act::proc::OutputPortRef<float> act::proc::AudioInProcNode::createOutputPort(std::string featureName)
 {
-	auto port = OutputPort<float>::create(PT_NUMBER, featureName);
-	m_outputPorts.push_back(port);
+	auto port = createNumberOutput(featureName);
 	return port;
 }

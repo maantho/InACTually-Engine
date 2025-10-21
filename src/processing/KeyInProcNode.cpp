@@ -25,8 +25,7 @@ act::proc::KeyInProcNode::KeyInProcNode() : ProcNodeBase("KeyIn") {
 	m_key = ImGuiKey_Space;
 	init = true;
 
-	m_pressedPort = OutputPort<bool> ::create(PT_BOOL, "is pressed");
-	m_outputPorts.push_back(m_pressedPort);
+	m_pressedPort = createBoolOutput("is pressed");
 }
 
 act::proc::KeyInProcNode::~KeyInProcNode() {

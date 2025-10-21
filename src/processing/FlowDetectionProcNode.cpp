@@ -28,15 +28,11 @@ act::proc::FlowDetectionProcNode::FlowDetectionProcNode() : ProcNodeBase("FlowDe
 	m_visualize = false;
 	m_movementValue = 0.0f;
 
-	auto image = InputPort<cv::UMat>::create(PT_IMAGE, "image", [&](cv::UMat mat) { this->onMat(mat); });
-	m_inputPorts.push_back(image);
+	auto image = createImageInput("image", [&](cv::UMat mat) { this->onMat(mat); });
 
-	m_movementPort = OutputPort<float>::create(PT_NUMBER, "movement value");
-	m_flowPort = OutputPort<cv::UMat>::create(PT_IMAGE, "flow image");
-	m_imagePort = OutputPort<cv::UMat>::create(PT_IMAGE, "visualized flow");
-	m_outputPorts.push_back(m_movementPort);
-	m_outputPorts.push_back(m_flowPort);
-	m_outputPorts.push_back(m_imagePort);
+	m_movementPort = createNumberOutput("movement value");
+	m_flowPort = createImageOutput("flow image");
+	m_imagePort = createImageOutput("visualized flow");
 }
 
 act::proc::FlowDetectionProcNode::~FlowDetectionProcNode() {

@@ -31,16 +31,11 @@ act::proc::BlobDetectionProcNode::BlobDetectionProcNode() : ProcNodeBase("BlobDe
 
 	m_bgModel = cv::createBackgroundSubtractorMOG2(m_historyLength, m_threshold, m_detectShadows);
 
-	auto image = InputPort<cv::UMat>::create(PT_IMAGE, "image", [&](cv::UMat mat) { this->onMat(mat); });
-	m_inputPorts.push_back(image);
+	auto image = createImageInput("image", [&](cv::UMat mat) { this->onMat(mat); });
 
-	m_fgMaskPort = OutputPort<cv::UMat>::create(PT_IMAGE, "foreground mask");
-	m_fgCutoutPort = OutputPort<cv::UMat>::create(PT_IMAGE, "foreground cutout");
-	m_bgCutoutPort = OutputPort<cv::UMat>::create(PT_IMAGE, "background cutout");
-
-	m_outputPorts.push_back(m_fgMaskPort);
-	m_outputPorts.push_back(m_fgCutoutPort);
-	m_outputPorts.push_back(m_bgCutoutPort);
+	m_fgMaskPort = createImageOutput("foreground mask");
+	m_fgCutoutPort = createImageOutput("foreground cutout");
+	m_bgCutoutPort = createImageOutput("background cutout");
 }
 
 act::proc::BlobDetectionProcNode::~BlobDetectionProcNode() {

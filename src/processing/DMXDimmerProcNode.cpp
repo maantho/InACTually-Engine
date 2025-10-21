@@ -9,7 +9,7 @@
 	Licensed under the MIT License.
 	See LICENSE file in the project root for full license information.
 
-	This file is created and substantially modified: 2022
+	This file is created and substantially modified: 2022-2025
 
 	contributors:
 	Lars Engeln - mail@lars-engeln.de
@@ -23,14 +23,23 @@ act::proc::DMXDimmerProcNode::DMXDimmerProcNode() : ProcNodeBase("DMXDimmer") {
 
 	m_dim = 1.0f;
 
-	m_dimPort = OutputPort<float> ::create(PT_NUMBER, "dimmer");
-	m_outputPorts.push_back(m_dimPort);
+	m_dimPort = createNumberOutput("dimmer");
 
-	auto triggerInput = InputPort<bool>::create(PT_BOOL, "trigger", [&](bool triggered) {
+	auto triggerInput = createBoolInput("trigger", [&](bool triggered) {
 		if (triggered)
 			m_dimPort->send(m_dim);
-		});
-	m_inputPorts.push_back(triggerInput);
+	});
+
+	auto dimmerInput = createNumberInput("dimmer", [&](float dimmer) {
+		m_dim = dimmer;
+		m_dimPort->send(m_dim);
+		if (m_dimmer)
+			m_dimmer->setDimmer(m_dim);
+	});
+}
+
+void act::proc::DMXDimmerProcNode::setup(act::room::RoomManagers roomMgrs) {
+	m_dmxMgr = roomMgrs.dmxMgr;
 }
 
 act::proc::DMXDimmerProcNode::~DMXDimmerProcNode() {
@@ -49,6 +58,17 @@ void act::proc::DMXDimmerProcNode::draw() {
 	if (ImGui::SliderFloat("", &m_dim, 0.0f, 1.0f)) {
 		sliderUsed = true;
 		m_dimPort->send(m_dim);
+		if (m_dimmer)
+			m_dimmer->setDimmer(m_dim);
+	}
+
+	if (m_dmxMgr->getFixtureNames().empty())
+		ImGui::Text("No DMX devices have been set up.");
+	else {
+		ImGui::SetNextItemWidth(m_drawSize.x - ImGui::CalcTextSize("Dimmer").x);
+		if (ImGui::Combo("Dimmer", &m_selectedDimmer, m_dmxMgr->getFixtureNames())) {
+			m_dimmer = m_dmxMgr->getDimmerByIndex(m_selectedDimmer);
+		}
 	}
 
 	preventDrag(sliderUsed);
@@ -59,9 +79,16 @@ void act::proc::DMXDimmerProcNode::draw() {
 ci::Json act::proc::DMXDimmerProcNode::toParams() {
 	ci::Json json = ci::Json::object();
 	json["dim"] = m_dim;
+	json["selectedDimmer"] = m_selectedDimmer;
 	return json;
 }
 
 void act::proc::DMXDimmerProcNode::fromParams(ci::Json json) {
 	util::setValueFromJson(json, "dim", m_dim);
+	util::setValueFromJson(json, "selectedDimmer", m_selectedDimmer);
+	m_dimmer = m_dmxMgr->getDimmerByIndex(m_selectedDimmer);
+	if(m_dimmer)
+		m_dimmer->setDimmer(m_dim);
+
+	m_dimPort->send(m_dim);
 }

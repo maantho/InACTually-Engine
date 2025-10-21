@@ -24,11 +24,9 @@
 act::proc::NumberEnhancerProcNode::NumberEnhancerProcNode() : ProcNodeBase("NumberEnhancer") {
 	m_drawSize = ivec2(300, 300);
 
-	auto number = InputPort<float>::create(PT_NUMBER, "number", [&](float num) { this->onNumber(num); });
-	m_inputPorts.push_back(number);
+	auto number = createNumberInput("number", [&](float num) { this->onNumber(num); });
 	
-	m_numberPort = OutputPort<float>::create(PT_NUMBER, "enhanced number");
-	m_outputPorts.push_back(m_numberPort);
+	m_numberPort = createNumberOutput("enhanced number");
 	
 	m_historySize = 1;
 	m_history.resize(10, 0.0f);

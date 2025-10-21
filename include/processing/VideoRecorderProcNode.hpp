@@ -40,7 +40,7 @@ namespace act {
 			void update()			override;
 			void draw()				override;
 
-			InputPortRef<cv::UMat> getVideoInPort() { return m_videoImageInPort; };
+			ImageInputPortRef getVideoInPort() { return m_videoImageInPort; };
 			void saveVideo(std::string path, int fps = app::getFrameRate(), bool isColor = true);
 
 			void record();
@@ -55,7 +55,7 @@ namespace act {
 
 			ci::ivec2				m_videoSize;
 
-			InputPortRef<cv::UMat> m_videoImageInPort;
+			ImageInputPortRef m_videoImageInPort;
 
 			void onImage(cv::UMat image);
 

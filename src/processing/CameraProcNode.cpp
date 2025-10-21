@@ -26,17 +26,16 @@ act::proc::CameraProcNode::CameraProcNode() : ProcNodeBase("Camera", NT_INPUT) {
 	m_show = false;
 	m_selectedCamera = 0;
 
-	m_cameraImageInPort = InputPort<cv::UMat>::create(PT_IMAGE, "cameraImage", [&](cv::UMat image) {
+	m_cameraImageInPort = createImageInput("cameraImage", [&](cv::UMat image) {
 		if(m_cameraRoomNode)
 			m_cameraImageOutPort->send(image, m_cameraRoomNode);
 
 		if (m_show) {
 			m_captureTexture = gl::Texture2d::create(fromOcv(image));
 		}
-	});
+	}, false);
 
-	m_cameraImageOutPort = ImageOutputPort::create(PT_IMAGE, "cameraImage");
-	m_outputPorts.push_back(m_cameraImageOutPort);
+	m_cameraImageOutPort = createImageOutput("cameraImage");
 
 	m_cameraImageOutPort->setConnectionCB([]() {
 		// someone connected to port

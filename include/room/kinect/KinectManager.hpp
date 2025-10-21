@@ -29,6 +29,8 @@
 
 #include "pointcloud/PointcloudRoomNode.hpp"
 
+#include "PortMsg.hpp"
+
 namespace act {
 	namespace room {
 
@@ -65,7 +67,7 @@ namespace act {
 			virtual ci::Json toJson();
 			virtual void fromJson(ci::Json json);
 
-			act::proc::OutputPortRef<cv::UMat> getKinectPort(std::string kinectName, kinectImagePort port);
+			act::proc::ImageOutputPortRef getKinectPort(std::string kinectName, kinectImagePort port);
 			act::proc::OutputPortRef<room::BodyRefList> getBodyPortByName(std::string kinectName);
 			act::proc::OutputPortRef<room::BodyRefList> getBodyPort(UID uid);
 

@@ -28,6 +28,8 @@
 
 #include "pointcloud/PointcloudRoomNode.hpp"
 
+#include "PortMsg.hpp"
+
 using namespace ci;
 using namespace ci::app;
 
@@ -52,10 +54,10 @@ namespace act {
 
 			Pointcloud getWorldSpacePointCloud();
 
-			act::proc::OutputPortRef<cv::UMat> getKinectImagePort() { return m_kinectImageOutPort; }
-			act::proc::OutputPortRef<cv::UMat> getKinectDepthPort() { return m_kinectDepthOutPort; }
-			act::proc::OutputPortRef<cv::UMat> getKinectIRPort() { return m_kinectIROutPort; }
-			act::proc::OutputPortRef<cv::UMat> getKinectBIMPort() { return m_kinectBIMOutPort; }
+			act::proc::ImageOutputPortRef getKinectImagePort() { return m_kinectImageOutPort; }
+			act::proc::ImageOutputPortRef getKinectDepthPort() { return m_kinectDepthOutPort; }
+			act::proc::ImageOutputPortRef getKinectIRPort() { return m_kinectIROutPort; }
+			act::proc::ImageOutputPortRef getKinectBIMPort() { return m_kinectBIMOutPort; }
 			act::proc::OutputPortRef<room::BodyRefList> getBodyPort() { return m_kinectBodiesOutPort; }
 
 		private:
@@ -124,10 +126,10 @@ namespace act {
 
 			ci::CameraPersp			m_cameraPersp;
 
-			act::proc::OutputPortRef<cv::UMat>	m_kinectImageOutPort;
-			act::proc::OutputPortRef<cv::UMat>	m_kinectDepthOutPort;
-			act::proc::OutputPortRef<cv::UMat>	m_kinectIROutPort;
-			act::proc::OutputPortRef<cv::UMat>	m_kinectBIMOutPort;
+			act::proc::ImageOutputPortRef	m_kinectImageOutPort;
+			act::proc::ImageOutputPortRef	m_kinectDepthOutPort;
+			act::proc::ImageOutputPortRef	m_kinectIROutPort;
+			act::proc::ImageOutputPortRef	m_kinectBIMOutPort;
 
 			act::proc::OutputPortRef<room::BodyRefList>		m_kinectBodiesOutPort;
 

@@ -41,7 +41,7 @@ namespace act {
 			void draw()				override;
 
 			void onTrigger(bool event);
-			OutputPortRef<cv::UMat> getVideoOutPort() { return m_videoImageOutPort; };
+			ImageOutputPortRef getVideoOutPort() { return m_videoImageOutPort; };
 
 			ci::Json toParams() override;
 			void fromParams(ci::Json json) override;
@@ -57,7 +57,7 @@ namespace act {
 
 			ci::ivec2				m_videoSize;
 
-			OutputPortRef<cv::UMat> m_videoImageOutPort;
+			ImageOutputPortRef m_videoImageOutPort;
 
 			
 			std::string				m_path;

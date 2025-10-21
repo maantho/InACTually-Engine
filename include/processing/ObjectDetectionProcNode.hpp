@@ -44,8 +44,8 @@ namespace act {
 			ci::gl::Texture2dRef				m_texture;
 			float								m_displayScale;
 
-			OutputPortRef<cv::UMat>				m_imagePort;
-			OutputPortRef<cv::UMat>				m_detectionImagePort;
+			ImageOutputPortRef				m_imagePort;
+			ImageOutputPortRef				m_detectionImagePort;
 			OutputPortRef<featureList>			m_featureListPort;
 
 			float								m_minConfidence;

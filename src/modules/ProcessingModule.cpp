@@ -255,6 +255,7 @@ void act::mod::ProcessingModule::drawNodePool() {
 }
 
 void act::mod::ProcessingModule::drawCreateButton(std::string nodeName) {
+	ImGui::PushID(nodeName.c_str());
 	if (ImGui::Button(nodeName.c_str())) {
 
 		if (m_focusedContainerNode != nullptr) {
@@ -271,6 +272,7 @@ void act::mod::ProcessingModule::drawCreateButton(std::string nodeName) {
 			}
 		}
 	}
+	ImGui::PopID();
 };
 
 void act::mod::ProcessingModule::saveToFile(fs::path path) {

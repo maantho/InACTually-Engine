@@ -9,7 +9,7 @@
 	Licensed under the MIT License.
 	See LICENSE file in the project root for full license information.
 
-	This file is created and substantially modified: 2022
+	This file is created and substantially modified: 2022-2025
 
 	contributors:
 	Lars Engeln - mail@lars-engeln.de
@@ -26,7 +26,7 @@
 #include "cinder/audio/Utilities.h"
 #include "cinder/audio/Param.h"
 
-act::room::SoundFileRoomNode::SoundFileRoomNode(ci::vec3 position, std::filesystem::path path, float radius, std::string name)
+act::room::SoundFileRoomNode::SoundFileRoomNode(ci::vec3 position, std::filesystem::path path, float radius, std::string name, bool noTimestretch)
 	: SoundRoomNode(position, radius, name)
 {
 	setTriMesh(ci::TriMesh::create(ci::geom::Sphere()));
@@ -34,13 +34,18 @@ act::room::SoundFileRoomNode::SoundFileRoomNode(ci::vec3 position, std::filesyst
 	//m_gen = ci::audio::Context::master()->makeNode(new ci::audio::GenSineNode(440, ci::audio::Node::Format().autoEnable()));
 	//m_gen >> m_gain;
 	m_bufferPlayerNode = ci::audio::Context::master()->makeNode(new ci::audio::BufferPlayerNode());
+	auto monitorFormat = audio::MonitorSpectralNode::Format().fftSize(2048).windowSize(1024);
+	m_monitorNode = ci::audio::Context::master()->makeNode(new ci::audio::MonitorNode(monitorFormat));
+
+	m_noTimestretch = noTimestretch;
 
 	if(path.string().find(":") == std::string::npos)
 		path = ci::app::getAssetPath(path);
 	
 	loadFile(path);
 
-	// m_bufferPlayerNode >> m_gain;
+	m_bufferPlayerNode >> m_gain;
+	m_bufferPlayerNode >> m_monitorNode;
 
 	m_isLooping = false;
 	m_bufferPlayerNode->setLoopEnabled(m_isLooping);
@@ -112,7 +117,7 @@ void act::room::SoundFileRoomNode::draw()
 void act::room::SoundFileRoomNode::disconnectExternals()
 {
 	m_gain->disconnectAllOutputs();
-	m_bufferPlayerNode >> m_gain;
+	m_bufferPlayerNode >> m_gain >> m_monitorNode;
 }
 
 void act::room::SoundFileRoomNode::play()
@@ -127,19 +132,27 @@ void act::room::SoundFileRoomNode::play()
 		
 	setVolume(0.0f, 0.0f);
 	rampVolume(m_targetVolume, m_fadeInPosition * getSeconds());
-	//m_bufferPlayerNode->start();
+	
+	m_bufferPlayerNode->seekToTime(4.f);
+
 	if (m_stretcherNode)
 		m_stretcherNode->play();
+	else
+		m_bufferPlayerNode->start();
+	m_bufferPlayerNode->seekToTime(4.f);
 	m_isPlaying = true;
 }
 
 void act::room::SoundFileRoomNode::stop()
 {
 	m_isFading = false;
-	// m_bufferPlayerNode->stop();
+ 
+	
 	if(m_stretcherNode)
 		m_stretcherNode->pause();
-	setVolume(m_targetVolume);
+	else
+		m_bufferPlayerNode->stop();
+	//setVolume(m_targetVolume);
 	m_isPlaying = false;
 }
 
@@ -153,15 +166,18 @@ void act::room::SoundFileRoomNode::loadFile(fs::path path)
 {
 	try {
 		auto source = ci::audio::load(ci::loadFile(path), ci::audio::Context::master()->getSampleRate());
-		
+
 		ci::audio::BufferRef buffer = source->loadBuffer();
 		m_bufferPlayerNode->setBuffer(buffer);
 
-		m_gain->disconnectAll();
+		if (!m_noTimestretch) {
+			m_gain->disconnectAll();
 
-		auto ctx = audio::Context::master();
-		m_stretcherNode = ctx->makeNode(new aio::TimeStretchingNode(source, 120));
-		m_stretcherNode >> m_gain >> ctx->getOutput();
+			auto ctx = audio::Context::master();
+			m_stretcherNode = ctx->makeNode(new aio::TimeStretchingNode(source, 120));
+			m_stretcherNode >> m_gain >> ctx->getOutput();
+			m_gain >> m_monitorNode;
+		}
 	}
 	catch (...) {
 	}
@@ -199,4 +215,12 @@ void act::room::SoundFileRoomNode::setSpeed(float speed)
 	}
 	if(m_stretcherNode)
 		m_stretcherNode->setPlaybackSpeed(m_speed);
+}
+
+void act::room::SoundFileRoomNode::setVolume(float volume, float rampDuration)
+{
+	//m_targetVolume = volume;
+	ci::app::timeline().apply(&m_volume, volume, rampDuration).updateFn([&]() {
+		m_gain->setValue(audio::decibelToLinear(m_volume));
+	});
 }

@@ -47,17 +47,33 @@ namespace act {
 			{
 				m_connected = false;
 				m_receiver = std::make_shared<Receiver>(port);
-				try {
-					// Bind the receiver to the endpoint. This function may throw.
-					m_receiver->bind();
-				}
-				catch (const osc::Exception& ex) {
-					CI_LOG_E("Error binding: " << ex.what() << " val: " << ex.value());
-				}
+				
 #if USE_UDP
 				// UDP opens the socket and "listens" accepting any message from any endpoint. The listen
 				// function takes an error handler for the underlying socket. Any errors that would
 				// call this function are because of problems with the socket or with the remote message.
+				
+#endif
+			}
+
+			static std::shared_ptr<OSCReciever> create(uint16_t localPort) { return std::make_shared<OSCReciever>(localPort); }
+
+
+			void setListener(std::string address, osc::ReceiverBase::ListenerFn callback) {
+				m_receiver->setListener(address, callback);
+			}
+			void removeListener(std::string address) {
+				m_receiver->removeListener(address);
+			}
+
+			void listen() {
+				try{
+					// Bind the receiver to the endpoint. This function may throw.
+					m_receiver->bind();
+				}
+					catch (const osc::Exception& ex) {
+					CI_LOG_E("Error binding: " << ex.what() << " val: " << ex.value());
+				}
 				m_receiver->listen(
 					[this](asio::error_code error, protocol::endpoint endpoint) -> bool {
 						if (error) {
@@ -69,14 +85,6 @@ namespace act {
 							return true;
 						}
 					});
-#endif
-			}
-
-			void setListener(std::string address, osc::ReceiverBase::ListenerFn callback) {
-				m_receiver->setListener(address, callback);
-			}
-			void removeListener(std::string address) {
-				m_receiver->removeListener(address);
 			}
 
 			bool isConnected() {
@@ -89,5 +97,6 @@ namespace act {
 			bool m_connected;
 
 		};
+		using OSCRecieverRef = std::shared_ptr<OSCReciever>;
 	}
 }

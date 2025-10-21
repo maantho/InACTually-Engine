@@ -9,7 +9,7 @@
 	Licensed under the MIT License.
 	See LICENSE file in the project root for full license information.
 
-	This file is created and substantially modified: 2023
+	This file is created and substantially modified: 2023-2025
 
 	contributors:
 	Lars Engeln - mail@lars-engeln.de
@@ -29,16 +29,14 @@ act::proc::NoiseProcNode::NoiseProcNode() : ProcNodeBase("Noise") {
 
 	m_show = false;
 
-	auto min = InputPort<float>::create(PT_NUMBER, "min", [&](float min) { this->onMin(min); });
-	m_inputPorts.push_back(min);
-	auto max = InputPort<float>::create(PT_NUMBER, "max", [&](float max) { this->onMax(max); });
-	m_inputPorts.push_back(max);
+	auto min = createNumberInput("min", [&](float min) { this->onMin(min); });
+	auto max = createNumberInput("max", [&](float max) { this->onMax(max); });
 
-	auto speed = InputPort<float>::create(PT_NUMBER, "speed", [&](float speed) { this->onSpeed(speed); });
-	m_inputPorts.push_back(speed);
+	auto speed = createNumberInput("speed", [&](float speed) { this->onSpeed(speed); });
 
-	m_noiseOutPort = OutputPort<number>::create(PT_NUMBER, "noise");
-	m_outputPorts.push_back(m_noiseOutPort);
+	m_noiseOutPort = createNumberOutput("noise");
+
+	auto off = createBoolInput("off", [&](bool off) { m_off = !off; });
 }
 
 act::proc::NoiseProcNode::~NoiseProcNode() {}
@@ -52,6 +50,8 @@ void act::proc::NoiseProcNode::update() {
 	float perlin = std::clamp(m_perlin.fBm(ci::app::getElapsedSeconds() * 2.5f * m_speed + m_random) + 0.5f, low, high);
 	m_noise = perlin * amplitude + m_min;
 
+	if(m_off)
+		m_noise = 0.0f;
 	m_noiseOutPort->send(m_noise);
 }
 

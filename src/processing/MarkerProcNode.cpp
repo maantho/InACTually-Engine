@@ -22,12 +22,11 @@ act::proc::MarkerProcNode::MarkerProcNode() : ProcNodeBase("Marker") {
 	m_selectedMarker= 0;
 	m_drawSize = ci::ivec2(200, 100);
 
-	m_markerPositionInPort = InputPort<vec3>::create(PT_VEC3, "markerPosIn", [&](ci::vec3 position) {
+	m_markerPositionInPort = createVec3Input("markerPosIn", [&](ci::vec3 position) {
 		m_markerPositionOutPort->send(position);
-	});
+	}, false);
 
-	m_markerPositionOutPort = OutputPort<vec3>::create(PT_VEC3, "markerPosOut");
-	m_outputPorts.push_back(m_markerPositionOutPort);
+	m_markerPositionOutPort = createVec3Output("markerPosOut");
 
 }
 

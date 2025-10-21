@@ -9,7 +9,7 @@
 	Licensed under the MIT License.
 	See LICENSE file in the project root for full license information.
 
-	This file is created and substantially modified: 2022-2024
+	This file is created and substantially modified: 2022-2025
 
 	contributors:
 	Lars Engeln - mail@lars-engeln.de
@@ -58,10 +58,13 @@ namespace act {
 			ci::Anim<float>					m_volume;
 			float							m_toVolume;
 
+			OutputPortRef<float>			m_currentVolumePort;
+
 			float							m_fadeInPosition;
 			float							m_fadeOutPosition;
 
 			bool							m_isLooping;
+			bool							m_noTimestretch;
 
 			vec3							m_3DPosition;
 			void							set3DPosition(vec3 position);
