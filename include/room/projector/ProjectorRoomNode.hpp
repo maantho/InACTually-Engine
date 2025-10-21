@@ -160,9 +160,6 @@ namespace act {
 			int getCurrentRay();
 			void resetCorrespondences();
 
-			//using cv calibrate camera
-			//void calibrateCV();
-
 			//using dlt
 			void calibrateDLT(const bool useTestPairs = false);
 			cv::Mat dltSolveP(std::vector<cv::Point3f> objectPoints, std::vector<cv::Point2f> imagePoints); //DLT alg on vector of correspondences

@@ -189,11 +189,6 @@ ci::Json act::room::ProjectorRoomNode::toParams()
 
 	//Calibration
 	json["isCalibrating"] = getIsCalibrating();
-	/*
-	json["nextCorrespondence"] = m_nextCorrespondence;
-	json["totalPoints"] = m_totalPoints;
-	json["totalCalibrationRays"] = m_totalCalibrationRays;
-	*/
 
 	// Error metrics
 	if (m_serializeErrors)
@@ -237,23 +232,6 @@ void act::room::ProjectorRoomNode::fromParams(ci::Json json)
 	if (util::setValueFromJson(json, "principalPoint", principalPoint)) {
 		setPrincipalPoint(principalPoint, false);
 	}
-
-	/*
-	int nextCorrespondence = 0;
-	if (util::setValueFromJson(json, "nextCorrespondence", nextCorrespondence)) {
-		m_nextCorrespondence = nextCorrespondence;
-	}
-
-	int totalPoints = 0;
-	if (util::setValueFromJson(json, "totalPoints", totalPoints)) {
-		m_totalPoints = totalPoints;
-	}
-
-	int totalCalibrationRays = 0;
-	if (util::setValueFromJson(json, "totalCalibrationRays", totalCalibrationRays)) {
-		m_totalCalibrationRays = totalCalibrationRays;
-	}
-	*/
 
 	//communication with frontend (not serialized)
 	bool isCalibrating;
@@ -811,34 +789,6 @@ void act::room::ProjectorRoomNode::resetCorrespondences()
 	m_nextCorrespondence = 0;
 }
 
-/* //does not work
-void act::room::ProjectorRoomNode::calibrateCV()
-{
-	std::vector<cv::Point3f> objectPoints;
-	std::vector<cv::Point2f> imagePoints;
-
-	getTestPairs(objectPoints, imagePoints);
-
-	std::vector<std::vector<cv::Point3f>> wrappedObjectPoints = { objectPoints };
-	std::vector<std::vector<cv::Point2f>> wrappedImagePoints = { imagePoints };
-
-	cv::Mat K, distCoeffs;
-	std::vector<cv::Mat> rvecs, tvecs;
-
-	CV_Assert(!wrappedImagePoints.empty());
-	CV_Assert(!wrappedObjectPoints.empty());
-	CV_Assert(wrappedImagePoints.size() == wrappedObjectPoints.size());
-	CV_Assert(wrappedImagePoints.size() > 0);
-	CV_Assert(wrappedImagePoints[0].size() == wrappedObjectPoints[0].size());
-	CV_Assert(wrappedImagePoints[0].size() >= 6);
-	CV_Assert(m_resolution.x > 6 && m_resolution.y > 6);
-
-	cv::calibrateCamera(wrappedObjectPoints, wrappedImagePoints, cv::Size(1920, 1080), K, distCoeffs, rvecs, tvecs);
-
-	//set intrinsics
-	
-} */
-
 void act::room::ProjectorRoomNode::calibrateDLT(const bool useTestPairs)
 {
 	std::vector<cv::Point3f> objectPoints;
@@ -862,13 +812,6 @@ void act::room::ProjectorRoomNode::calibrateDLT(const bool useTestPairs)
 	cv::Mat K, R, t;
 
 	cv::decomposeProjectionMatrix(P, K, R, t);
-
-	/*
-	if (cv::determinant(R) < 0) {
-		R = -R;
-		t = -t;
-	}
-	*/
 
 	//set intrinsics
 	K /= K.at<double>(2, 2); //normalize
