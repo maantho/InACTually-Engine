@@ -766,6 +766,12 @@ void act::room::ProjectorRoomNode::addCorrespondence(cv::Point3f objectPoint, bo
 
 int act::room::ProjectorRoomNode::getCurrentRay()
 {
+
+	//prefer next ray
+	return m_nextCorrespondence % m_totalCalibrationRays;
+
+	/*
+	//prefer same ray
 	int pointsPerRay = m_totalPoints / m_totalCalibrationRays;
 	int rest = m_totalPoints % m_totalCalibrationRays;
 
@@ -778,8 +784,9 @@ int act::room::ProjectorRoomNode::getCurrentRay()
 			rayOrder.push_back(ray);
 		}
 	}
-
 	return rayOrder[m_nextCorrespondence]; 
+	*/
+
 }
 
 void act::room::ProjectorRoomNode::resetCorrespondences()

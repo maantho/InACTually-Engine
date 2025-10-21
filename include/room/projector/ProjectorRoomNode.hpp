@@ -109,12 +109,12 @@ namespace act {
 				cv::Point2f(5.0f / 6.0f, 2.0f / 3.0f),
 
 				//additionally for  up to 10 points
-				cv::Point2f(2.0f / 6.0f, 1.0f / 3.0f),
 				cv::Point2f(3.0f / 6.0f, 1.0f / 3.0f),
-				cv::Point2f(4.0f / 6.0f, 1.0f / 3.0f),
-				cv::Point2f(2.0f / 6.0f, 2.0f / 3.0f),
 				cv::Point2f(3.0f / 6.0f, 2.0f / 3.0f),
+				cv::Point2f(2.0f / 6.0f, 1.0f / 3.0f),
 				cv::Point2f(4.0f / 6.0f, 2.0f / 3.0f),
+				cv::Point2f(2.0f / 6.0f, 2.0f / 3.0f),
+				cv::Point2f(4.0f / 6.0f, 1.0f / 3.0f),
 			};
 
 			//Error metrics
