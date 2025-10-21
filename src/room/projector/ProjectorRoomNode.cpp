@@ -127,6 +127,7 @@ void act::room::ProjectorRoomNode::drawSpecificSettings()
 		{
 			setIsCalibrating(m_isCalibrating);
 		}
+		ImGui::Text("Calibration refinement is only possible in the session the calibration process was started!");
 		if (ImGui::Button("Reset Correspondences"))
 		{
 			resetCorrespondences();
