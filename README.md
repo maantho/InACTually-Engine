@@ -1,68 +1,42 @@
+# Projector Calibration & Rendering for Dynamic Spatial Projection Mapping
+
+This fork contains additions to [InACTually Engine](https://github.com/InACTually/InACTually-Engine) that got merged into upstream with [PR #1](https://github.com/InACTually/InACTually-Engine/pull/1). 
+**They where created as part of my Bachelor Thesis.** All changes can be viewed [here](https://github.com/maantho/InACTually-Engine/tree/ProjectorCalibration)
+
+The goal was to find a projector calibration method, that can be used for dynamic spatial projection mapping in a wide variety of artistic contexts. Out of existing methods a novel multi-projector calibration method was developed to support projection-mapping onto arbitrary dynamic surfaces. This is achieved in a user-friendly way, utilizing a mixed reality headset. It mitigates restriction on the surface and calibration targets, that are common with other projector calibration methods. 
+
+<img src="gallery/combined.png" alt="A human using the calibration algorithm" width="700"/>
+
+<img src="gallery/result.png" alt="The calibration result" width="400"/>
+
+To calibrate the projector with an MR headset, the user freely selects 3D world points that correspond to a set of projected
+2D image points. The user intersects their hand with the ray formed by a projected
+point. The hand position and the 2D image position are used as a correspondence to calibrate the projector with the
+DLT algorithm. Repeating this interaction a minimum of six times produces a coarse
+projector calibration. Multiple projectors can be calibrated in row, without requiring a specific surface or calibration target.
+The DLT algorithm was implemented in C++. The projected image is rendered and mapped accurately to a surface by constructing an OpenGL projection matrix from the estimated parameters.
+
+The estimated frustum and projector position and orientation can be inspected through the MR headset, creating the calibration flow shown below. Additionally, hand gesture recognition was added to enable the selection of points and placement of the world anchor with the corresponding hand gesture.  
+The UI was created with WebGL and Three.js in this [fork](https://github.com/maantho/InACTually-Stage) and was merged in this [PR](https://github.com/InACTually/InACTually-Stage/pull/1).
+
+<img src="gallery/calibrationflow.png" alt="The calibration flow" width="550"/>
+
+The communication between the headset and the PC running the application over the network was handled by [InACTually](https://github.com/InACTually)
+___
+
+<br>
+<br>
+<br>
+
+
 <img src="assets/design/splash.png" alt="InACTually Engine Splash" width="250"/>
 
-# InACTually Engine
+# InACTually Engine 
+
 a MediaServer for driving all technology in\
 interactive theater for actual acts
 
+<https://github.com/InACTually/InACTually-Engine>
+
 
 InACTually is (or wants to be) an artistic tool and consists of the Engine and the Stage. InACTually allows artists to realize their multimedia and multimodal concepts autonomously. The underlying spatiality of performing arts is used to design an intuitive and easy-to-use interface, which introduces direct manipulation as well as immersive applications in Mixed Reality.
-
-<br>
-
-## 🎢 What InACTually actually is
-... or what it wants to be.
-We should definitively path this out.
-
-InACTually started 2021 as tiny tool made by Lars Engeln and Fabian Töpfer that suits their needs to create spatial media installations and interactive moments in theater productions. So it got bigger and bigger over time, sometimes without really any time to refurbish. Thereby, some parts might be a bit deprecated, but we are tidying up :)
-
-The Engine is InACTually's media server, that should be able to run a show or media installations on its own. Its core idea is to think everything spatially. Thereby, it has RoomNodes that express something in space like devices or tracked objects. According to that, there are ProcessingNode, which can be used to orchestrate more complex behaviour in the node-link diagram. 
-
-[The Stage](https://github.com/InACTually/InACTually-Stage) (in another repo) is InACTually's frontend, that should be nicer to use and should only give instructions to the Engine what to do. The Stage is meant to be hosted in a venue, to easily access it via a tablet or a Mixed-Reality headset.
-
-<br>
-
-## 🎭 Gallery
-
-We would like to build up a Gallery to showcase how InACTually is been used in all the lovely projects. Please contact us, if you use InACTually (all tools or one of them) in your projects.
-And think about to contribute to the Gallery. \
-Some impressions from projects by Fabian Töpfer and Lars Engeln using InACTually:
-
-<img src="./gallery/InACTually-Impressions_FabianTöpfer-LarsEngeln.png" alt="InACTually Gallery Impressions - Fotos by Lars Engeln" />
-
-<br>
-
-## 🛠️ Setup – How to compile
-
-To make it compile... pray.
-At the moment, only a project file for VisualStudio2022 is available.
-A CMake workflow would be a dream.
-Most of the dependencies are included in this repo (see the third-party notice below), but you need to setup the bigger dependencies yourself:
-
-+ [Cinder - 0.9.3dev](https://github.com/cinder/Cinder) [Jul'25] (or possibly newer) \
-Place Cinder in a folder named "Cinder" parallel to your InACTually-Engine folder (same hierarchy level), so that it can be relatively found. You need to replace the ImGui files with its [docking-branch](https://github.com/ocornut/imgui/tree/docking) [Jul'25]. After that, your want to compile Cinder with dynamic runtime linking (in VisualStudio something like: Proj.-settings -> C/C++ -> CodeGeneration -> runtime lib -> "-DLL"):
-    - for Release "Multithreaded-DLL (/MD)" name the lib "cinder_MD.lib"
-    - for Debug "Multithreaded-Debug-DLL (/MDd)" name the lib "cinder_MDd.lib" likewise
-
-+ [OpenCV 4.10.0](https://github.com/opencv/opencv) (or possibly newer) \
-You need to compile OpenCV, maybe with opencv_contrib and things you like to have.\
-Place OpenCV in `./3rd/OpenCV4` – care the include folder is `./3rd/OpenCV4/include/opencv`.\
-You need to place/copy the corresponding *.dll's in `vc2022\bin\Release|Debug`.
-
-<br>
-
-## ✒️ Contributing
-Whether you are fixing a bug, suggesting an improvement, or just asking a question, you are helping make this better. Best is always to contact us, but you find more information in the [CONTRIBUTING.md](CONTRIBUTING.md).
-
-<br>
-
-## 🧩 Third-Party Notice and Credits
-
-The InACTually Engine project uses external resources licensed under open-source terms. \
-You can find the list of frameworks, code snippets, models, and other material in the [THIRD_PARTY.md](THIRD_PARTY.md).
-
-<br>
-
-## 📜 License
-The InACTually Engine is licensed under the MIT License, see the [LICENSE](LICENSE). \
-Contact us, if you use InACTually (all tools or one of them) in your projects. 
-Would be nice to see, what lovely things you are creating :)
